@@ -5,7 +5,14 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     MainWindow w;
-    w.show();
 
-    return a.exec();
+
+    if(w.setup() == true)
+    {
+        w.show();
+        return a.exec();
+    }else
+    {
+        return 0;
+    }
 }

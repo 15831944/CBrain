@@ -13,8 +13,18 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+        mainwindow.cpp \
+    brain.cpp \
+    dialog_login.cpp \
+    text_zeilenweise.cpp \
+    users.cpp
 
-HEADERS  += mainwindow.h
+HEADERS  += mainwindow.h \
+    brain.h \
+    defines_filenames.h \
+    dialog_login.h \
+    text_zeilenweise.h \
+    users.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    dialog_login.ui
