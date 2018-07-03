@@ -7,6 +7,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     clear();
+    this->setWindowState(Qt::WindowMaximized);
 }
 
 MainWindow::~MainWindow()
@@ -75,7 +76,8 @@ void MainWindow::read_inifile()
 
     if(file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
-        inifile = file.readAll();
+        inifile.set_text( file.readAll()  );
+        cb.set_rootdir(inifile.zeile(1));
     }else
     {
         on_actionNetzwerkordner_aendern_triggered();
@@ -98,14 +100,49 @@ void MainWindow::read_inifile()
     }
 }
 
+void MainWindow::write_inifile()
+{
+    QString filename = INIFILE;
+    QFile file(filename);
+
+    if(file.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+        file.write(cb.get_rootdir().toUtf8());  //Zeile 1
+
+        //file.write("\n");
+        //Zeile 2
+
+        file.close();
+    }
+}
+
 void MainWindow::read_iniuser()
 {
-    QString filename = INIUSER;
+    QString filename;
+    filename =  cb.get_rootdir();
+    filename += QDir::separator();
+    filename += INIUSER;
     QFile file(filename);
 
     if(file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
         u.set_users(file.readAll());
+        file.close();
+    }
+}
+
+void MainWindow::write_iniuser()
+{
+    QString filename;
+    filename =  cb.get_rootdir();
+    filename += QDir::separator();
+    filename += INIUSER;
+    QFile file(filename);
+
+    if(file.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+        file.write(u.get_users().toUtf8());
+        file.close();
     }
 }
 
@@ -125,6 +162,7 @@ void MainWindow::on_actionNetzwerkordner_aendern_triggered()
     if(!tmpdir.isEmpty())
     {
         cb.set_rootdir(tmpdir);
+        write_inifile();
     }else
     {
         if(cb.get_rootdir().isEmpty())
@@ -135,6 +173,38 @@ void MainWindow::on_actionNetzwerkordner_aendern_triggered()
             isvalid = false;
         }
     }
+}
+
+void MainWindow::on_actionBenutzer_verwalten_triggered()
+{
+    Dialog_user *d = new Dialog_user;
+    connect(d, SIGNAL(signal_send_users(users)),        \
+            this, SLOT(slot_get_users(users))           );
+    d->set_users(u);
+    d->exec();
+    delete d;
+}
+
+void MainWindow::slot_get_users(users new_users)
+{
+    u = new_users;
+    write_iniuser();
+}
+
+void MainWindow::on_actionInfo_triggered()
+{
+    QString msg;
+    msg += "CBrain Version ";
+    msg += VERSIONSNUMMER;
+    msg += "\n";
+    msg += "Autor: Oliver Schuft";
+    msg += "\n";
+    msg += "Quellcode: https://github.com/TischlerWilly/CBrain.git";
+    //msg += "\n";
+
+    QMessageBox mb;
+    mb.setText(msg);
+    mb.exec();
 }
 
 //-----------------------------------------------UI den Rechten entsprechend anpassen:
@@ -149,3 +219,7 @@ void MainWindow::ui_rechte_admin()
     ui->actionNetzwerkordner_aendern->setEnabled(true);
     ui->actionBenutzer_verwalten->setEnabled(true);
 }
+
+//-----------------------------------------------
+
+

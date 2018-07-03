@@ -7,6 +7,7 @@
 #include <QString>
 #include <QMessageBox>
 #include "text_zeilenweise.h"
+#include "umwandeln.h"
 
 class users
 {
@@ -14,11 +15,29 @@ public:
     users();
     users(QString users);
     void set_users(QString users);
+    void newuser();
     QString get_users();
+    void removeuser(uint index);
+    uint get_anz_admins();
 
     bool login(QString user, QString pwd);
     bool is_admin();
-
+    bool is_admin(uint index);
+    inline text_zeilenweise get_names_tz()
+    {
+        return user_tz;
+    }
+    inline text_zeilenweise get_pwd_tz()
+    {
+        return pwd_tz;
+    }
+    inline text_zeilenweise get_isadmin_tz()
+    {
+        return is_admin_tz;
+    }
+    bool change_name(uint index, QString newname);
+    void change_pwd(uint index, QString newpwd);
+    void change_isadmin(uint index, bool isadmin);
 
 private:
     QString trzparam;               //Trennzeichen der einzelnen Parameter eines Nutzers
@@ -31,6 +50,7 @@ private:
 
 
     void clear();
+    void set_first_admin();
 };
 
 #endif // USERS_H

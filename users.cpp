@@ -20,14 +20,18 @@ void users::set_users(QString users)
 
     //Achtung! Wenn die Parameter für den Nutzer erweitert werden auch
     //clear() erweitern --> Wartungspasswort
+    set_first_admin();
 
     //Benutzer einlesen:
     for(uint i=1; i<=input.zeilenanzahl() ;i++)
     {
         zeile.set_text(input.zeile(i));
-        user_tz.zeile_anhaengen(zeile.zeile(1));
-        pwd_tz.zeile_anhaengen(zeile.zeile(2));
-        is_admin_tz.zeile_anhaengen(zeile.zeile(3));
+        if(zeile.zeile(1) != USERADMIN_NAME)
+        {
+            user_tz.zeile_anhaengen(zeile.zeile(1));
+            pwd_tz.zeile_anhaengen(zeile.zeile(2));
+            is_admin_tz.zeile_anhaengen(zeile.zeile(3));
+        }
     }
 }
 
@@ -60,7 +64,10 @@ void users::clear()
     pwd_tz.clear();
     is_admin_tz.clear();
     current_user = 0;
+}
 
+void users::set_first_admin()
+{
     //Wartungspasswort:
     user_tz.zeile_anhaengen(USERADMIN_NAME);
     pwd_tz.zeile_anhaengen(USERADMIN_PWD);
@@ -104,4 +111,83 @@ bool users::is_admin()
     {
         return false;
     }
+}
+bool users::is_admin(uint index)
+{
+    if(index <= is_admin_tz.zeilenanzahl())
+    {
+        if(is_admin_tz.zeile(index) == "1")
+        {
+            return true;
+        }else
+        {
+            return false;
+        }
+    }else
+    {
+        return false;
+    }
+}
+
+bool users::change_name(uint index, QString newname)
+{
+    //Prüfen ob Name bereits verwendet wird:
+    bool isvalid = true;
+    for(uint i=1; i<=user_tz.zeilenanzahl() ;i++)
+    {
+        if(user_tz.zeile(i) == newname)
+        {
+            isvalid = false;
+            break;
+        }
+    }
+    if(isvalid == true)
+    {
+        user_tz.zeile_ersaetzen(index, newname);
+    }
+    return isvalid;
+}
+void users::change_pwd(uint index, QString newpwd)
+{
+    pwd_tz.zeile_ersaetzen(index, newpwd);
+}
+void users::change_isadmin(uint index, bool isadmin)
+{
+    if(isadmin == true)
+    {
+        is_admin_tz.zeile_ersaetzen(index, "1");
+    }else
+    {
+        is_admin_tz.zeile_ersaetzen(index, "0");
+    }
+}
+
+void users::newuser()
+{
+    user_tz.zeile_anhaengen("Nutzer " + int_to_qstring(user_tz.zeilenanzahl()+1));
+    pwd_tz.zeile_anhaengen("Nutzer " + int_to_qstring(user_tz.zeilenanzahl()));
+    is_admin_tz.zeile_anhaengen("0");
+}
+
+void users::removeuser(uint index)
+{
+    if(index <= user_tz.zeilenanzahl())
+    {
+        user_tz.zeile_loeschen(index);
+        pwd_tz.zeile_loeschen(index);
+        is_admin_tz.zeile_loeschen(index);
+    }
+}
+
+uint users::get_anz_admins()
+{
+    uint anz = 0;
+    for(uint i=1; i<=is_admin_tz.zeilenanzahl() ;i++)
+    {
+        if(is_admin_tz.zeile(i) == "1")
+        {
+            anz++;
+        }
+    }
+    return anz;
 }

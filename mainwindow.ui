@@ -37,7 +37,14 @@
     <addaction name="menuEinstellungen_2"/>
     <addaction name="actionBenutzer_wechsen"/>
    </widget>
+   <widget class="QMenu" name="menuExtras">
+    <property name="title">
+     <string>Extras</string>
+    </property>
+    <addaction name="actionInfo"/>
+   </widget>
    <addaction name="menuEinstellungen"/>
+   <addaction name="menuExtras"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -61,6 +68,11 @@
   <action name="actionBenutzer_verwalten">
    <property name="text">
     <string>Benutzer verwalten</string>
+   </property>
+  </action>
+  <action name="actionInfo">
+   <property name="text">
+    <string>Info</string>
    </property>
   </action>
  </widget>

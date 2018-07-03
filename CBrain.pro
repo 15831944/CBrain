@@ -17,14 +17,19 @@ SOURCES += main.cpp\
     brain.cpp \
     dialog_login.cpp \
     text_zeilenweise.cpp \
-    users.cpp
+    users.cpp \
+    dialog_user.cpp \
+    umwandeln.cpp
 
 HEADERS  += mainwindow.h \
     brain.h \
     defines_filenames.h \
     dialog_login.h \
     text_zeilenweise.h \
-    users.h
+    users.h \
+    dialog_user.h \
+    umwandeln.h
 
 FORMS    += mainwindow.ui \
-    dialog_login.ui
+    dialog_login.ui \
+    dialog_user.ui
