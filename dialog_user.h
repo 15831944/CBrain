@@ -32,9 +32,7 @@ private slots:
     void on_lineEdit_pwd_editingFinished();
     void on_checkBox_isadmin_toggled(bool checked);
     void on_pushButton_newuser_clicked();
-
     void on_pushButton_deleteuser_clicked();
-
     void on_pushButton_ok_clicked();
 
 private:

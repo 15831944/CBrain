@@ -18,8 +18,7 @@ MainWindow::~MainWindow()
 void MainWindow::clear()
 {
     isvalid = true;
-    inifile.clear();
-    cb.clear();
+    ini.clear();
     ui_rechte_nobody();
 }
 
@@ -76,8 +75,7 @@ void MainWindow::read_inifile()
 
     if(file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
-        inifile.set_text( file.readAll()  );
-        cb.set_rootdir(inifile.zeile(1));
+        ini.set_text( file.readAll()  );
     }else
     {
         on_actionNetzwerkordner_aendern_triggered();
@@ -87,7 +85,7 @@ void MainWindow::read_inifile()
             //Inifile anlegen:
             if(file.open(QIODevice::WriteOnly | QIODevice::Text))
             {
-                file.write(cb.get_rootdir().toUtf8());
+                file.write(ini.get_rootdir().toUtf8());
                 file.close();
             }else
             {
@@ -107,11 +105,7 @@ void MainWindow::write_inifile()
 
     if(file.open(QIODevice::WriteOnly | QIODevice::Text))
     {
-        file.write(cb.get_rootdir().toUtf8());  //Zeile 1
-
-        //file.write("\n");
-        //Zeile 2
-
+        file.write(ini.get_text().toUtf8());
         file.close();
     }
 }
@@ -119,7 +113,7 @@ void MainWindow::write_inifile()
 void MainWindow::read_iniuser()
 {
     QString filename;
-    filename =  cb.get_rootdir();
+    filename =  ini.get_rootdir();
     filename += QDir::separator();
     filename += INIUSER;
     QFile file(filename);
@@ -134,7 +128,7 @@ void MainWindow::read_iniuser()
 void MainWindow::write_iniuser()
 {
     QString filename;
-    filename =  cb.get_rootdir();
+    filename =  ini.get_rootdir();
     filename += QDir::separator();
     filename += INIUSER;
     QFile file(filename);
@@ -150,22 +144,22 @@ void MainWindow::on_actionNetzwerkordner_aendern_triggered()
 {
     QString tmpdir;
 
-    if(cb.get_rootdir().isEmpty())
+    if(ini.get_rootdir().isEmpty())
     {
         tmpdir = "./";
     }else
     {
-        tmpdir = cb.get_rootdir();
+        tmpdir = ini.get_rootdir();
     }
 
     tmpdir = QFileDialog::getExistingDirectory(this, tr("Wurzelverzeichnis bestimmen"), tmpdir);
     if(!tmpdir.isEmpty())
     {
-        cb.set_rootdir(tmpdir);
+        ini.set_rootdir(tmpdir);
         write_inifile();
     }else
     {
-        if(cb.get_rootdir().isEmpty())
+        if(ini.get_rootdir().isEmpty())
         {
             QMessageBox mb;
             mb.setText("Wurzelverzeichnis nicht bekannt!\nProgramm wird beendet.");
@@ -207,19 +201,39 @@ void MainWindow::on_actionInfo_triggered()
     mb.exec();
 }
 
+void MainWindow::on_actionProgrammeigene_Datenbank_triggered()
+{
+    Dialog_settings_db *d = new Dialog_settings_db;
+    connect(d, SIGNAL(signal_send_data(text_zeilenweise)),           \
+            this, SLOT(slot_get_settings_db_eigen(text_zeilenweise)) );
+    d->set_data(ini.get_settings_db_eigen());
+    d->exec();
+    delete d;
+}
+
+void MainWindow::slot_get_settings_db_eigen(text_zeilenweise data)
+{
+    ini.set_settings_db_eigen(data);
+    write_inifile();
+}
+
 //-----------------------------------------------UI den Rechten entsprechend anpassen:
 void MainWindow::ui_rechte_nobody()
 {
     ui->actionNetzwerkordner_aendern->setDisabled(true);
     ui->actionBenutzer_verwalten->setDisabled(true);
+    ui->actionProgrammeigene_Datenbank->setDisabled(true);
 }
 
 void MainWindow::ui_rechte_admin()
 {
     ui->actionNetzwerkordner_aendern->setEnabled(true);
     ui->actionBenutzer_verwalten->setEnabled(true);
+    ui->actionProgrammeigene_Datenbank->setEnabled(true);
 }
 
 //-----------------------------------------------
+
+
 
 

@@ -33,6 +33,7 @@
      </property>
      <addaction name="actionNetzwerkordner_aendern"/>
      <addaction name="actionBenutzer_verwalten"/>
+     <addaction name="actionProgrammeigene_Datenbank"/>
     </widget>
     <addaction name="menuEinstellungen_2"/>
     <addaction name="actionBenutzer_wechsen"/>
@@ -73,6 +74,11 @@
   <action name="actionInfo">
    <property name="text">
     <string>Info</string>
+   </property>
+  </action>
+  <action name="actionProgrammeigene_Datenbank">
+   <property name="text">
+    <string>Programmeigene Datenbank</string>
    </property>
   </action>
  </widget>
