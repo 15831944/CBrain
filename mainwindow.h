@@ -54,6 +54,8 @@ private slots:
     void on_actionTestfunktion_triggered();
     void on_actionTabelleneditor_triggered();
 
+    void on_actionKeinModul_triggered();
+
 private:
     Ui::MainWindow *ui;
     users u;
@@ -65,7 +67,8 @@ private:
 
     //Flags:
     bool isvalid;               //Anwendungsumgebung korrekt (Inifiles + Ordner...)
-    bool widget_tabedit_open;   //widget_tableeditor ist offen
+    bool modul_kein;            //kein widget ist offen
+    bool modul_tabedit;         //widget_tableeditor ist offen
 
     //eigene Widgets:
     Form_tableeditor widget_tableeditor;
@@ -78,6 +81,7 @@ private:
     void write_iniuser();
     void ui_rechte_admin();
     void ui_rechte_nobody();
+    void change_modul(QString modul);
 
 };
 

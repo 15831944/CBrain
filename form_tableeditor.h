@@ -22,6 +22,11 @@ public:
 protected:
     void resizeEvent(QResizeEvent *event);
 
+private slots:
+    void on_listWidget_tables_currentRowChanged();
+
+    void on_listWidget_tablehead_currentRowChanged(int currentRow);
+
 private:
     Ui::Form_tableeditor *ui;
 

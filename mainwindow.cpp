@@ -7,9 +7,10 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     clear();
-    widget_tabedit_open = false;
+    widget_tableeditor.setParent(this);
+    on_actionKeinModul_triggered();
 
-    this->setWindowState(Qt::WindowMaximized);
+    //this->setWindowState(Qt::WindowMaximized);
 }
 
 MainWindow::~MainWindow()
@@ -22,6 +23,8 @@ void MainWindow::clear()
     isvalid = true;
     ini.clear();
     ui_rechte_nobody();
+    modul_kein      = false;
+    modul_tabedit   = false;
 }
 
 bool MainWindow::setup()
@@ -36,6 +39,8 @@ bool MainWindow::setup()
         read_iniuser();
 
         on_actionBenutzer_wechsen_triggered();
+
+        widget_tableeditor.set_db(&dbeigen);    //widget Zeiger auf DB übergeben
     }
 
     return isvalid;
@@ -204,8 +209,11 @@ void MainWindow::slot_get_users(users new_users)
 
 void MainWindow::slot_get_settings_db_eigen(text_zeilenweise data)
 {
-    ini.set_settings_db_eigen(data);
-    write_inifile();
+    if(ini.get_settings_db_eigen().get_text()  !=  data.get_text())
+    {
+        ini.set_settings_db_eigen(data);
+        write_inifile();
+    }
 }
 
 //-----------------------------------------------Dialoge und Widgets ansprechen:
@@ -240,15 +248,40 @@ void MainWindow::on_actionProgrammeigene_Datenbank_triggered()
     dbeigen.set_param(ini.get_settings_db_eigen());
 }
 
+//-----------------------------------------------Aktives Modul wechseln:
+void MainWindow::on_actionKeinModul_triggered()
+{
+    change_modul("kein");
+}
+
 void MainWindow::on_actionTabelleneditor_triggered()
 {
-    if(widget_tabedit_open == false)
+    change_modul("tableeditor");
+}
+
+void MainWindow::change_modul(QString modul)
+{
+    if(modul == "tableeditor")
     {
-        widget_tabedit_open = true;
-        widget_tableeditor.set_db(&dbeigen);
-        widget_tableeditor.setParent(this);
-        widget_tableeditor.show();
+        if(modul_tabedit == false)
+        {
+            modul_kein      = false;
+            modul_tabedit   = true;
+
+
+            widget_tableeditor.show();
+        }
+    }else
+    {
+        if(modul_kein == false)
+        {
+            modul_kein      = true;
+            modul_tabedit   = false;
+
+            widget_tableeditor.hide();
+        }
     }
+
 }
 
 //-----------------------------------------------UI den Rechten entsprechend anpassen:
@@ -258,6 +291,7 @@ void MainWindow::ui_rechte_nobody()
     ui->actionBenutzer_verwalten->setDisabled(true);
     ui->actionProgrammeigene_Datenbank->setDisabled(true);
     ui->actionTestfunktion->setDisabled(true);
+    ui->actionKeinModul->setDisabled(true);
     ui->actionTabelleneditor->setDisabled(true);
 }
 
@@ -267,6 +301,7 @@ void MainWindow::ui_rechte_admin()
     ui->actionBenutzer_verwalten->setEnabled(true);
     ui->actionProgrammeigene_Datenbank->setEnabled(true);
     ui->actionTestfunktion->setEnabled(true);
+    ui->actionKeinModul->setEnabled(true);
     ui->actionTabelleneditor->setEnabled(true);
 }
 
@@ -295,6 +330,8 @@ void MainWindow::on_actionTestfunktion_triggered()
 }
 
 //-----------------------------------------------
+
+
 
 
 

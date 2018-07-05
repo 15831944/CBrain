@@ -49,6 +49,7 @@
     <property name="title">
      <string>Module</string>
     </property>
+    <addaction name="actionKeinModul"/>
     <addaction name="actionTabelleneditor"/>
    </widget>
    <addaction name="menuEinstellungen"/>
@@ -60,7 +61,7 @@
     <enum>TopToolBarArea</enum>
    </attribute>
    <attribute name="toolBarBreak">
-    <bool>false</bool>
+    <bool>true</bool>
    </attribute>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
@@ -95,8 +96,19 @@
    </property>
   </action>
   <action name="actionTabelleneditor">
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Tabelleneditor</string>
+   </property>
+  </action>
+  <action name="actionKeinModul">
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>kein</string>
    </property>
   </action>
  </widget>

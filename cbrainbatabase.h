@@ -5,6 +5,7 @@
 #include <QString>
 #include <QMessageBox>
 #include "text_zeilenweise.h"
+#include "umwandeln.h"
 
 class cbrainbatabase
 {
@@ -56,14 +57,12 @@ public:
         return pwd;
     }
 
-    bool open();
-    inline bool get_isopen()
-    {
-        return isopen;
-    }
-    void close();
 
     text_zeilenweise get_tables_tz();
+    text_zeilenweise get_table_head(QString tablename);
+    text_zeilenweise get_table_head_type(QString tablename);
+    text_zeilenweise get_table_is_primary_key(QString tablename);
+    text_zeilenweise get_table_value_extra(QString tablename);
 
 private:
     QString host;
@@ -71,9 +70,6 @@ private:
     QString driver;
     QString user;
     QString pwd;
-
-    QSqlDatabase db;
-    bool isopen;
 
 
 
