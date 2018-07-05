@@ -6,11 +6,13 @@ Form_tableeditor::Form_tableeditor(QWidget *parent) :
     ui(new Ui::Form_tableeditor)
 {
     ui->setupUi(this);
+    this->model = new QSqlQueryModel();
 }
 
 Form_tableeditor::~Form_tableeditor()
 {
     delete ui;
+    delete model;
 }
 
 void Form_tableeditor::clear()
@@ -33,14 +35,14 @@ void Form_tableeditor::resizeEvent(QResizeEvent *event)
     ui->label_tables->setFixedWidth(breite/5);
     ui->listWidget_tables->move( 1 ,                                                \
                                  1 + ui->label_tables->geometry().height() + 1      );
-    ui->listWidget_tables->setFixedSize(breite/5, hoehe-2);
+    ui->listWidget_tables->setFixedSize(breite/5, hoehe-5);
 
     //Spalte 2 Tabellen-Kopft:
     ui->label_tablehead->move(1+ui->listWidget_tables->geometry().width()+1 , 1 );
     ui->label_tablehead->setFixedWidth(breite/5);
     ui->listWidget_tablehead->move( 1+ui->listWidget_tables->geometry().width()+1 , \
                                     1 + ui->label_tables->geometry().height() + 1   );
-    ui->listWidget_tablehead->setFixedSize(breite/5, hoehe-2);
+    ui->listWidget_tablehead->setFixedSize(breite/5, hoehe-5);
 
     //Spalte 3 :
     int labelbreite = ui->label_typlabel->geometry().width();
@@ -91,7 +93,9 @@ void Form_tableeditor::resizeEvent(QResizeEvent *event)
     ui->label_extralabel->move( xposlabel , (1 + ui->label_tables->geometry().height())*3 + 1 );
     ui->label_extra->move     ( xposlabel2 , (1 + ui->label_tables->geometry().height())*3 + 1 );
 
-
+    ui->tableView->move(xposlabel, (1 + ui->label_tables->geometry().height())*4 + 1);
+    ui->tableView->setFixedWidth(labelbreite + labelbreite2 -1);
+    ui->tableView->setFixedHeight(hoehe - ui->tableView->pos().ry()+ui->label_tables->geometry().height() -3 );
 
     QWidget::resizeEvent(event);
 }
@@ -117,6 +121,45 @@ void Form_tableeditor::on_listWidget_tables_currentRowChanged()
     for(uint i=1; i<=tables.zeilenanzahl() ;i++)
     {
         ui->listWidget_tablehead->addItem(tables.zeile(i));
+    }
+
+    {
+        QSqlDatabase mydb;
+
+        mydb = QSqlDatabase::addDatabase(db->get_driver(), "noname");
+        mydb.setHostName(db->get_host());
+        mydb.setDatabaseName(db->get_dbname());
+        mydb.setUserName(db->get_user());
+        mydb.setPassword(db->get_pwd());
+
+        if(mydb.open())
+        {
+            QSqlQuery q(mydb);
+            QString cmd;
+            cmd += "SELECT * FROM ";
+            cmd += ui->listWidget_tables->currentItem()->text();
+
+            if(q.exec(cmd))
+            {
+                model->setQuery(q);
+                ui->tableView->setModel(model);
+            }else
+            {
+                QMessageBox mb;
+                mb.setText("Fehler:\n" + q.lastError().text());
+                mb.exec();
+            }
+            mydb.close();
+
+        }else
+        {
+            QMessageBox mb;
+            mb.setText("Fehler bei Datenbankverbindung!");
+            mb.exec();
+        }
+
+        mydb = QSqlDatabase();
+        mydb.removeDatabase("noname");
     }
 }
 

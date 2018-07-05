@@ -43,6 +43,33 @@ void cbrainbatabase::set_param(text_zeilenweise param)
     set_pwd(param.zeile(5));
 }
 
+bool cbrainbatabase::pingdb()
+{
+    bool pingok;
+
+    QSqlDatabase db;
+
+    db = QSqlDatabase::addDatabase(driver, "noname");
+    db.setHostName(host);
+    db.setDatabaseName(dbname);
+    db.setUserName(user);
+    db.setPassword(pwd);
+
+    if(db.open())
+    {
+        pingok = true;
+        db.close();
+    }else
+    {
+        pingok = false;
+    }
+
+    db = QSqlDatabase();
+    db.removeDatabase("noname");
+
+    return pingok;
+}
+
 text_zeilenweise cbrainbatabase::get_tables_tz()
 {
     text_zeilenweise tz;

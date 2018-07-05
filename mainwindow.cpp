@@ -265,11 +265,18 @@ void MainWindow::change_modul(QString modul)
     {
         if(modul_tabedit == false)
         {
-            modul_kein      = false;
-            modul_tabedit   = true;
+            if(dbeigen.pingdb() == true)
+            {
+                modul_kein      = false;
+                modul_tabedit   = true;
 
-
-            widget_tableeditor.show();
+                widget_tableeditor.show();
+            }else
+            {
+                QMessageBox mb;
+                mb.setText("Datenbank nicht erreichbar!\nModul wurden nicht geladen.");
+                mb.exec();
+            }
         }
     }else
     {

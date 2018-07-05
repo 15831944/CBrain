@@ -58,11 +58,14 @@ public:
     }
 
 
+    bool pingdb();
+
     text_zeilenweise get_tables_tz();
     text_zeilenweise get_table_head(QString tablename);
     text_zeilenweise get_table_head_type(QString tablename);
     text_zeilenweise get_table_is_primary_key(QString tablename);
     text_zeilenweise get_table_value_extra(QString tablename);
+
 
 private:
     QString host;

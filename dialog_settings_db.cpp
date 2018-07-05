@@ -74,11 +74,9 @@ void Dialog_settings_db::on_pushButton_cancel_clicked()
     this->close();
 }
 
-
 void Dialog_settings_db::on_pushButton_test_clicked()
 {
-    QSqlDatabase db = QSqlDatabase::addDatabase(ui->comboBox_driver->currentText());
-    //QSqlQuery qry(db);
+    QSqlDatabase db = QSqlDatabase::addDatabase(ui->comboBox_driver->currentText(), "noname");
     db.setHostName(ui->lineEdit_host->text());
     db.setDatabaseName(ui->lineEdit_dbname->text());
     db.setUserName(ui->lineEdit_username->text());
@@ -98,4 +96,7 @@ void Dialog_settings_db::on_pushButton_test_clicked()
         mb.setText("Fehler:\n" + db.lastError().text());
         mb.exec();
     }
+
+    db = QSqlDatabase();
+    db.removeDatabase("noname");
 }

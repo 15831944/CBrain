@@ -31,6 +31,7 @@ private:
     Ui::Form_tableeditor *ui;
 
     cbrainbatabase *db;
+    QSqlQueryModel *model;
 };
 
 #endif // FORM_TABLEEDITOR_H
