@@ -21,7 +21,9 @@ SOURCES += main.cpp\
     dialog_user.cpp \
     umwandeln.cpp \
     dialog_settings_db.cpp \
-    inifile.cpp
+    inifile.cpp \
+    cbrainbatabase.cpp \
+    form_tableeditor.cpp
 
 HEADERS  += mainwindow.h \
     defines_filenames.h \
@@ -31,9 +33,12 @@ HEADERS  += mainwindow.h \
     dialog_user.h \
     umwandeln.h \
     dialog_settings_db.h \
-    inifile.h
+    inifile.h \
+    cbrainbatabase.h \
+    form_tableeditor.h
 
 FORMS    += mainwindow.ui \
     dialog_login.ui \
     dialog_user.ui \
-    dialog_settings_db.ui
+    dialog_settings_db.ui \
+    form_tableeditor.ui

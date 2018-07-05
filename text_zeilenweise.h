@@ -3,6 +3,7 @@
 
 
 #include <QString>
+#include <QStringList>
 
 
 class text_zeilenweise
@@ -24,6 +25,7 @@ public:
 
     //Funktionen zum erweitern des Textes:
     void    set_text(QString neuer_text);
+    void    set_text(QStringList neuer_text);
     void    zeile_vorwegsetzen(QString zeilentext);
     void    zeile_anhaengen(QString zeilentext);
     void    zeilen_anhaengen(QString zeilentext);

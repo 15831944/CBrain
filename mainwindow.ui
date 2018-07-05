@@ -43,9 +43,17 @@
      <string>Extras</string>
     </property>
     <addaction name="actionInfo"/>
+    <addaction name="actionTestfunktion"/>
+   </widget>
+   <widget class="QMenu" name="menuModule">
+    <property name="title">
+     <string>Module</string>
+    </property>
+    <addaction name="actionTabelleneditor"/>
    </widget>
    <addaction name="menuEinstellungen"/>
    <addaction name="menuExtras"/>
+   <addaction name="menuModule"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -79,6 +87,16 @@
   <action name="actionProgrammeigene_Datenbank">
    <property name="text">
     <string>Programmeigene Datenbank</string>
+   </property>
+  </action>
+  <action name="actionTestfunktion">
+   <property name="text">
+    <string>Testfunktion</string>
+   </property>
+  </action>
+  <action name="actionTabelleneditor">
+   <property name="text">
+    <string>Tabelleneditor</string>
    </property>
   </action>
  </widget>
