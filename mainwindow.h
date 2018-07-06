@@ -8,12 +8,18 @@
 #include <QDir>
 #include <QMessageBox>
 #include <QFileDialog>
-#include "defines_filenames.h"
+
 #include "dialog_login.h"
-#include "users.h"
 #include "dialog_user.h"
-#include "inifile.h"
 #include "dialog_settings_db.h"
+
+#include "form_tableeditor.h"
+
+#include "defines_filenames.h"
+#include "users.h"
+#include "inifile.h"
+#include "cbrainbatabase.h"
+
 
 namespace Ui {
 class MainWindow;
@@ -31,6 +37,8 @@ public:
 
 signals:
 
+protected:
+    void resizeEvent(QResizeEvent *event);
 
 public slots:
     void slot_login(QString user, QString pwd);
@@ -42,18 +50,32 @@ private slots:
     void on_actionBenutzer_wechsen_triggered();
     void on_actionBenutzer_verwalten_triggered();
     void on_actionInfo_triggered();
-
     void on_actionProgrammeigene_Datenbank_triggered();
+    void on_actionTestfunktion_triggered();
+    void on_actionTabelleneditor_triggered();
+
+    void on_actionKeinModul_triggered();
 
 private:
     Ui::MainWindow *ui;
-    bool isvalid;
-    //text_zeilenweise inifile;
     users u;
-    QString user;
-    //QString rootdir;
+    //QString user;
     inifile ini;
 
+    //Datenbanken:
+    QSqlDatabase dbglobal;
+    cbrainbatabase dbeigen;
+
+    //Flags:
+    bool isvalid;               //Anwendungsumgebung korrekt (Inifiles + Ordner...)
+    QString currend_modul;      //Speichert den Namen des Moduls für WindowTitle
+    bool modul_kein;            //kein widget ist offen
+    bool modul_tabedit;         //widget_tableeditor ist offen
+
+    //eigene Widgets:
+    Form_tableeditor widget_tableeditor;
+
+    //Funktionen:
     void clear();
     void read_inifile();
     void write_inifile();
@@ -61,6 +83,8 @@ private:
     void write_iniuser();
     void ui_rechte_admin();
     void ui_rechte_nobody();
+    void change_modul(QString modul);
+    void chande_windowtitle();
 
 };
 

@@ -7,7 +7,10 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     clear();
-    this->setWindowState(Qt::WindowMaximized);
+    widget_tableeditor.setParent(this);
+    on_actionKeinModul_triggered();
+
+    //this->setWindowState(Qt::WindowMaximized);
 }
 
 MainWindow::~MainWindow()
@@ -20,6 +23,8 @@ void MainWindow::clear()
     isvalid = true;
     ini.clear();
     ui_rechte_nobody();
+    modul_kein      = false;
+    modul_tabedit   = false;
 }
 
 bool MainWindow::setup()
@@ -34,40 +39,79 @@ bool MainWindow::setup()
         read_iniuser();
 
         on_actionBenutzer_wechsen_triggered();
+
+        dbglobal.setHostName(dbeigen.get_host());
+        dbglobal.setDatabaseName(dbeigen.get_dbname());
+        dbglobal.setUserName(dbeigen.get_user());
+        dbglobal.setPassword(dbeigen.get_pwd());
+        dbglobal = QSqlDatabase::addDatabase(dbeigen.get_driver(), "dbglobal");
+
+        widget_tableeditor.set_db(&dbeigen);    //widget Zeiger auf DB übergeben
     }
 
     return isvalid;
 }
 
-void MainWindow::on_actionBenutzer_wechsen_triggered()
+void MainWindow::on_actionNetzwerkordner_aendern_triggered()
 {
-    //Anmeldedialog:
-    Dialog_login *login = new Dialog_login;
-    connect(login, SIGNAL(signal_ok(QString,QString)),       \
-            this, SLOT(slot_login(QString,QString))     );
-    login->exec();
-    delete login;
-}
+    QString tmpdir;
 
-void MainWindow::slot_login(QString user, QString pwd)
-{
-    if(u.login(user, pwd) == true)
+    if(ini.get_rootdir().isEmpty())
     {
-        if(u.is_admin() == true)
-        {
-            ui_rechte_admin();
-        }else
-        {
-            ui_rechte_nobody();
-        }
-        this->setWindowTitle("CBrain /" + user);
+        tmpdir = "./";
     }else
     {
-        ui_rechte_nobody();
-        this->setWindowTitle("CBrain / Nobody");
+        tmpdir = ini.get_rootdir();
+    }
+
+    tmpdir = QFileDialog::getExistingDirectory(this, tr("Wurzelverzeichnis bestimmen"), tmpdir);
+    if(!tmpdir.isEmpty())
+    {
+        ini.set_rootdir(tmpdir);
+        write_inifile();
+    }else
+    {
+        if(ini.get_rootdir().isEmpty())
+        {
+            QMessageBox mb;
+            mb.setText("Wurzelverzeichnis nicht bekannt!\nProgramm wird beendet.");
+            mb.exec();
+            isvalid = false;
+        }
     }
 }
 
+void MainWindow::on_actionInfo_triggered()
+{
+    QString msg;
+    msg += "CBrain Version ";
+    msg += VERSIONSNUMMER;
+    msg += "\n";
+    msg += "Autor: Oliver Schuft";
+    msg += "\n";
+    msg += "Quellcode: https://github.com/TischlerWilly/CBrain.git";
+    //msg += "\n";
+
+    QMessageBox mb;
+    mb.setText(msg);
+    mb.exec();
+}
+
+void MainWindow::resizeEvent(QResizeEvent *event)
+{
+    int hoehe_menue =   ui->menuBar->geometry().height() +      \
+                        ui->mainToolBar->geometry().height()    ;
+    QRect rect_main =  this->geometry();
+    int hoehe = rect_main.height()-hoehe_menue;
+    int breite = rect_main.width();
+
+    widget_tableeditor.move(0, hoehe_menue);
+    widget_tableeditor.setFixedSize(breite, hoehe);
+
+    QWidget::resizeEvent(event);
+}
+
+//-----------------------------------------------Inis:
 void MainWindow::read_inifile()
 {
     QString filename = INIFILE;
@@ -76,6 +120,8 @@ void MainWindow::read_inifile()
     if(file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
         ini.set_text( file.readAll()  );
+        dbeigen.set_param(ini.get_settings_db_eigen());
+
     }else
     {
         on_actionNetzwerkordner_aendern_triggered();
@@ -107,6 +153,8 @@ void MainWindow::write_inifile()
     {
         file.write(ini.get_text().toUtf8());
         file.close();
+        //dbeigen.set_param(ini.get_settings_db_eigen());
+        //bis zum Neustart mit der alten Einstellung weiter machen!!
     }
 }
 
@@ -140,33 +188,72 @@ void MainWindow::write_iniuser()
     }
 }
 
-void MainWindow::on_actionNetzwerkordner_aendern_triggered()
+//-----------------------------------------------Slots:
+void MainWindow::slot_login(QString user, QString pwd)
 {
-    QString tmpdir;
-
-    if(ini.get_rootdir().isEmpty())
+    if(u.login(user, pwd) == true)
     {
-        tmpdir = "./";
-    }else
-    {
-        tmpdir = ini.get_rootdir();
-    }
-
-    tmpdir = QFileDialog::getExistingDirectory(this, tr("Wurzelverzeichnis bestimmen"), tmpdir);
-    if(!tmpdir.isEmpty())
-    {
-        ini.set_rootdir(tmpdir);
-        write_inifile();
-    }else
-    {
-        if(ini.get_rootdir().isEmpty())
+        if(u.is_admin() == true)
         {
+            ui_rechte_admin();
+        }else
+        {
+            ui_rechte_nobody();
+        }
+        //this->setWindowTitle(  "CBrain /" + user + " / " + dbeigen.get_dbname()  );
+        chande_windowtitle();
+    }else
+    {
+        ui_rechte_nobody();
+        //this->setWindowTitle(  "CBrain / Nobody / " + dbeigen.get_dbname()  );
+        chande_windowtitle();
+    }
+}
+
+void MainWindow::chande_windowtitle()
+{
+    QString title;
+    title += "CBrain";
+    title += " / DB: ";
+    title += dbeigen.get_dbname();
+    title += " / User: ";
+    title += u.get_current_user();
+    title += " / ";
+    title += currend_modul;
+
+    this->setWindowTitle(title);
+}
+
+void MainWindow::slot_get_users(users new_users)
+{
+    u = new_users;
+    write_iniuser();
+}
+
+void MainWindow::slot_get_settings_db_eigen(text_zeilenweise data)
+{
+    if(ini.get_settings_db_eigen().get_text()  !=  data.get_text())
+    {
+        if(data.get_text() != ini.get_settings_db_eigen().get_text())
+        {
+            ini.set_settings_db_eigen(data);
+            write_inifile();
             QMessageBox mb;
-            mb.setText("Wurzelverzeichnis nicht bekannt!\nProgramm wird beendet.");
+            mb.setText("Bitte starten Sie das Programm nun neu damit die Aenderungen wirksam werden.");
             mb.exec();
-            isvalid = false;
         }
     }
+}
+
+//-----------------------------------------------Dialoge und Widgets ansprechen:
+void MainWindow::on_actionBenutzer_wechsen_triggered()
+{
+    //Anmeldedialog:
+    Dialog_login *login = new Dialog_login;
+    connect(login, SIGNAL(signal_ok(QString,QString)),       \
+            this, SLOT(slot_login(QString,QString))     );
+    login->exec();
+    delete login;
 }
 
 void MainWindow::on_actionBenutzer_verwalten_triggered()
@@ -179,28 +266,6 @@ void MainWindow::on_actionBenutzer_verwalten_triggered()
     delete d;
 }
 
-void MainWindow::slot_get_users(users new_users)
-{
-    u = new_users;
-    write_iniuser();
-}
-
-void MainWindow::on_actionInfo_triggered()
-{
-    QString msg;
-    msg += "CBrain Version ";
-    msg += VERSIONSNUMMER;
-    msg += "\n";
-    msg += "Autor: Oliver Schuft";
-    msg += "\n";
-    msg += "Quellcode: https://github.com/TischlerWilly/CBrain.git";
-    //msg += "\n";
-
-    QMessageBox mb;
-    mb.setText(msg);
-    mb.exec();
-}
-
 void MainWindow::on_actionProgrammeigene_Datenbank_triggered()
 {
     Dialog_settings_db *d = new Dialog_settings_db;
@@ -209,12 +274,53 @@ void MainWindow::on_actionProgrammeigene_Datenbank_triggered()
     d->set_data(ini.get_settings_db_eigen());
     d->exec();
     delete d;
+    //dbeigen.set_param(ini.get_settings_db_eigen());
+    //bis zum Neustart mit der alten Einstellung weiter machen!!
 }
 
-void MainWindow::slot_get_settings_db_eigen(text_zeilenweise data)
+//-----------------------------------------------Aktives Modul wechseln:
+void MainWindow::on_actionKeinModul_triggered()
 {
-    ini.set_settings_db_eigen(data);
-    write_inifile();
+    change_modul("kein");
+}
+
+void MainWindow::on_actionTabelleneditor_triggered()
+{
+    change_modul("tableeditor");
+}
+
+void MainWindow::change_modul(QString modul)
+{
+    if(modul == "tableeditor")
+    {
+        if(modul_tabedit == false)
+        {
+            if(dbeigen.pingdb() == true)
+            {
+                modul_kein      = false;
+                modul_tabedit   = true;
+
+                currend_modul = "Tabelleneditor";
+                widget_tableeditor.show();
+            }else
+            {
+                QMessageBox mb;
+                mb.setText("Datenbank nicht erreichbar!\nModul wurden nicht geladen.");
+                mb.exec();
+            }
+        }
+    }else
+    {
+        if(modul_kein == false)
+        {
+            modul_kein      = true;
+            modul_tabedit   = false;
+
+            currend_modul = "kein Modul geladen";
+            widget_tableeditor.hide();
+        }
+    }
+    chande_windowtitle();
 }
 
 //-----------------------------------------------UI den Rechten entsprechend anpassen:
@@ -223,6 +329,9 @@ void MainWindow::ui_rechte_nobody()
     ui->actionNetzwerkordner_aendern->setDisabled(true);
     ui->actionBenutzer_verwalten->setDisabled(true);
     ui->actionProgrammeigene_Datenbank->setDisabled(true);
+    ui->actionTestfunktion->setDisabled(true);
+    ui->actionKeinModul->setDisabled(true);
+    ui->actionTabelleneditor->setDisabled(true);
 }
 
 void MainWindow::ui_rechte_admin()
@@ -230,9 +339,57 @@ void MainWindow::ui_rechte_admin()
     ui->actionNetzwerkordner_aendern->setEnabled(true);
     ui->actionBenutzer_verwalten->setEnabled(true);
     ui->actionProgrammeigene_Datenbank->setEnabled(true);
+    ui->actionTestfunktion->setEnabled(true);
+    ui->actionKeinModul->setEnabled(true);
+    ui->actionTabelleneditor->setEnabled(true);
+}
+
+//-----------------------------------------------Testfunktion:
+void MainWindow::on_actionTestfunktion_triggered()
+{
+    //-------------------------
+    QMessageBox mb;
+    mb.setText("Die Testfunktion ist derzteit nicht in Nutzung.");
+    mb.exec();
+    //-------------------------
+    /*
+    if(dbeigen.open())
+    {
+        QMessageBox mb;
+        mb.setText(dbeigen.get_tables_tz().get_text());
+        mb.exec();
+        dbeigen.close();
+    }else
+    {
+        QMessageBox mb;
+        mb.setText("nicht offen");
+        mb.exec();
+    }
+    */
 }
 
 //-----------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

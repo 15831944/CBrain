@@ -43,16 +43,25 @@
      <string>Extras</string>
     </property>
     <addaction name="actionInfo"/>
+    <addaction name="actionTestfunktion"/>
+   </widget>
+   <widget class="QMenu" name="menuModule">
+    <property name="title">
+     <string>Module</string>
+    </property>
+    <addaction name="actionKeinModul"/>
+    <addaction name="actionTabelleneditor"/>
    </widget>
    <addaction name="menuEinstellungen"/>
    <addaction name="menuExtras"/>
+   <addaction name="menuModule"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
    </attribute>
    <attribute name="toolBarBreak">
-    <bool>false</bool>
+    <bool>true</bool>
    </attribute>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
@@ -79,6 +88,27 @@
   <action name="actionProgrammeigene_Datenbank">
    <property name="text">
     <string>Programmeigene Datenbank</string>
+   </property>
+  </action>
+  <action name="actionTestfunktion">
+   <property name="text">
+    <string>Testfunktion</string>
+   </property>
+  </action>
+  <action name="actionTabelleneditor">
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Tabelleneditor</string>
+   </property>
+  </action>
+  <action name="actionKeinModul">
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>kein</string>
    </property>
   </action>
  </widget>

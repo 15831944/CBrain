@@ -65,6 +65,20 @@ void text_zeilenweise::set_text(QString neuer_text)
     zeilen_zaehlen();
 }
 
+void text_zeilenweise::set_text(QStringList neuer_text)
+{
+    clear();
+    for(int i=0; i<neuer_text.count() ;i++)
+    {
+        text += neuer_text.at(i);
+        if(i != neuer_text.count()-1)
+        {
+            text += get_trennzeichen();
+        }
+    }
+    zeilen_zaehlen();
+}
+
 void text_zeilenweise::zeile_vorwegsetzen(QString zeilentext)
 {
     zeilentext = textzeile_ohne_Zeilenvorschuebe(zeilentext);

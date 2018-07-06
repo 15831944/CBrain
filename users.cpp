@@ -96,6 +96,17 @@ bool users::login(QString user, QString pwd)
     }
 }
 
+QString users::get_current_user()
+{
+    if(current_user != 0)
+    {
+        return user_tz.zeile(current_user);
+    }else
+    {
+        return "nobody";
+    }
+}
+
 bool users::is_admin()
 {
     if(current_user != 0)
