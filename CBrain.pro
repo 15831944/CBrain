@@ -35,7 +35,8 @@ HEADERS  += mainwindow.h \
     dialog_settings_db.h \
     inifile.h \
     cbrainbatabase.h \
-    form_tableeditor.h
+    form_tableeditor.h \
+    _todo.h
 
 FORMS    += mainwindow.ui \
     dialog_login.ui \
