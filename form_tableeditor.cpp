@@ -32,18 +32,44 @@ void Form_tableeditor::resizeEvent(QResizeEvent *event)
     hoehe = hoehe - ui->label_tables->geometry().height();
 
     //Spalte 1 Tabellen-Namen:
+    //--label:
     ui->label_tables->move(1,1);
     ui->label_tables->setFixedWidth(breite/5);
+    //--listWidget
     ui->listWidget_tables->move( 1 ,                                                \
                                  1 + ui->label_tables->geometry().height() + 1      );
-    ui->listWidget_tables->setFixedSize(breite/5, hoehe-5);
+    ui->listWidget_tables->setFixedSize(breite/5, \
+                                        hoehe - ui->pushButton_table_new->geometry().height() - 5);
+    //--buttons:
+    ui->pushButton_table_new->setFixedWidth(ui->listWidget_tables->geometry().width() / 2);
+    ui->pushButton_table_del->setFixedWidth(ui->listWidget_tables->geometry().width() / 2 - 1);
+    ui->pushButton_table_new->move(1, \
+                                   this->geometry().height() - ui->pushButton_table_new->geometry().height());
+    ui->pushButton_table_del->move(1 + ui->pushButton_table_new->geometry().width() + 1, \
+                                   this->geometry().height() - ui->pushButton_table_new->geometry().height());
+
 
     //Spalte 2 Tabellen-Kopft:
+    //--label:
     ui->label_tablehead->move(1+ui->listWidget_tables->geometry().width()+1 , 1 );
     ui->label_tablehead->setFixedWidth(breite/5);
+    //--listWidget
     ui->listWidget_tablehead->move( 1+ui->listWidget_tables->geometry().width()+1 , \
                                     1 + ui->label_tables->geometry().height() + 1   );
-    ui->listWidget_tablehead->setFixedSize(breite/5, hoehe-5);
+    ui->listWidget_tablehead->setFixedSize(breite/5, \
+                                           hoehe - ui->pushButton_table_new->geometry().height() - 5);
+    //--buttons:
+    ui->pushButton_param_new->setFixedWidth(ui->listWidget_tables->geometry().width() / 3);
+    ui->pushButton_param_del->setFixedWidth(ui->listWidget_tables->geometry().width() / 3 - 1);
+    ui->pushButton_param_edit->setFixedWidth(ui->listWidget_tables->geometry().width() / 3 - 1);
+    ui->pushButton_param_new->move(breite/5 +1 , \
+                                   this->geometry().height() - ui->pushButton_table_new->geometry().height());
+    ui->pushButton_param_del->move(breite/5 + 1 + ui->pushButton_param_new->geometry().width() + 1, \
+                                   this->geometry().height() - ui->pushButton_table_new->geometry().height());
+    ui->pushButton_param_edit->move(breite/5 + 1 + ui->pushButton_param_new->geometry().width()*2 + 2, \
+                                   this->geometry().height() - ui->pushButton_table_new->geometry().height());
+
+
 
     //Spalte 3 :
     int labelbreite = ui->label_typlabel->geometry().width();
@@ -106,7 +132,7 @@ void Form_tableeditor::resizeEvent(QResizeEvent *event)
 }
 
 void Form_tableeditor::set_db(cbrainbatabase *new_db)
-{
+{    
     clear();
     dbeigen = new_db;
 
@@ -202,6 +228,48 @@ void Form_tableeditor::on_listWidget_tablehead_currentRowChanged(int currentRow)
         ui->label_extra->setText("...");
     }
 }
+
+//----------------------------------Buttons:
+void Form_tableeditor::on_pushButton_table_new_clicked()
+{
+    //noch Dialog vorher programmieren zum Eingeben des Nahmens
+
+    QString name = "def";
+    if(dbeigen->new_table(name) == true)
+    {
+        ui->listWidget_tables->addItem(name);
+        ui->listWidget_tables->sortItems();
+    }
+}
+
+void Form_tableeditor::on_pushButton_table_del_clicked()
+{
+    Dialog_yes_no *d = new Dialog_yes_no;
+    QString msg;
+    msg += "Wollen Sie die Tabelle \"";
+    msg += ui->listWidget_tables->currentItem()->text();
+    msg += "\" in der Datenbank wirklich unwiederruflich entfernen?";
+    d->setup(msg);
+    connect(d, SIGNAL(signal_yes()), this, SLOT(slot_delete_table()));
+    d->exec();
+    delete d;
+}
+
+//----------------------------------slots:
+void Form_tableeditor::slot_delete_table()
+{
+    if(dbeigen->del_table(ui->listWidget_tables->currentItem()->text()) == true)
+    {
+        delete ui->listWidget_tables->currentItem();
+    }
+}
+
+//----------------------------------
+
+
+
+
+
 
 
 

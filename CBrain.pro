@@ -23,7 +23,8 @@ SOURCES += main.cpp\
     dialog_settings_db.cpp \
     inifile.cpp \
     cbrainbatabase.cpp \
-    form_tableeditor.cpp
+    form_tableeditor.cpp \
+    dialog_yes_no.cpp
 
 HEADERS  += mainwindow.h \
     defines_filenames.h \
@@ -36,10 +37,12 @@ HEADERS  += mainwindow.h \
     inifile.h \
     cbrainbatabase.h \
     form_tableeditor.h \
-    _todo.h
+    _todo.h \
+    dialog_yes_no.h
 
 FORMS    += mainwindow.ui \
     dialog_login.ui \
     dialog_user.ui \
     dialog_settings_db.ui \
-    form_tableeditor.ui
+    form_tableeditor.ui \
+    dialog_yes_no.ui

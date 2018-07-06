@@ -6,8 +6,7 @@
     ->Datenfelder hinzufügen
     ->Datenfelder entfernen
     ->Datenfelder ändern
-    ->Tabellen hinzufügen
-    ->Tabellen löschen
+    ->Tabellen hinzufügen   --> noch Dialog vorher programmieren zum Eingeben des Nahmens
 
 
 

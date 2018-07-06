@@ -61,7 +61,7 @@
     <enum>TopToolBarArea</enum>
    </attribute>
    <attribute name="toolBarBreak">
-    <bool>true</bool>
+    <bool>false</bool>
    </attribute>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
@@ -109,6 +109,11 @@
    </property>
    <property name="text">
     <string>kein</string>
+   </property>
+  </action>
+  <action name="actionAddTable">
+   <property name="text">
+    <string>Tabelle hinzufügen</string>
    </property>
   </action>
  </widget>

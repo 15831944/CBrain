@@ -83,8 +83,6 @@ text_zeilenweise cbrainbatabase::get_tables_tz()
     db.setUserName(user);
     db.setPassword(pwd);
 
-
-
     if(db.open())
     {
         tz.set_text(db.tables());
@@ -271,8 +269,85 @@ text_zeilenweise cbrainbatabase::get_table_value_extra(QString tablename)
     return tz;
 }
 
+bool cbrainbatabase::new_table(QString tablename)
+{
+    bool ok = false;
 
+    QSqlDatabase db;
 
+    db = QSqlDatabase::database("dbglobal");
+    db.setHostName(host);
+    db.setDatabaseName(dbname);
+    db.setUserName(user);
+    db.setPassword(pwd);
+
+    if(db.open())
+    {
+        QSqlQuery q(db);
+        QString cmd;
+        cmd += "CREATE TABLE ";
+        cmd += tablename;
+        cmd += "(id int(11) unsigned auto_increment primary key not null)";
+        cmd += " ENGINE=InnoDB";
+
+        if(q.exec(cmd))
+        {
+            ok = true;
+        }else
+        {
+            QMessageBox mb;
+            mb.setText("Fehler:\n" + q.lastError().text());
+            mb.exec();
+        }
+        db.close();
+
+    }else
+    {
+        QMessageBox mb;
+        mb.setText("Fehler bei Datenbankverbindung!");
+        mb.exec();
+    }
+    return ok;
+}
+
+bool cbrainbatabase::del_table(QString tablename)
+{
+    bool ok = false;
+
+    QSqlDatabase db;
+
+    db = QSqlDatabase::database("dbglobal");
+    db.setHostName(host);
+    db.setDatabaseName(dbname);
+    db.setUserName(user);
+    db.setPassword(pwd);
+
+    if(db.open())
+    {
+        QSqlQuery q(db);
+        QString cmd;
+        cmd += "DROP TABLE ";
+        cmd += tablename;
+
+        if(q.exec(cmd))
+        {
+            ok = true;
+        }else
+        {
+            QMessageBox mb;
+            mb.setText("Fehler:\n" + q.lastError().text());
+            mb.exec();
+        }
+        db.close();
+
+    }else
+    {
+        QMessageBox mb;
+        mb.setText("Fehler bei Datenbankverbindung!");
+        mb.exec();
+    }
+    return ok;
+}
 
 
 

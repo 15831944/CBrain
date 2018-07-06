@@ -66,6 +66,9 @@ public:
     text_zeilenweise get_table_is_primary_key(QString tablename);
     text_zeilenweise get_table_value_extra(QString tablename);
 
+    bool new_table(QString tablename);
+    bool del_table(QString tablename);
+
 
 private:
     QString host;
