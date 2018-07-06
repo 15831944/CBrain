@@ -1,6 +1,7 @@
 #include "form_tableeditor.h"
 #include "ui_form_tableeditor.h"
 
+
 Form_tableeditor::Form_tableeditor(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::Form_tableeditor)
@@ -17,7 +18,7 @@ Form_tableeditor::~Form_tableeditor()
 
 void Form_tableeditor::clear()
 {
-    db = NULL;
+    dbeigen = NULL;
     ui->listWidget_tables->clear();
     ui->listWidget_tablehead->clear();
 }
@@ -103,9 +104,9 @@ void Form_tableeditor::resizeEvent(QResizeEvent *event)
 void Form_tableeditor::set_db(cbrainbatabase *new_db)
 {
     clear();
-    db = new_db;
+    dbeigen = new_db;
 
-    text_zeilenweise tables = db->get_tables_tz();
+    text_zeilenweise tables = dbeigen->get_tables_tz();
 
     for(uint i=1; i<=tables.zeilenanzahl() ;i++)
     {
@@ -115,26 +116,27 @@ void Form_tableeditor::set_db(cbrainbatabase *new_db)
 
 void Form_tableeditor::on_listWidget_tables_currentRowChanged()
 {
+    //-------------------------------------------
     ui->listWidget_tablehead->clear();
-    text_zeilenweise tables = db->get_table_head(ui->listWidget_tables->currentItem()->text());
+    text_zeilenweise tables = dbeigen->get_table_head(ui->listWidget_tables->currentItem()->text());
 
     for(uint i=1; i<=tables.zeilenanzahl() ;i++)
     {
         ui->listWidget_tablehead->addItem(tables.zeile(i));
     }
-
+    //-------------------------------------------
     {
-        QSqlDatabase mydb;
+        QSqlDatabase db;
 
-        mydb = QSqlDatabase::addDatabase(db->get_driver(), "noname");
-        mydb.setHostName(db->get_host());
-        mydb.setDatabaseName(db->get_dbname());
-        mydb.setUserName(db->get_user());
-        mydb.setPassword(db->get_pwd());
+        db = QSqlDatabase::database("dbglobal");
+        db.setHostName(dbeigen->get_host());
+        db.setDatabaseName(dbeigen->get_dbname());
+        db.setUserName(dbeigen->get_user());
+        db.setPassword(dbeigen->get_pwd());
 
-        if(mydb.open())
+        if(db.open())
         {
-            QSqlQuery q(mydb);
+            QSqlQuery q(db);
             QString cmd;
             cmd += "SELECT * FROM ";
             cmd += ui->listWidget_tables->currentItem()->text();
@@ -149,7 +151,7 @@ void Form_tableeditor::on_listWidget_tables_currentRowChanged()
                 mb.setText("Fehler:\n" + q.lastError().text());
                 mb.exec();
             }
-            mydb.close();
+            db.close();
 
         }else
         {
@@ -157,15 +159,13 @@ void Form_tableeditor::on_listWidget_tables_currentRowChanged()
             mb.setText("Fehler bei Datenbankverbindung!");
             mb.exec();
         }
-
-        mydb = QSqlDatabase();
-        mydb.removeDatabase("noname");
     }
+    //-------------------------------------------
 }
 
 void Form_tableeditor::on_listWidget_tablehead_currentRowChanged(int currentRow)
 {
-    text_zeilenweise types = db->get_table_head_type(ui->listWidget_tables->currentItem()->text());
+    text_zeilenweise types = dbeigen->get_table_head_type(ui->listWidget_tables->currentItem()->text());
     if(currentRow != -1)//ist -1 wenn noch nichts gewählt wurde
     {
          ui->label_typ->setText(types.zeile(currentRow+1));
@@ -174,7 +174,7 @@ void Form_tableeditor::on_listWidget_tablehead_currentRowChanged(int currentRow)
         ui->label_typ->setText("...");
     }
 
-    text_zeilenweise pri = db->get_table_is_primary_key(ui->listWidget_tables->currentItem()->text());
+    text_zeilenweise pri = dbeigen->get_table_is_primary_key(ui->listWidget_tables->currentItem()->text());
     if(currentRow != -1)//ist -1 wenn noch nichts gewählt wurde
     {
         if(pri.zeile(currentRow+1) == "PRI")
@@ -189,7 +189,7 @@ void Form_tableeditor::on_listWidget_tablehead_currentRowChanged(int currentRow)
         ui->label_pri->setText("...");
     }
 
-    text_zeilenweise extra = db->get_table_value_extra(ui->listWidget_tables->currentItem()->text());
+    text_zeilenweise extra = dbeigen->get_table_value_extra(ui->listWidget_tables->currentItem()->text());
     if(currentRow != -1)//ist -1 wenn noch nichts gewählt wurde
     {
          ui->label_extra->setText(extra.zeile(currentRow+1));

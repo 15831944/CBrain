@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 4.1.0, 2018-07-05T20:23:14. -->
+<!-- Written by QtCreator 4.1.0, 2018-07-06T08:13:51. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -250,7 +250,7 @@
     <value type="QString" key="Qt4ProjectManager.Qt4RunConfiguration.ProFile">CBrain.pro</value>
     <value type="bool" key="Qt4ProjectManager.Qt4RunConfiguration.UseDyldImageSuffix">false</value>
     <value type="QString" key="Qt4ProjectManager.Qt4RunConfiguration.UserWorkingDirectory"></value>
-    <value type="QString" key="Qt4ProjectManager.Qt4RunConfiguration.UserWorkingDirectory.default">/home/oliver/Dokumente/cpp/CBrain/build-CBrain-Qt_4_8_7_in_PATH_qt4-Release</value>
+    <value type="QString" key="Qt4ProjectManager.Qt4RunConfiguration.UserWorkingDirectory.default"></value>
     <value type="uint" key="RunConfiguration.QmlDebugServerPort">3768</value>
     <value type="bool" key="RunConfiguration.UseCppDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseCppDebuggerAuto">true</value>

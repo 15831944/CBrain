@@ -15,7 +15,7 @@ QSqlDatabase cbrainbatabase::get_db()
 {
     QSqlDatabase db;
 
-    db = QSqlDatabase::addDatabase(driver);
+    db = QSqlDatabase::database("dbglobal");
     db.setHostName(host);
     db.setDatabaseName(dbname);
     db.setUserName(user);
@@ -49,11 +49,12 @@ bool cbrainbatabase::pingdb()
 
     QSqlDatabase db;
 
-    db = QSqlDatabase::addDatabase(driver, "noname");
+    db = QSqlDatabase::database("dbglobal");
     db.setHostName(host);
     db.setDatabaseName(dbname);
     db.setUserName(user);
     db.setPassword(pwd);
+
 
     if(db.open())
     {
@@ -64,9 +65,6 @@ bool cbrainbatabase::pingdb()
         pingok = false;
     }
 
-    db = QSqlDatabase();
-    db.removeDatabase("noname");
-
     return pingok;
 }
 
@@ -76,11 +74,16 @@ text_zeilenweise cbrainbatabase::get_tables_tz()
 
     QSqlDatabase db;
 
-    db = QSqlDatabase::addDatabase(driver, "noname");
+    db = QSqlDatabase::database("dbglobal"); //Diese Zeile verursacht folgende Fehlermeldung:
+    //QSqlDatabasePrivate::database: unable to open database: "Access denied for user 'oliver'@'localhost' (using password: NO) QMYSQL: Unable to connect"
+    //Aber warum?
+    //Die DB kann jedoch scheinbar ohne Einschränkungen geöffnen und ausgelesen werden
     db.setHostName(host);
     db.setDatabaseName(dbname);
     db.setUserName(user);
     db.setPassword(pwd);
+
+
 
     if(db.open())
     {
@@ -93,9 +96,6 @@ text_zeilenweise cbrainbatabase::get_tables_tz()
         mb.exec();
     }
 
-    db = QSqlDatabase();
-    db.removeDatabase("noname");
-
     return tz;
 }
 
@@ -105,7 +105,7 @@ text_zeilenweise cbrainbatabase::get_table_head(QString tablename)
 
     QSqlDatabase db;
 
-    db = QSqlDatabase::addDatabase(driver, "noname");
+    db = QSqlDatabase::database("dbglobal");
     db.setHostName(host);
     db.setDatabaseName(dbname);
     db.setUserName(user);
@@ -139,8 +139,6 @@ text_zeilenweise cbrainbatabase::get_table_head(QString tablename)
         mb.exec();
     }
 
-    db = QSqlDatabase();
-    db.removeDatabase("noname");
     return tz;
 }
 
@@ -150,7 +148,7 @@ text_zeilenweise cbrainbatabase::get_table_head_type(QString tablename)
 
     QSqlDatabase db;
 
-    db = QSqlDatabase::addDatabase(driver, "noname");
+    db = QSqlDatabase::database("dbglobal");
     db.setHostName(host);
     db.setDatabaseName(dbname);
     db.setUserName(user);
@@ -184,8 +182,6 @@ text_zeilenweise cbrainbatabase::get_table_head_type(QString tablename)
         mb.exec();
     }
 
-    db = QSqlDatabase();
-    db.removeDatabase("noname");
     return tz;
 }
 
@@ -195,7 +191,7 @@ text_zeilenweise cbrainbatabase::get_table_is_primary_key(QString tablename)
 
     QSqlDatabase db;
 
-    db = QSqlDatabase::addDatabase(driver, "noname");
+    db = QSqlDatabase::database("dbglobal");
     db.setHostName(host);
     db.setDatabaseName(dbname);
     db.setUserName(user);
@@ -229,8 +225,6 @@ text_zeilenweise cbrainbatabase::get_table_is_primary_key(QString tablename)
         mb.exec();
     }
 
-    db = QSqlDatabase();
-    db.removeDatabase("noname");
     return tz;
 }
 
@@ -240,7 +234,7 @@ text_zeilenweise cbrainbatabase::get_table_value_extra(QString tablename)
 
     QSqlDatabase db;
 
-    db = QSqlDatabase::addDatabase(driver, "noname");
+    db = QSqlDatabase::database("dbglobal");
     db.setHostName(host);
     db.setDatabaseName(dbname);
     db.setUserName(user);
@@ -274,8 +268,6 @@ text_zeilenweise cbrainbatabase::get_table_value_extra(QString tablename)
         mb.exec();
     }
 
-    db = QSqlDatabase();
-    db.removeDatabase("noname");
     return tz;
 }
 

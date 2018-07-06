@@ -19,6 +19,18 @@ public:
     void set_db(cbrainbatabase *new_db);
     void clear();
 
+    inline void show()
+    {
+        setVisible(true);
+        //mydb = QSqlDatabase::addDatabase(db->get_driver(), "noname");
+    }
+    inline void hide()
+    {
+        setVisible(false);
+        //mydb = QSqlDatabase();
+        //mydb.removeDatabase("noname");
+    }
+
 protected:
     void resizeEvent(QResizeEvent *event);
 
@@ -30,7 +42,8 @@ private slots:
 private:
     Ui::Form_tableeditor *ui;
 
-    cbrainbatabase *db;
+    cbrainbatabase *dbeigen;
+    //QSqlDatabase mydb;
     QSqlQueryModel *model;
 };
 

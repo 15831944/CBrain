@@ -63,6 +63,7 @@ private:
     inifile ini;
 
     //Datenbanken:
+    QSqlDatabase dbglobal;
     cbrainbatabase dbeigen;
 
     //Flags:

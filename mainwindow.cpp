@@ -40,6 +40,12 @@ bool MainWindow::setup()
 
         on_actionBenutzer_wechsen_triggered();
 
+        dbglobal.setHostName(dbeigen.get_host());
+        dbglobal.setDatabaseName(dbeigen.get_dbname());
+        dbglobal.setUserName(dbeigen.get_user());
+        dbglobal.setPassword(dbeigen.get_pwd());
+        dbglobal = QSqlDatabase::addDatabase(dbeigen.get_driver(), "dbglobal");
+
         widget_tableeditor.set_db(&dbeigen);    //widget Zeiger auf DB übergeben
     }
 
@@ -148,6 +154,7 @@ void MainWindow::write_inifile()
         file.write(ini.get_text().toUtf8());
         file.close();
         dbeigen.set_param(ini.get_settings_db_eigen());
+        //evtl Programm-Neustart nötig wegen db
     }
 }
 
@@ -246,6 +253,7 @@ void MainWindow::on_actionProgrammeigene_Datenbank_triggered()
     d->exec();
     delete d;
     dbeigen.set_param(ini.get_settings_db_eigen());
+    //evtl Programm-Neustart nötig wegen db
 }
 
 //-----------------------------------------------Aktives Modul wechseln:
