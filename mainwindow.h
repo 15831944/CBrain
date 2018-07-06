@@ -59,7 +59,7 @@ private slots:
 private:
     Ui::MainWindow *ui;
     users u;
-    QString user;
+    //QString user;
     inifile ini;
 
     //Datenbanken:
@@ -68,6 +68,7 @@ private:
 
     //Flags:
     bool isvalid;               //Anwendungsumgebung korrekt (Inifiles + Ordner...)
+    QString currend_modul;      //Speichert den Namen des Moduls für WindowTitle
     bool modul_kein;            //kein widget ist offen
     bool modul_tabedit;         //widget_tableeditor ist offen
 
@@ -83,6 +84,7 @@ private:
     void ui_rechte_admin();
     void ui_rechte_nobody();
     void change_modul(QString modul);
+    void chande_windowtitle();
 
 };
 

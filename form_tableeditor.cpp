@@ -96,7 +96,11 @@ void Form_tableeditor::resizeEvent(QResizeEvent *event)
 
     ui->tableView->move(xposlabel, (1 + ui->label_tables->geometry().height())*4 + 1);
     ui->tableView->setFixedWidth(labelbreite + labelbreite2 -1);
-    ui->tableView->setFixedHeight(hoehe - ui->tableView->pos().ry()+ui->label_tables->geometry().height() -3 );
+    int tablehight = hoehe - ui->tableView->pos().ry()+ui->label_tables->geometry().height() -3;
+    if(tablehight > 0)
+    {
+        ui->tableView->setFixedHeight(tablehight);
+    }
 
     QWidget::resizeEvent(event);
 }

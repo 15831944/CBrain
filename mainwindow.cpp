@@ -153,8 +153,8 @@ void MainWindow::write_inifile()
     {
         file.write(ini.get_text().toUtf8());
         file.close();
-        dbeigen.set_param(ini.get_settings_db_eigen());
-        //evtl Programm-Neustart nötig wegen db
+        //dbeigen.set_param(ini.get_settings_db_eigen());
+        //bis zum Neustart mit der alten Einstellung weiter machen!!
     }
 }
 
@@ -200,12 +200,28 @@ void MainWindow::slot_login(QString user, QString pwd)
         {
             ui_rechte_nobody();
         }
-        this->setWindowTitle("CBrain /" + user);
+        //this->setWindowTitle(  "CBrain /" + user + " / " + dbeigen.get_dbname()  );
+        chande_windowtitle();
     }else
     {
         ui_rechte_nobody();
-        this->setWindowTitle("CBrain / Nobody");
+        //this->setWindowTitle(  "CBrain / Nobody / " + dbeigen.get_dbname()  );
+        chande_windowtitle();
     }
+}
+
+void MainWindow::chande_windowtitle()
+{
+    QString title;
+    title += "CBrain";
+    title += " / DB: ";
+    title += dbeigen.get_dbname();
+    title += " / User: ";
+    title += u.get_current_user();
+    title += " / ";
+    title += currend_modul;
+
+    this->setWindowTitle(title);
 }
 
 void MainWindow::slot_get_users(users new_users)
@@ -218,8 +234,14 @@ void MainWindow::slot_get_settings_db_eigen(text_zeilenweise data)
 {
     if(ini.get_settings_db_eigen().get_text()  !=  data.get_text())
     {
-        ini.set_settings_db_eigen(data);
-        write_inifile();
+        if(data.get_text() != ini.get_settings_db_eigen().get_text())
+        {
+            ini.set_settings_db_eigen(data);
+            write_inifile();
+            QMessageBox mb;
+            mb.setText("Bitte starten Sie das Programm nun neu damit die Aenderungen wirksam werden.");
+            mb.exec();
+        }
     }
 }
 
@@ -252,8 +274,8 @@ void MainWindow::on_actionProgrammeigene_Datenbank_triggered()
     d->set_data(ini.get_settings_db_eigen());
     d->exec();
     delete d;
-    dbeigen.set_param(ini.get_settings_db_eigen());
-    //evtl Programm-Neustart nötig wegen db
+    //dbeigen.set_param(ini.get_settings_db_eigen());
+    //bis zum Neustart mit der alten Einstellung weiter machen!!
 }
 
 //-----------------------------------------------Aktives Modul wechseln:
@@ -278,6 +300,7 @@ void MainWindow::change_modul(QString modul)
                 modul_kein      = false;
                 modul_tabedit   = true;
 
+                currend_modul = "Tabelleneditor";
                 widget_tableeditor.show();
             }else
             {
@@ -293,10 +316,11 @@ void MainWindow::change_modul(QString modul)
             modul_kein      = true;
             modul_tabedit   = false;
 
+            currend_modul = "kein Modul geladen";
             widget_tableeditor.hide();
         }
     }
-
+    chande_windowtitle();
 }
 
 //-----------------------------------------------UI den Rechten entsprechend anpassen:
