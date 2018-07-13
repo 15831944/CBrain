@@ -182,7 +182,9 @@ text_zeilenweise cbrainbatabase::get_tables_tz()
 
 //------------------------------------------
 //-------------------------------param:
-bool cbrainbatabase::param_new(QString tablename, QString paramname, QString typ, QString additional, bool ispri, bool autoincrement)
+bool cbrainbatabase::param_new(QString tablename, QString paramname, QString typ, QString additional, \
+                               bool ispri, bool autoincrement, bool isunsigned,\
+                               bool notnull, QString defaultvalue)
 {
     bool ok = false;
 
@@ -210,14 +212,29 @@ bool cbrainbatabase::param_new(QString tablename, QString paramname, QString typ
             cmd += additional;
             cmd += ")";
         }
+        if(isunsigned == true)
+        {
+            cmd += " unsigned";
+        }
         if(autoincrement == true)
         {
             cmd += " auto_increment";
         }
         if(ispri == true)
         {
-            cmd += " primary key not null";
+            cmd += " primary key";
         }
+        if(notnull == true)
+        {
+            cmd += " not null";
+        }
+        if(!defaultvalue.isEmpty())
+        {
+            cmd += " DEFAULT \'";
+            cmd += defaultvalue;
+            cmd += "\'";
+        }
+
         cmd += ")";
 
         if(q.exec(cmd))
@@ -442,6 +459,106 @@ text_zeilenweise cbrainbatabase::get_param_extra_tz(QString tablename)
             while(q.next())
             {
                 QString tmp = q.value(5).toString();
+                if(!tmp.isEmpty())
+                {
+                    tz.zeile_anhaengen(tmp);
+                }else
+                {
+                    tz.zeile_anhaengen("---");
+                }
+            }
+        }else
+        {
+            QMessageBox mb;
+            mb.setText("Fehler:\n" + q.lastError().text());
+            mb.exec();
+        }
+        db.close();
+
+    }else
+    {
+        QMessageBox mb;
+        mb.setText("Fehler bei Datenbankverbindung!");
+        mb.exec();
+    }
+
+    return tz;
+}
+
+text_zeilenweise cbrainbatabase::get_param_notnull_tz(QString tablename)
+{
+    text_zeilenweise tz;
+
+    QSqlDatabase db;
+
+    db = QSqlDatabase::database("dbglobal");
+    db.setHostName(host);
+    db.setDatabaseName(dbname);
+    db.setUserName(user);
+    db.setPassword(pwd);
+
+    if(db.open())
+    {
+        QSqlQuery q(db);
+        QString cmd;
+        cmd += "SHOW COLUMNS FROM ";
+        cmd += tablename;
+
+        if(q.exec(cmd))
+        {
+            while(q.next())
+            {
+                QString tmp = q.value(2).toString();
+                if(!tmp.isEmpty())
+                {
+                    tz.zeile_anhaengen(tmp);
+                }else
+                {
+                    tz.zeile_anhaengen("---");
+                }
+            }
+        }else
+        {
+            QMessageBox mb;
+            mb.setText("Fehler:\n" + q.lastError().text());
+            mb.exec();
+        }
+        db.close();
+
+    }else
+    {
+        QMessageBox mb;
+        mb.setText("Fehler bei Datenbankverbindung!");
+        mb.exec();
+    }
+
+    return tz;
+}
+
+text_zeilenweise cbrainbatabase::get_param_default_tz(QString tablename)
+{
+    text_zeilenweise tz;
+
+    QSqlDatabase db;
+
+    db = QSqlDatabase::database("dbglobal");
+    db.setHostName(host);
+    db.setDatabaseName(dbname);
+    db.setUserName(user);
+    db.setPassword(pwd);
+
+    if(db.open())
+    {
+        QSqlQuery q(db);
+        QString cmd;
+        cmd += "SHOW COLUMNS FROM ";
+        cmd += tablename;
+
+        if(q.exec(cmd))
+        {
+            while(q.next())
+            {
+                QString tmp = q.value(4).toString();
                 if(!tmp.isEmpty())
                 {
                     tz.zeile_anhaengen(tmp);

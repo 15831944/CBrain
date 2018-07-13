@@ -37,16 +37,30 @@ void Dialog_tableparam::on_pushButton_ok_clicked()
     {
         autoincrement = false;
     }
+    bool isunsigned;
+    if(ui->checkBox_unsigned->isChecked())
+    {
+        isunsigned = true;
+    }else
+    {
+        isunsigned = false;
+    }
+    bool notnull;
+    if(ui->checkBox_notnull->isChecked())
+    {
+        notnull = true;
+    }else
+    {
+        notnull = false;
+    }
     emit signal_send_dialog_data(ui->lineEdit_name->text(),\
                                  ui->comboBox_typ->currentText(),\
                                  ui->lineEdit_aditional->text(),\
                                  ispri,\
-                                 autoincrement);
-}
-
-void Dialog_tableparam::set_windowTitle(QString title)
-{
-    this->setWindowTitle(title);
+                                 autoincrement,\
+                                 isunsigned,\
+                                 notnull,\
+                                 ui->lineEdit_default->text());
 }
 
 void Dialog_tableparam::setup_mysql()
@@ -113,6 +127,10 @@ void Dialog_tableparam::on_comboBox_typ_currentIndexChanged(const QString &arg1)
             ui->label_aditional->setText("...");
             ui->lineEdit_aditional->setDisabled(true);
             ui->lineEdit_aditional->clear();
+            ui->checkBox_ispri->setEnabled(true);
+            ui->checkBox_autoincrement->setEnabled(true);
+            ui->checkBox_unsigned->setEnabled(true);
+            ui->lineEdit_default->setEnabled(true);
         }else if(arg1 == "SMALLINT")
         {
             msg += "2 Bytes\n";
@@ -122,6 +140,10 @@ void Dialog_tableparam::on_comboBox_typ_currentIndexChanged(const QString &arg1)
             ui->label_aditional->setText("...");
             ui->lineEdit_aditional->setDisabled(true);
             ui->lineEdit_aditional->clear();
+            ui->checkBox_ispri->setEnabled(true);
+            ui->checkBox_autoincrement->setEnabled(true);
+            ui->checkBox_unsigned->setEnabled(true);
+            ui->lineEdit_default->setEnabled(true);
         }else if(arg1 == "MEDIUMINT")
         {
             msg += "3 Bytes\n";
@@ -131,6 +153,10 @@ void Dialog_tableparam::on_comboBox_typ_currentIndexChanged(const QString &arg1)
             ui->label_aditional->setText("...");
             ui->lineEdit_aditional->setDisabled(true);
             ui->lineEdit_aditional->clear();
+            ui->checkBox_ispri->setEnabled(true);
+            ui->checkBox_autoincrement->setEnabled(true);
+            ui->checkBox_unsigned->setEnabled(true);
+            ui->lineEdit_default->setEnabled(true);
         }else if(arg1 == "INT")
         {
             msg += "4 Bytes\n";
@@ -140,6 +166,10 @@ void Dialog_tableparam::on_comboBox_typ_currentIndexChanged(const QString &arg1)
             ui->label_aditional->setText("...");
             ui->lineEdit_aditional->setDisabled(true);
             ui->lineEdit_aditional->clear();
+            ui->checkBox_ispri->setEnabled(true);
+            ui->checkBox_autoincrement->setEnabled(true);
+            ui->checkBox_unsigned->setEnabled(true);
+            ui->lineEdit_default->setEnabled(true);
         }else if(arg1 == "BIGINT")
         {
             msg += "8 Bytes\n";
@@ -149,6 +179,10 @@ void Dialog_tableparam::on_comboBox_typ_currentIndexChanged(const QString &arg1)
             ui->label_aditional->setText("...");
             ui->lineEdit_aditional->setDisabled(true);
             ui->lineEdit_aditional->clear();
+            ui->checkBox_ispri->setEnabled(true);
+            ui->checkBox_autoincrement->setEnabled(true);
+            ui->checkBox_unsigned->setEnabled(true);
+            ui->lineEdit_default->setEnabled(true);
         }else if(arg1 == "DECIMAL")
         {
             msg += "Fliesskommazahlen\n";
@@ -156,6 +190,10 @@ void Dialog_tableparam::on_comboBox_typ_currentIndexChanged(const QString &arg1)
             ui->label_aditional->setText("...");
             ui->lineEdit_aditional->setDisabled(true);
             ui->lineEdit_aditional->clear();
+            ui->checkBox_ispri->setEnabled(true);
+            ui->checkBox_autoincrement->setEnabled(true);
+            ui->checkBox_unsigned->setEnabled(true);
+            ui->lineEdit_default->setEnabled(true);
         }else if(arg1 == "FLOAT")
         {
             msg += "4 Bytes\n";
@@ -164,6 +202,10 @@ void Dialog_tableparam::on_comboBox_typ_currentIndexChanged(const QString &arg1)
             ui->label_aditional->setText("...");
             ui->lineEdit_aditional->setDisabled(true);
             ui->lineEdit_aditional->clear();
+            ui->checkBox_ispri->setEnabled(true);
+            ui->checkBox_autoincrement->setEnabled(true);
+            ui->checkBox_unsigned->setEnabled(true);
+            ui->lineEdit_default->setEnabled(true);
         }else if(arg1 == "DOUBLE")
         {
             msg += "8 Bytes\n";
@@ -172,6 +214,10 @@ void Dialog_tableparam::on_comboBox_typ_currentIndexChanged(const QString &arg1)
             ui->label_aditional->setText("...");
             ui->lineEdit_aditional->setDisabled(true);
             ui->lineEdit_aditional->clear();
+            ui->checkBox_ispri->setEnabled(true);
+            ui->checkBox_autoincrement->setEnabled(true);
+            ui->checkBox_unsigned->setEnabled(true);
+            ui->lineEdit_default->setEnabled(true);
         }else if(arg1 == "BIT")
         {
             msg += "ca. (M+7)/8 Bytes\n";
@@ -179,6 +225,10 @@ void Dialog_tableparam::on_comboBox_typ_currentIndexChanged(const QString &arg1)
             ui->label_aditional->setText("...");
             ui->lineEdit_aditional->setDisabled(true);
             ui->lineEdit_aditional->clear();
+            ui->checkBox_ispri->setDisabled(true);
+            ui->checkBox_autoincrement->setDisabled(true);
+            ui->checkBox_unsigned->setDisabled(true);
+            ui->lineEdit_default->setEnabled(true);
         }else if(arg1 == "BOOLEAN")
         {
             msg += "1 Byte\n";
@@ -186,6 +236,10 @@ void Dialog_tableparam::on_comboBox_typ_currentIndexChanged(const QString &arg1)
             ui->label_aditional->setText("...");
             ui->lineEdit_aditional->setDisabled(true);
             ui->lineEdit_aditional->clear();
+            ui->checkBox_ispri->setDisabled(true);
+            ui->checkBox_autoincrement->setDisabled(true);
+            ui->checkBox_unsigned->setDisabled(true);
+            ui->lineEdit_default->setEnabled(true);
         }else if(arg1 == "DATE")
         {
             msg += "3 Bytes\n";
@@ -194,6 +248,10 @@ void Dialog_tableparam::on_comboBox_typ_currentIndexChanged(const QString &arg1)
             ui->label_aditional->setText("...");
             ui->lineEdit_aditional->setDisabled(true);
             ui->lineEdit_aditional->clear();
+            ui->checkBox_ispri->setDisabled(true);
+            ui->checkBox_autoincrement->setDisabled(true);
+            ui->checkBox_unsigned->setDisabled(true);
+            ui->lineEdit_default->setEnabled(true);
         }else if(arg1 == "DATETIME")
         {
             msg += "8 Bytes\n";
@@ -202,6 +260,10 @@ void Dialog_tableparam::on_comboBox_typ_currentIndexChanged(const QString &arg1)
             ui->label_aditional->setText("...");
             ui->lineEdit_aditional->setDisabled(true);
             ui->lineEdit_aditional->clear();
+            ui->checkBox_ispri->setDisabled(true);
+            ui->checkBox_autoincrement->setDisabled(true);
+            ui->checkBox_unsigned->setDisabled(true);
+            ui->lineEdit_default->setEnabled(true);
         }else if(arg1 == "TIMESTAMP")
         {
             msg += "4 Bytes\n";
@@ -211,6 +273,10 @@ void Dialog_tableparam::on_comboBox_typ_currentIndexChanged(const QString &arg1)
             ui->label_aditional->setText("...");
             ui->lineEdit_aditional->setDisabled(true);
             ui->lineEdit_aditional->clear();
+            ui->checkBox_ispri->setDisabled(true);
+            ui->checkBox_autoincrement->setDisabled(true);
+            ui->checkBox_unsigned->setDisabled(true);
+            ui->lineEdit_default->setEnabled(true);
         }else if(arg1 == "TIME")
         {
             msg += "3 Bytes\n";
@@ -219,6 +285,10 @@ void Dialog_tableparam::on_comboBox_typ_currentIndexChanged(const QString &arg1)
             ui->label_aditional->setText("...");
             ui->lineEdit_aditional->setDisabled(true);
             ui->lineEdit_aditional->clear();
+            ui->checkBox_ispri->setDisabled(true);
+            ui->checkBox_autoincrement->setDisabled(true);
+            ui->checkBox_unsigned->setDisabled(true);
+            ui->lineEdit_default->setEnabled(true);
         }else if(arg1 == "YEAR")
         {
             msg += "1 Byte\n";
@@ -228,6 +298,10 @@ void Dialog_tableparam::on_comboBox_typ_currentIndexChanged(const QString &arg1)
             ui->label_aditional->setText("...");
             ui->lineEdit_aditional->setDisabled(true);
             ui->lineEdit_aditional->clear();
+            ui->checkBox_ispri->setDisabled(true);
+            ui->checkBox_autoincrement->setDisabled(true);
+            ui->checkBox_unsigned->setDisabled(true);
+            ui->lineEdit_default->setEnabled(true);
         }else if(arg1 == "CHAR")
         {
             msg += "L Byte(s)\n";
@@ -236,6 +310,10 @@ void Dialog_tableparam::on_comboBox_typ_currentIndexChanged(const QString &arg1)
             ui->label_aditional->setText("Zeichenanzahl:");
             ui->lineEdit_aditional->setEnabled(true);
             ui->lineEdit_aditional->setText("40");
+            ui->checkBox_ispri->setDisabled(true);
+            ui->checkBox_autoincrement->setDisabled(true);
+            ui->checkBox_unsigned->setDisabled(true);
+            ui->lineEdit_default->setDisabled(true);
         }else if(arg1 == "VARCHAR")
         {
             msg += "L+1 Byte(s)\n";
@@ -244,6 +322,10 @@ void Dialog_tableparam::on_comboBox_typ_currentIndexChanged(const QString &arg1)
             ui->label_aditional->setText("max Zeichenanzahl:");
             ui->lineEdit_aditional->setEnabled(true);
             ui->lineEdit_aditional->setText("40");
+            ui->checkBox_ispri->setDisabled(true);
+            ui->checkBox_autoincrement->setDisabled(true);
+            ui->checkBox_unsigned->setDisabled(true);
+            ui->lineEdit_default->setDisabled(true);
         }else if(arg1 == "TINYTEXT")
         {
             msg += "L+1 Byte(s)\n";
@@ -252,6 +334,10 @@ void Dialog_tableparam::on_comboBox_typ_currentIndexChanged(const QString &arg1)
             ui->label_aditional->setText("max Zeichenanzahl:");
             ui->lineEdit_aditional->setEnabled(true);
             ui->lineEdit_aditional->setText("40");
+            ui->checkBox_ispri->setDisabled(true);
+            ui->checkBox_autoincrement->setDisabled(true);
+            ui->checkBox_unsigned->setDisabled(true);
+            ui->lineEdit_default->setDisabled(true);
         }else if(arg1 == "TEXT")
         {
             msg += "L+2 Byte(s)\n";
@@ -260,6 +346,10 @@ void Dialog_tableparam::on_comboBox_typ_currentIndexChanged(const QString &arg1)
             ui->label_aditional->setText("max Zeichenanzahl:");
             ui->lineEdit_aditional->setEnabled(true);
             ui->lineEdit_aditional->setText("40");
+            ui->checkBox_ispri->setDisabled(true);
+            ui->checkBox_autoincrement->setDisabled(true);
+            ui->checkBox_unsigned->setDisabled(true);
+            ui->lineEdit_default->setDisabled(true);
         }else if(arg1 == "MEDIUMTEXT")
         {
             msg += "L+3 Byte(s)\n";
@@ -268,6 +358,10 @@ void Dialog_tableparam::on_comboBox_typ_currentIndexChanged(const QString &arg1)
             ui->label_aditional->setText("max Zeichenanzahl:");
             ui->lineEdit_aditional->setEnabled(true);
             ui->lineEdit_aditional->setText("40");
+            ui->checkBox_ispri->setDisabled(true);
+            ui->checkBox_autoincrement->setDisabled(true);
+            ui->checkBox_unsigned->setDisabled(true);
+            ui->lineEdit_default->setDisabled(true);
         }else if(arg1 == "LONGTEXT")
         {
             msg += "L+4 Byte(s)\n";
@@ -276,6 +370,10 @@ void Dialog_tableparam::on_comboBox_typ_currentIndexChanged(const QString &arg1)
             ui->label_aditional->setText("max Zeichenanzahl:");
             ui->lineEdit_aditional->setEnabled(true);
             ui->lineEdit_aditional->setText("40");
+            ui->checkBox_ispri->setDisabled(true);
+            ui->checkBox_autoincrement->setDisabled(true);
+            ui->checkBox_unsigned->setDisabled(true);
+            ui->lineEdit_default->setDisabled(true);
         }else if(arg1 == "BINARY")
         {
             msg += "L Byte(s)\n";
@@ -283,6 +381,10 @@ void Dialog_tableparam::on_comboBox_typ_currentIndexChanged(const QString &arg1)
             ui->label_aditional->setText("max Zeichenanzahl:");
             ui->lineEdit_aditional->setEnabled(true);
             ui->lineEdit_aditional->clear();
+            ui->checkBox_ispri->setDisabled(true);
+            ui->checkBox_autoincrement->setDisabled(true);
+            ui->checkBox_unsigned->setDisabled(true);
+            ui->lineEdit_default->setDisabled(true);
         }else if(arg1 == "VARBINARY")
         {
             msg += "L+1 Byte(s)\n";
@@ -290,6 +392,10 @@ void Dialog_tableparam::on_comboBox_typ_currentIndexChanged(const QString &arg1)
             ui->label_aditional->setText("max Zeichenanzahl:");
             ui->lineEdit_aditional->setEnabled(true);
             ui->lineEdit_aditional->clear();
+            ui->checkBox_ispri->setDisabled(true);
+            ui->checkBox_autoincrement->setDisabled(true);
+            ui->checkBox_unsigned->setDisabled(true);
+            ui->lineEdit_default->setDisabled(true);
         }else if(arg1 == "TINYBLOB")
         {
             msg += "L+1 Byte(s)\n";
@@ -297,7 +403,10 @@ void Dialog_tableparam::on_comboBox_typ_currentIndexChanged(const QString &arg1)
             msg += "Gespeichert mit einem Ein-Byte-Praefix, der die Laenge des Wertes in Bytes angibt";
             ui->label_aditional->setText("...");
             ui->lineEdit_aditional->setDisabled(true);ui->lineEdit_aditional->clear();
-
+            ui->checkBox_ispri->setDisabled(true);
+            ui->checkBox_autoincrement->setDisabled(true);
+            ui->checkBox_unsigned->setDisabled(true);
+            ui->lineEdit_default->setDisabled(true);
         }else if(arg1 == "BLOB")
         {
             msg += "L+2 Byte(s)\n";
@@ -306,6 +415,10 @@ void Dialog_tableparam::on_comboBox_typ_currentIndexChanged(const QString &arg1)
             ui->label_aditional->setText("...");
             ui->lineEdit_aditional->setDisabled(true);
             ui->lineEdit_aditional->clear();
+            ui->checkBox_ispri->setDisabled(true);
+            ui->checkBox_autoincrement->setDisabled(true);
+            ui->checkBox_unsigned->setDisabled(true);
+            ui->lineEdit_default->setDisabled(true);
         }else if(arg1 == "MEDIUMBLOB")
         {
             msg += "L+3 Byte(s)\n";
@@ -314,6 +427,10 @@ void Dialog_tableparam::on_comboBox_typ_currentIndexChanged(const QString &arg1)
             ui->label_aditional->setText("...");
             ui->lineEdit_aditional->setDisabled(true);
             ui->lineEdit_aditional->clear();
+            ui->checkBox_ispri->setDisabled(true);
+            ui->checkBox_autoincrement->setDisabled(true);
+            ui->checkBox_unsigned->setDisabled(true);
+            ui->lineEdit_default->setDisabled(true);
         }else if(arg1 == "LONGBLOB")
         {
             msg += "L+4 Byte(s)\n";
@@ -322,6 +439,10 @@ void Dialog_tableparam::on_comboBox_typ_currentIndexChanged(const QString &arg1)
             ui->label_aditional->setText("...");
             ui->lineEdit_aditional->setDisabled(true);
             ui->lineEdit_aditional->clear();
+            ui->checkBox_ispri->setDisabled(true);
+            ui->checkBox_autoincrement->setDisabled(true);
+            ui->checkBox_unsigned->setDisabled(true);
+            ui->lineEdit_default->setDisabled(true);
         }else if(arg1 == "ENUM")
         {
             msg += "1-2 Byte(s)\n";
@@ -330,6 +451,10 @@ void Dialog_tableparam::on_comboBox_typ_currentIndexChanged(const QString &arg1)
             ui->label_aditional->setText("...");
             ui->lineEdit_aditional->setDisabled(true);
             ui->lineEdit_aditional->clear();
+            ui->checkBox_ispri->setDisabled(true);
+            ui->checkBox_autoincrement->setDisabled(true);
+            ui->checkBox_unsigned->setDisabled(true);
+            ui->lineEdit_default->setDisabled(true);
         }else if(arg1 == "SET")
         {
             msg += "1,2,3,4 oder 8 Byte(s)\n";
@@ -338,60 +463,99 @@ void Dialog_tableparam::on_comboBox_typ_currentIndexChanged(const QString &arg1)
             ui->label_aditional->setText("...");
             ui->lineEdit_aditional->setDisabled(true);
             ui->lineEdit_aditional->clear();
+            ui->checkBox_ispri->setDisabled(true);
+            ui->checkBox_autoincrement->setDisabled(true);
+            ui->checkBox_unsigned->setDisabled(true);
+            ui->lineEdit_default->setDisabled(true);
         }else if(arg1 == "GEOMETRY")
         {
             msg += "Typ, der die Geometrie irgendeinen Typs speichern kann";
             ui->label_aditional->setText("...");
             ui->lineEdit_aditional->setDisabled(true);
             ui->lineEdit_aditional->clear();
+            ui->checkBox_ispri->setDisabled(true);
+            ui->checkBox_autoincrement->setDisabled(true);
+            ui->checkBox_unsigned->setDisabled(true);
+            ui->lineEdit_default->setDisabled(true);
         }else if(arg1 == "POINT")
         {
             msg += "Punkt im 2-dimensionalen Raum";
             ui->label_aditional->setText("...");
             ui->lineEdit_aditional->setDisabled(true);
             ui->lineEdit_aditional->clear();
+            ui->checkBox_ispri->setDisabled(true);
+            ui->checkBox_autoincrement->setDisabled(true);
+            ui->checkBox_unsigned->setDisabled(true);
+            ui->lineEdit_default->setDisabled(true);
         }else if(arg1 == "LINESTRING")
         {
             msg += "Kurve mit linearer Interpolation zwischen Punkten";
             ui->label_aditional->setText("...");
             ui->lineEdit_aditional->setDisabled(true);
             ui->lineEdit_aditional->clear();
+            ui->checkBox_ispri->setDisabled(true);
+            ui->checkBox_autoincrement->setDisabled(true);
+            ui->checkBox_unsigned->setDisabled(true);
+            ui->lineEdit_default->setDisabled(true);
         }else if(arg1 == "POLYGON")
         {
             msg += "Vieleck (Polygon)";
             ui->label_aditional->setText("...");
             ui->lineEdit_aditional->setDisabled(true);
             ui->lineEdit_aditional->clear();
+            ui->checkBox_ispri->setDisabled(true);
+            ui->checkBox_autoincrement->setDisabled(true);
+            ui->checkBox_unsigned->setDisabled(true);
+            ui->lineEdit_default->setDisabled(true);
         }else if(arg1 == "MULTIPOINT")
         {
             msg += "Punkte-Sammlung";
             ui->label_aditional->setText("...");
             ui->lineEdit_aditional->setDisabled(true);
             ui->lineEdit_aditional->clear();
+            ui->checkBox_ispri->setDisabled(true);
+            ui->checkBox_autoincrement->setDisabled(true);
+            ui->checkBox_unsigned->setDisabled(true);
+            ui->lineEdit_default->setDisabled(true);
         }else if(arg1 == "MULTILINESTRING")
         {
             msg += "Kurven-Sammlung mit linearer Interpolation zwischen Punkten";
             ui->label_aditional->setText("...");
             ui->lineEdit_aditional->setDisabled(true);ui->lineEdit_aditional->clear();
-
+            ui->checkBox_ispri->setDisabled(true);
+            ui->checkBox_autoincrement->setDisabled(true);
+            ui->checkBox_unsigned->setDisabled(true);
+            ui->lineEdit_default->setDisabled(true);
         }else if(arg1 == "MULTIPOLYGON")
         {
             msg += "Polygon-Sammlung";
             ui->label_aditional->setText("...");
             ui->lineEdit_aditional->setDisabled(true);
             ui->lineEdit_aditional->clear();
+            ui->checkBox_ispri->setDisabled(true);
+            ui->checkBox_autoincrement->setDisabled(true);
+            ui->checkBox_unsigned->setDisabled(true);
+            ui->lineEdit_default->setDisabled(true);
         }else if(arg1 == "GEOMETRYCOLLECTION")
         {
             msg += "Sammlung von Geometrie-Objekten irgendeinen Typs";
             ui->label_aditional->setText("...");
             ui->lineEdit_aditional->setDisabled(true);
             ui->lineEdit_aditional->clear();
+            ui->checkBox_ispri->setDisabled(true);
+            ui->checkBox_autoincrement->setDisabled(true);
+            ui->checkBox_unsigned->setDisabled(true);
+            ui->lineEdit_default->setDisabled(true);
         }else
         {
             msg += "";
             ui->label_aditional->setText("...");
             ui->lineEdit_aditional->setDisabled(true);
             ui->lineEdit_aditional->clear();
+            ui->checkBox_ispri->setDisabled(true);
+            ui->checkBox_autoincrement->setDisabled(true);
+            ui->checkBox_unsigned->setDisabled(true);
+            ui->lineEdit_default->setDisabled(true);
         }
 
     }
@@ -399,11 +563,71 @@ void Dialog_tableparam::on_comboBox_typ_currentIndexChanged(const QString &arg1)
     ui->label_info->setText(msg);
 }
 
+void Dialog_tableparam::set_paramname(QString new_name)
+{
+    ui->lineEdit_name->setText(new_name);
+}
 
+void Dialog_tableparam::set_paramtyp(QString new_typ)
+{
+    if(new_typ.contains("(") && new_typ.contains(")"))
+    {
+        int index = ui->comboBox_typ->findText(text_links(new_typ, "(").toUpper());
+        ui->comboBox_typ->setCurrentIndex(index);
+        ui->lineEdit_aditional->setText(text_mitte(new_typ, "(", ")"));
+        ui->lineEdit_aditional->setEnabled(true);
+    }else
+    {
+        int index = ui->comboBox_typ->findText(new_typ.toUpper());
+        ui->comboBox_typ->setCurrentIndex(index);
+        ui->lineEdit_aditional->clear();
+    }
+    if(new_typ.contains("unsigned"))
+    {
+        ui->checkBox_unsigned->setChecked(true);
+    }else
+    {
+        ui->checkBox_unsigned->setChecked(false);
+    }
+}
 
+void Dialog_tableparam::set_pri(bool ispri)
+{
+    if(ispri == true)
+    {
+        ui->checkBox_ispri->setChecked(true);
+    }else
+    {
+        ui->checkBox_ispri->setChecked(false);
+    }
+}
 
+void Dialog_tableparam::set_autoincrement(bool yes)
+{
+    if(yes == true)
+    {
+        ui->checkBox_autoincrement->setChecked(true);
+    }else
+    {
+        ui->checkBox_autoincrement->setChecked(false);
+    }
+}
 
+void Dialog_tableparam::set_notnull(bool notnull)
+{
+    if(notnull == true)
+    {
+        ui->checkBox_notnull->setChecked(true);
+    }else
+    {
+        ui->checkBox_notnull->setChecked(false);
+    }
+}
 
+void Dialog_tableparam::set_default(QString defaultvalue)
+{
+    ui->lineEdit_default->setText(defaultvalue);
+}
 
 
 

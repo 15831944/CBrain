@@ -30,7 +30,12 @@ public slots:
     void slot_delete_table();
     void slot_delete_param();
     void slot_new_table(QString tablename);
-    void slot_new_param(QString name, QString typ, QString additional, bool ispri, bool autoincrement);
+    void slot_new_param(QString name, QString typ, QString additional, \
+                        bool ispri, bool autoincrement, bool isunsigned,\
+                        bool notnull, QString defaultvalue);
+    void slot_edit_param(QString name, QString typ, QString additional, \
+                         bool ispri, bool autoincrement, bool isunsigned,\
+                         bool notnull, QString defaultvalue);
 
 
 private slots:

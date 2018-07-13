@@ -266,10 +266,10 @@ void Form_tableeditor::on_pushButton_param_new_clicked()
     if(ui->listWidget_tables->currentRow() >= 0)
     {
         Dialog_tableparam *d = new Dialog_tableparam;
-        d->set_windowTitle("neuen Parameter anlegen");
+        d->setWindowTitle("neuen Parameter anlegen");
         d->setup_mysql();   //derzeit wird nur mysql gebraucht, später evtl. Differenzierung
-        connect(d, SIGNAL(signal_send_dialog_data(QString,QString,QString,bool,bool)),  \
-                this, SLOT(slot_new_param(QString,QString,QString,bool,bool))           );
+        connect(d, SIGNAL(signal_send_dialog_data(QString,QString,QString,bool,bool,bool,bool,QString)),  \
+                this, SLOT(slot_new_param(QString,QString,QString,bool,bool,bool,bool,QString))           );
         d->exec();
         delete d;
     }else
@@ -315,9 +315,50 @@ void Form_tableeditor::on_pushButton_param_edit_clicked()
     {
         if(ui->listWidget_tablehead->currentRow() >= 0)
         {
-            QMessageBox mb;
-            mb.setText("Diese Funktion ist leider noch nicht fertig!");
-            mb.exec();
+            int currentRow = ui->listWidget_tablehead->currentRow();
+            Dialog_tableparam *d = new Dialog_tableparam;
+
+            d->setWindowTitle("Parameter bearbeiten");
+            d->setup_mysql();   //derzeit wird nur mysql gebraucht, später evtl. Differenzierung
+            d->set_paramname(ui->listWidget_tablehead->currentItem()->text());
+            text_zeilenweise types = dbeigen->get_param_type_tz(ui->listWidget_tables->currentItem()->text());
+            d->set_paramtyp(types.zeile(currentRow+1));
+            text_zeilenweise pri = dbeigen->get_param_primkey_tz(ui->listWidget_tables->currentItem()->text());
+            if(pri.zeile(currentRow+1).contains("PRI"))
+            {
+                d->set_pri(true);
+            }else
+            {
+                d->set_pri(false);
+            }
+            text_zeilenweise extra = dbeigen->get_param_extra_tz(ui->listWidget_tables->currentItem()->text());
+            if(extra.zeile(currentRow+1).contains("auto_increment"))
+            {
+                d->set_autoincrement(true);
+            }else
+            {
+                d->set_autoincrement(false);
+            }
+            text_zeilenweise notnull = dbeigen->get_param_notnull_tz(ui->listWidget_tables->currentItem()->text());
+            if(notnull.zeile(currentRow+1).contains("NO"))
+            {
+                d->set_notnull(true);
+            }else
+            {
+                d->set_notnull(false);
+            }
+            text_zeilenweise defaultvalue = dbeigen->get_param_default_tz(ui->listWidget_tables->currentItem()->text());
+            QString defval = defaultvalue.zeile(currentRow+1);
+            if(defval == "---")
+            {
+                defval.clear();
+            }
+            d->set_default(defval);
+
+            connect(d, SIGNAL(signal_send_dialog_data(QString,QString,QString,bool,bool,bool,bool,QString)),  \
+                    this, SLOT(slot_edit_param(QString,QString,QString,bool,bool,bool,bool,QString))           );
+            d->exec();
+            delete d;
         }else
         {
             QMessageBox mb;
@@ -360,18 +401,31 @@ void Form_tableeditor::slot_new_table(QString tablename)
     }
 }
 
-void Form_tableeditor::slot_new_param(QString name, QString typ, QString additional, bool ispri, bool autoincrement)
+void Form_tableeditor::slot_new_param(QString name, QString typ, QString additional, \
+                                      bool ispri, bool autoincrement, bool isunsigned,\
+                                      bool notnull, QString defaultvalue)
 {
     if(dbeigen->param_new( ui->listWidget_tables->currentItem()->text(),\
                            name,\
                            typ,\
                            additional,\
                            ispri,\
-                           autoincrement) == true)
+                           autoincrement,\
+                           isunsigned,\
+                           notnull,\
+                           defaultvalue) == true
+      )
     {
         ui->listWidget_tablehead->addItem(name);
         on_listWidget_tables_currentRowChanged();
     }
+}
+
+void Form_tableeditor::slot_edit_param(QString name, QString typ, QString additional, \
+                                       bool ispri, bool autoincrement, bool isunsigned,\
+                                       bool notnull, QString defaultvalue)
+{
+
 }
 
 //----------------------------------

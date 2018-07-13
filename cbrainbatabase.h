@@ -76,13 +76,17 @@ public:
     //------------------------------------------
     //-------------------------------param:
     bool param_new(QString tablename, QString parmname, \
-                   QString typ, QString additional, bool ispri, bool autoincrement);
+                   QString typ, QString additional, \
+                   bool ispri, bool autoincrement, bool isunsigned,\
+                   bool notnull, QString defaultvalue);
     bool param_del(QString tablename, QString parmname);
     //----------------
     text_zeilenweise get_param_tz(QString tablename);
     text_zeilenweise get_param_type_tz(QString tablename);
     text_zeilenweise get_param_primkey_tz(QString tablename);
     text_zeilenweise get_param_extra_tz(QString tablename);
+    text_zeilenweise get_param_notnull_tz(QString tablename);
+    text_zeilenweise get_param_default_tz(QString tablename);
     //------------------------------------------
     //-------------------------------data:
     bool data_new(QString tablename, text_zeilenweise param, text_zeilenweise values);
