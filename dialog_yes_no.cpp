@@ -21,12 +21,12 @@ void Dialog_yes_no::setup(QString msg)
 
 void Dialog_yes_no::on_pushButton_yes_clicked()
 {
-    this->hide();
+    this->close();
     emit signal_yes();
 }
 
 void Dialog_yes_no::on_pushButton_no_clicked()
 {
-    this->hide();
+    this->close();
     emit signal_no();
 }

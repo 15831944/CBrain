@@ -7,6 +7,14 @@
 #include "text_zeilenweise.h"
 #include "umwandeln.h"
 
+#define DBEMPTYFIELD    "---"
+
+//table == Tabelle
+//param == Überschrif == mehrere param bilden den Tabellenkopf
+//data == eine Datenzeile in der Tabelle
+//value == Werte == der Inhalt eines Datenfeldes in einer Zeile
+
+
 class cbrainbatabase
 {
 public:
@@ -57,18 +65,34 @@ public:
         return pwd;
     }
 
-
     bool pingdb();
 
+    //------------------------------------------
+    //-------------------------------table:
+    bool table_new(QString tablename);
+    bool table_del(QString tablename);
+    //----------------
     text_zeilenweise get_tables_tz();
-    text_zeilenweise get_table_head(QString tablename);
-    text_zeilenweise get_table_head_type(QString tablename);
-    text_zeilenweise get_table_is_primary_key(QString tablename);
-    text_zeilenweise get_table_value_extra(QString tablename);
+    //------------------------------------------
+    //-------------------------------param:
+    bool param_new(QString tablename, QString parmname, \
+                   QString typ, QString additional, bool ispri, bool autoincrement);
+    bool param_del(QString tablename, QString parmname);
+    //----------------
+    text_zeilenweise get_param_tz(QString tablename);
+    text_zeilenweise get_param_type_tz(QString tablename);
+    text_zeilenweise get_param_primkey_tz(QString tablename);
+    text_zeilenweise get_param_extra_tz(QString tablename);
+    //------------------------------------------
+    //-------------------------------data:
+    bool data_new(QString tablename, text_zeilenweise param, text_zeilenweise values);
+    bool data_del(QString tablename, text_zeilenweise ids);
+    bool data_edit(QString tablename, QString param, QString value, QString id);
+    //----------------
 
-    bool new_table(QString tablename);
-    bool del_table(QString tablename);
-
+    //------------------------------------------
+    //-------------------------------values:
+    text_zeilenweise get_values_from_column(QString tablename, int column, QString querryfilter);
 
 private:
     QString host;

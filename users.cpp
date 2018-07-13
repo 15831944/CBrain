@@ -28,9 +28,10 @@ void users::set_users(QString users)
         zeile.set_text(input.zeile(i));
         if(zeile.zeile(1) != USERADMIN_NAME)
         {
-            user_tz.zeile_anhaengen(zeile.zeile(1));
-            pwd_tz.zeile_anhaengen(zeile.zeile(2));
-            is_admin_tz.zeile_anhaengen(zeile.zeile(3));
+            user_tz.zeile_anhaengen(zeile.zeile(1));            //Wert 1
+            pwd_tz.zeile_anhaengen(zeile.zeile(2));             //Wert 2
+            is_admin_tz.zeile_anhaengen(zeile.zeile(3));        //Wert 3
+            use_modul_artikel.zeile_anhaengen(zeile.zeile(4));  //Wert 4
         }
     }
 }
@@ -41,11 +42,13 @@ QString users::get_users()
 
     for(uint i =1; i<=user_tz.zeilenanzahl() ;i++)
     {
-        msg += user_tz.zeile(i);
+        msg += user_tz.zeile(i);            //Wert 1
         msg += trzparam;
-        msg += pwd_tz.zeile(i);
+        msg += pwd_tz.zeile(i);             //Wert 2
         msg += trzparam;
-        msg += is_admin_tz.zeile(i);
+        msg += is_admin_tz.zeile(i);        //Wert 3
+        msg += trzparam;
+        msg += use_modul_artikel.zeile(i);  //Wert 4
 
         if(i != user_tz.zeilenanzahl()) //in der letzten Zeile keinen Zeilenvorschub
         {
@@ -64,6 +67,7 @@ void users::clear()
     pwd_tz.clear();
     is_admin_tz.clear();
     current_user = 0;
+    use_modul_artikel.clear();
 }
 
 void users::set_first_admin()
@@ -72,6 +76,7 @@ void users::set_first_admin()
     user_tz.zeile_anhaengen(USERADMIN_NAME);
     pwd_tz.zeile_anhaengen(USERADMIN_PWD);
     is_admin_tz.zeile_anhaengen("1");
+    use_modul_artikel.zeile_anhaengen("1");
 }
 
 bool users::login(QString user, QString pwd)
@@ -140,6 +145,23 @@ bool users::is_admin(uint index)
     }
 }
 
+bool users::modul_artikel()
+{
+    if(current_user != 0)
+    {
+        if(use_modul_artikel.zeile(current_user) == "1")
+        {
+            return true;
+        }else
+        {
+            return false;
+        }
+    }else
+    {
+        return false;
+    }
+}
+
 bool users::change_name(uint index, QString newname)
 {
     //Prüfen ob Name bereits verwendet wird:
@@ -172,12 +194,23 @@ void users::change_isadmin(uint index, bool isadmin)
         is_admin_tz.zeile_ersaetzen(index, "0");
     }
 }
+void users::change_use_modul_artikel(uint index, bool isalowed)
+{
+    if(isalowed == true)
+    {
+        use_modul_artikel.zeile_ersaetzen(index, "1");
+    }else
+    {
+        use_modul_artikel.zeile_ersaetzen(index, "0");
+    }
+}
 
 void users::newuser()
 {
     user_tz.zeile_anhaengen("Nutzer " + int_to_qstring(user_tz.zeilenanzahl()+1));
     pwd_tz.zeile_anhaengen("Nutzer " + int_to_qstring(user_tz.zeilenanzahl()));
     is_admin_tz.zeile_anhaengen("0");
+    use_modul_artikel.zeile_anhaengen("0");
 }
 
 void users::removeuser(uint index)
@@ -187,6 +220,7 @@ void users::removeuser(uint index)
         user_tz.zeile_loeschen(index);
         pwd_tz.zeile_loeschen(index);
         is_admin_tz.zeile_loeschen(index);
+        use_modul_artikel.zeile_loeschen(index);
     }
 }
 

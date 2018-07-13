@@ -3,12 +3,10 @@
 /*
 
 -->tabelleneditor:
-    ->Datenfelder hinzufügen
-    ->Datenfelder entfernen
+    ->Datenfelder hinzufügen    ->noch herausfinden was genau die optionale Zahl in Klammern angibt
     ->Datenfelder ändern
-    ->Tabellen hinzufügen   --> noch Dialog vorher programmieren zum Eingeben des Nahmens
 
-
+-->Wie DB-Teile sperren solange Datensatz bearbeitet wird?
 
 
 

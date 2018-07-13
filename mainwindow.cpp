@@ -8,9 +8,10 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     clear();
     widget_tableeditor.setParent(this);
+    widget_artikel.setParent(this);
     on_actionKeinModul_triggered();
 
-    //this->setWindowState(Qt::WindowMaximized);
+    this->setWindowState(Qt::WindowMaximized);
 }
 
 MainWindow::~MainWindow()
@@ -25,6 +26,7 @@ void MainWindow::clear()
     ui_rechte_nobody();
     modul_kein      = false;
     modul_tabedit   = false;
+    modul_artikel   = false;
 }
 
 bool MainWindow::setup()
@@ -47,6 +49,7 @@ bool MainWindow::setup()
         dbglobal = QSqlDatabase::addDatabase(dbeigen.get_driver(), "dbglobal");
 
         widget_tableeditor.set_db(&dbeigen);    //widget Zeiger auf DB übergeben
+        widget_artikel.set_db(&dbeigen);        //widget Zeiger auf DB übergeben
     }
 
     return isvalid;
@@ -107,6 +110,9 @@ void MainWindow::resizeEvent(QResizeEvent *event)
 
     widget_tableeditor.move(0, hoehe_menue);
     widget_tableeditor.setFixedSize(breite, hoehe);
+
+    widget_artikel.move(0, hoehe_menue);
+    widget_artikel.setFixedSize(breite, hoehe);
 
     QWidget::resizeEvent(event);
 }
@@ -200,8 +206,10 @@ void MainWindow::slot_login(QString user, QString pwd)
         {
             ui_rechte_nobody();
         }
-        //this->setWindowTitle(  "CBrain /" + user + " / " + dbeigen.get_dbname()  );
         chande_windowtitle();
+        widget_artikel.set_user(u.get_current_user());
+        //Rechte für Module setzen:
+        ui_rechte_modul_artikel(  u.modul_artikel()  );
     }else
     {
         ui_rechte_nobody();
@@ -286,12 +294,17 @@ void MainWindow::on_actionKeinModul_triggered()
 
 void MainWindow::on_actionTabelleneditor_triggered()
 {
-    change_modul("tableeditor");
+    change_modul("Tableeditor");
+}
+
+void MainWindow::on_actionModulArtikel_triggered()
+{
+    change_modul("Artikel");
 }
 
 void MainWindow::change_modul(QString modul)
 {
-    if(modul == "tableeditor")
+    if(modul == "Tableeditor")
     {
         if(modul_tabedit == false)
         {
@@ -299,9 +312,33 @@ void MainWindow::change_modul(QString modul)
             {
                 modul_kein      = false;
                 modul_tabedit   = true;
+                modul_artikel   = false;
 
                 currend_modul = "Tabelleneditor";
+                //widget_tableeditor.set_db(&dbeigen);    //widget Zeiger auf DB übergeben
+                widget_artikel.hide();
                 widget_tableeditor.show();
+            }else
+            {
+                QMessageBox mb;
+                mb.setText("Datenbank nicht erreichbar!\nModul wurden nicht geladen.");
+                mb.exec();
+            }
+        }
+    }else if(modul == "Artikel")
+    {
+        if(modul_artikel == false)
+        {
+            if(dbeigen.pingdb() == true)
+            {
+                modul_kein      = false;
+                modul_tabedit   = false;
+                modul_artikel   = true;
+
+                currend_modul = "Artikel";
+                //widget_artikel.set_db(&dbeigen);    //widget Zeiger auf DB übergeben
+                widget_tableeditor.hide();
+                widget_artikel.show();
             }else
             {
                 QMessageBox mb;
@@ -315,9 +352,11 @@ void MainWindow::change_modul(QString modul)
         {
             modul_kein      = true;
             modul_tabedit   = false;
+            modul_artikel   = false;
 
             currend_modul = "kein Modul geladen";
             widget_tableeditor.hide();
+            widget_artikel.hide();
         }
     }
     chande_windowtitle();
@@ -330,7 +369,7 @@ void MainWindow::ui_rechte_nobody()
     ui->actionBenutzer_verwalten->setDisabled(true);
     ui->actionProgrammeigene_Datenbank->setDisabled(true);
     ui->actionTestfunktion->setDisabled(true);
-    ui->actionKeinModul->setDisabled(true);
+    //ui->actionKeinModul->setDisabled(true);
     ui->actionTabelleneditor->setDisabled(true);
 }
 
@@ -340,8 +379,19 @@ void MainWindow::ui_rechte_admin()
     ui->actionBenutzer_verwalten->setEnabled(true);
     ui->actionProgrammeigene_Datenbank->setEnabled(true);
     ui->actionTestfunktion->setEnabled(true);
-    ui->actionKeinModul->setEnabled(true);
+    //ui->actionKeinModul->setEnabled(true);
     ui->actionTabelleneditor->setEnabled(true);
+}
+
+void MainWindow::ui_rechte_modul_artikel(bool hat_rechte)
+{
+    if(hat_rechte == true)
+    {
+        ui->actionModulArtikel->setEnabled(true);
+    }else
+    {
+        ui->actionModulArtikel->setDisabled(true);
+    }
 }
 
 //-----------------------------------------------Testfunktion:
@@ -369,6 +419,8 @@ void MainWindow::on_actionTestfunktion_triggered()
 }
 
 //-----------------------------------------------
+
+
 
 
 

@@ -34,6 +34,7 @@ private slots:
     void on_pushButton_newuser_clicked();
     void on_pushButton_deleteuser_clicked();
     void on_pushButton_ok_clicked();
+    void on_checkBox_modul_artikel_toggled(bool checked);
 
 private:
     Ui::Dialog_user *ui;
