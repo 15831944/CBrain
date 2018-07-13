@@ -30,6 +30,7 @@ public slots:
     void slot_delete_table();
     void slot_delete_param();
     void slot_new_table(QString tablename);
+    void slot_rename_table(QString tablename_new);
     void slot_new_param(QString name, QString typ, QString additional, \
                         bool ispri, bool autoincrement, bool isunsigned,\
                         bool notnull, QString defaultvalue);
@@ -46,6 +47,7 @@ private slots:
     void on_pushButton_param_new_clicked();
     void on_pushButton_param_del_clicked();
     void on_pushButton_param_edit_clicked();
+    void on_pushButton_table_edit_clicked();
 
 private:
     Ui::Form_tableeditor *ui;

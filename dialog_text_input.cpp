@@ -29,3 +29,8 @@ void Dialog_text_input::on_pushButton_ok_clicked()
     this->close();
     emit signal_userinput(ui->lineEdit->text());
 }
+
+void Dialog_text_input::set_default_input(QString def)
+{
+    ui->lineEdit->setText(def);
+}

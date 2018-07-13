@@ -41,11 +41,14 @@ void Form_tableeditor::resizeEvent(QResizeEvent *event)
     ui->listWidget_tables->setFixedSize(breite/5, \
                                         hoehe - ui->pushButton_table_new->geometry().height() - 5);
     //--buttons:
-    ui->pushButton_table_new->setFixedWidth(ui->listWidget_tables->geometry().width() / 2);
-    ui->pushButton_table_del->setFixedWidth(ui->listWidget_tables->geometry().width() / 2 - 1);
+    ui->pushButton_table_new->setFixedWidth(ui->listWidget_tables->geometry().width() / 3);
+    ui->pushButton_table_del->setFixedWidth(ui->listWidget_tables->geometry().width() / 3 - 1);
+    ui->pushButton_table_edit->setFixedWidth(ui->listWidget_tables->geometry().width() / 3 - 1);
     ui->pushButton_table_new->move(1, \
                                    this->geometry().height() - ui->pushButton_table_new->geometry().height());
     ui->pushButton_table_del->move(1 + ui->pushButton_table_new->geometry().width() + 1, \
+                                   this->geometry().height() - ui->pushButton_table_new->geometry().height());
+    ui->pushButton_table_edit->move(1 + ui->pushButton_table_new->geometry().width()*2 + 2, \
                                    this->geometry().height() - ui->pushButton_table_new->geometry().height());
 
 
@@ -261,6 +264,25 @@ void Form_tableeditor::on_pushButton_table_del_clicked()
     }
 }
 
+void Form_tableeditor::on_pushButton_table_edit_clicked()
+{
+    if(ui->listWidget_tables->currentRow() >= 0)
+    {
+        Dialog_text_input *d = new Dialog_text_input;
+        d->setup("Tabelle umbenennen","Bitte geben Sie den neuen Namen der Tabelle ein:");
+        d->set_default_input(ui->listWidget_tables->currentItem()->text());
+        connect(d, SIGNAL(signal_userinput(QString)),           \
+                          this, SLOT(slot_rename_table(QString))   );
+        d->exec();
+        delete d;
+    }else
+    {
+        QMessageBox mb;
+        mb.setText("Bitte waelen Sie zuerst eine Tabelle aus!");
+        mb.exec();
+    }
+}
+
 void Form_tableeditor::on_pushButton_param_new_clicked()
 {
     if(ui->listWidget_tables->currentRow() >= 0)
@@ -392,6 +414,15 @@ void Form_tableeditor::slot_delete_param()
     on_listWidget_tables_currentRowChanged();
 }
 
+void Form_tableeditor::slot_rename_table(QString tablename_new)
+{
+    if(dbeigen->table_rename(ui->listWidget_tables->currentItem()->text(), tablename_new) == true)
+    {
+        ui->listWidget_tables->currentItem()->setText(tablename_new);
+        ui->listWidget_tables->sortItems();
+    }
+}
+
 void Form_tableeditor::slot_new_table(QString tablename)
 {
     if(dbeigen->table_new(tablename) == true)
@@ -425,10 +456,26 @@ void Form_tableeditor::slot_edit_param(QString name, QString typ, QString additi
                                        bool ispri, bool autoincrement, bool isunsigned,\
                                        bool notnull, QString defaultvalue)
 {
-
+    if(dbeigen->param_edit(ui->listWidget_tables->currentItem()->text(),\
+                           ui->listWidget_tablehead->currentItem()->text(),\
+                           name,\
+                           typ,\
+                           additional,\
+                           ispri,\
+                           autoincrement,\
+                           isunsigned,\
+                           notnull,\
+                           defaultvalue) == true
+      )
+    {
+        ui->listWidget_tablehead->currentItem()->setText(name);
+        on_listWidget_tables_currentRowChanged();
+    }
 }
 
 //----------------------------------
+
+
 
 
 

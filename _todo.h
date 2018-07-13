@@ -3,10 +3,7 @@
 /*
 
 -->tabelleneditor:
-    ->Datenfelder ändern
-void Form_tableeditor::slot_edit_param(QString name, QString typ, QString additional, \
-                                       bool ispri, bool autoincrement, bool isunsigned,\
-                                       bool notnull, QString defaultvalue)
+    ->rename Table
 
 
 

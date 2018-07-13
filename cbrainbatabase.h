@@ -71,15 +71,20 @@ public:
     //-------------------------------table:
     bool table_new(QString tablename);
     bool table_del(QString tablename);
+    bool table_rename(QString tablename_old, QString tablename_new);
     //----------------
     text_zeilenweise get_tables_tz();
     //------------------------------------------
     //-------------------------------param:
-    bool param_new(QString tablename, QString parmname, \
+    bool param_new(QString tablename, QString paramname, \
                    QString typ, QString additional, \
                    bool ispri, bool autoincrement, bool isunsigned,\
                    bool notnull, QString defaultvalue);
     bool param_del(QString tablename, QString parmname);
+    bool param_edit(QString tablename, QString paramname_old, QString paramname_new,\
+                    QString typ, QString additional, \
+                    bool ispri, bool autoincrement, bool isunsigned,\
+                    bool notnull, QString defaultvalue);
     //----------------
     text_zeilenweise get_param_tz(QString tablename);
     text_zeilenweise get_param_type_tz(QString tablename);

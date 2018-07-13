@@ -16,6 +16,7 @@ public:
     ~Dialog_text_input();
 
     void setup(QString new_window_title, QString new_labeltext);
+    void set_default_input(QString def);
 
 signals:
     void signal_userinput(QString msg);

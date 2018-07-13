@@ -150,6 +150,47 @@ bool cbrainbatabase::table_del(QString tablename)
     return ok;
 }
 
+bool cbrainbatabase::table_rename(QString tablename_old, QString tablename_new)
+{
+    bool ok = false;
+
+    QSqlDatabase db;
+
+    db = QSqlDatabase::database("dbglobal");
+    db.setHostName(host);
+    db.setDatabaseName(dbname);
+    db.setUserName(user);
+    db.setPassword(pwd);
+
+    if(db.open())
+    {
+        QSqlQuery q(db);
+        QString cmd;
+        cmd += "ALTER TABLE ";
+        cmd += tablename_old;
+        cmd += " RENAME ";
+        cmd += tablename_new;
+
+        if(q.exec(cmd))
+        {
+            ok = true;
+        }else
+        {
+            QMessageBox mb;
+            mb.setText("Fehler:\n" + q.lastError().text());
+            mb.exec();
+        }
+        db.close();
+
+    }else
+    {
+        QMessageBox mb;
+        mb.setText("Fehler bei Datenbankverbindung!");
+        mb.exec();
+    }
+    return ok;
+}
+
 //----------------
 text_zeilenweise cbrainbatabase::get_tables_tz()
 {
@@ -277,6 +318,81 @@ bool cbrainbatabase::param_del(QString tablename, QString parmname)
         cmd += tablename;
         cmd += " DROP COLUMN ";
         cmd += parmname;
+
+        if(q.exec(cmd))
+        {
+            ok = true;
+        }else
+        {
+            QMessageBox mb;
+            mb.setText("Fehler:\n" + q.lastError().text());
+            mb.exec();
+        }
+        db.close();
+
+    }else
+    {
+        QMessageBox mb;
+        mb.setText("Fehler bei Datenbankverbindung!");
+        mb.exec();
+    }
+    return ok;
+}
+
+bool cbrainbatabase::param_edit(QString tablename, QString paramname_old, QString paramname_new, QString typ, QString additional, \
+                                bool ispri, bool autoincrement, bool isunsigned,\
+                                bool notnull, QString defaultvalue)
+{
+    bool ok = false;
+
+    QSqlDatabase db;
+
+    db = QSqlDatabase::database("dbglobal");
+    db.setHostName(host);
+    db.setDatabaseName(dbname);
+    db.setUserName(user);
+    db.setPassword(pwd);
+
+    if(db.open())
+    {
+        QSqlQuery q(db);
+        QString cmd;
+        cmd += "ALTER TABLE ";
+        cmd += tablename;
+        cmd += " CHANGE ";
+        cmd += paramname_old;
+        cmd += " ";
+        cmd += paramname_new;
+        cmd += " ";
+        cmd += typ;
+        if(!additional.isEmpty())
+        {
+            cmd += "(";
+            cmd += additional;
+            cmd += ")";
+        }
+        if(isunsigned == true)
+        {
+            cmd += " unsigned";
+        }
+        if(autoincrement == true)
+        {
+            cmd += " auto_increment";
+        }
+        if(ispri == true)
+        {
+            cmd += " primary key";
+        }
+        if(notnull == true)
+        {
+            cmd += " not null";
+        }
+        if(!defaultvalue.isEmpty())
+        {
+            cmd += " DEFAULT \'";
+            cmd += defaultvalue;
+            cmd += "\'";
+        }
 
         if(q.exec(cmd))
         {

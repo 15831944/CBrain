@@ -2,7 +2,7 @@
 #define _TABELLENNAMEN_H
 
 
-#define TABNAME_ARTIKEL             "artikel"
+#define TABNAME_ARTIKEL             "Artikel"
 #define PARAM_ARTIKEL_ID            "id"                //Wert 0
 #define PARAM_ARTIKEL_NR            "Artikelnummer"     //Wert 1
 #define PARAM_ARTIKEL_BEZ           "Bezeichnung"       //Wert 2
@@ -13,7 +13,7 @@
 #define PARAM_ARTIKEL_BEARBEITER    "Bearbeiter"        //Wert 7
 #define PARAM_ARTIKEL_DATBEARB      "Bearbeitung"       //Wert 8    //Datum der letzten Bearbeitung
 
-#define TABNAME_LIEFERANTEN         "lieferanten"
+#define TABNAME_LIEFERANTEN         "Lieferanten"
 #define PARAM_LIEFERANT_ID          "id"                //Wert 0
 #define PARAM_LIEFERANT_NAME        "Name"              //Wert 1
 
