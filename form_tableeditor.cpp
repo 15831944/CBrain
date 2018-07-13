@@ -32,18 +32,47 @@ void Form_tableeditor::resizeEvent(QResizeEvent *event)
     hoehe = hoehe - ui->label_tables->geometry().height();
 
     //Spalte 1 Tabellen-Namen:
+    //--label:
     ui->label_tables->move(1,1);
     ui->label_tables->setFixedWidth(breite/5);
+    //--listWidget
     ui->listWidget_tables->move( 1 ,                                                \
                                  1 + ui->label_tables->geometry().height() + 1      );
-    ui->listWidget_tables->setFixedSize(breite/5, hoehe-5);
+    ui->listWidget_tables->setFixedSize(breite/5, \
+                                        hoehe - ui->pushButton_table_new->geometry().height() - 5);
+    //--buttons:
+    ui->pushButton_table_new->setFixedWidth(ui->listWidget_tables->geometry().width() / 3);
+    ui->pushButton_table_del->setFixedWidth(ui->listWidget_tables->geometry().width() / 3 - 1);
+    ui->pushButton_table_edit->setFixedWidth(ui->listWidget_tables->geometry().width() / 3 - 1);
+    ui->pushButton_table_new->move(1, \
+                                   this->geometry().height() - ui->pushButton_table_new->geometry().height());
+    ui->pushButton_table_del->move(1 + ui->pushButton_table_new->geometry().width() + 1, \
+                                   this->geometry().height() - ui->pushButton_table_new->geometry().height());
+    ui->pushButton_table_edit->move(1 + ui->pushButton_table_new->geometry().width()*2 + 2, \
+                                   this->geometry().height() - ui->pushButton_table_new->geometry().height());
+
 
     //Spalte 2 Tabellen-Kopft:
+    //--label:
     ui->label_tablehead->move(1+ui->listWidget_tables->geometry().width()+1 , 1 );
     ui->label_tablehead->setFixedWidth(breite/5);
+    //--listWidget
     ui->listWidget_tablehead->move( 1+ui->listWidget_tables->geometry().width()+1 , \
                                     1 + ui->label_tables->geometry().height() + 1   );
-    ui->listWidget_tablehead->setFixedSize(breite/5, hoehe-5);
+    ui->listWidget_tablehead->setFixedSize(breite/5, \
+                                           hoehe - ui->pushButton_table_new->geometry().height() - 5);
+    //--buttons:
+    ui->pushButton_param_new->setFixedWidth(ui->listWidget_tables->geometry().width() / 3);
+    ui->pushButton_param_del->setFixedWidth(ui->listWidget_tables->geometry().width() / 3 - 1);
+    ui->pushButton_param_edit->setFixedWidth(ui->listWidget_tables->geometry().width() / 3 - 1);
+    ui->pushButton_param_new->move(breite/5 +1 , \
+                                   this->geometry().height() - ui->pushButton_table_new->geometry().height());
+    ui->pushButton_param_del->move(breite/5 + 1 + ui->pushButton_param_new->geometry().width() + 1, \
+                                   this->geometry().height() - ui->pushButton_table_new->geometry().height());
+    ui->pushButton_param_edit->move(breite/5 + 1 + ui->pushButton_param_new->geometry().width()*2 + 2, \
+                                   this->geometry().height() - ui->pushButton_table_new->geometry().height());
+
+
 
     //Spalte 3 :
     int labelbreite = ui->label_typlabel->geometry().width();
@@ -106,7 +135,7 @@ void Form_tableeditor::resizeEvent(QResizeEvent *event)
 }
 
 void Form_tableeditor::set_db(cbrainbatabase *new_db)
-{
+{    
     clear();
     dbeigen = new_db;
 
@@ -122,7 +151,7 @@ void Form_tableeditor::on_listWidget_tables_currentRowChanged()
 {
     //-------------------------------------------
     ui->listWidget_tablehead->clear();
-    text_zeilenweise tables = dbeigen->get_table_head(ui->listWidget_tables->currentItem()->text());
+    text_zeilenweise tables = dbeigen->get_param_tz(ui->listWidget_tables->currentItem()->text());
 
     for(uint i=1; i<=tables.zeilenanzahl() ;i++)
     {
@@ -169,7 +198,7 @@ void Form_tableeditor::on_listWidget_tables_currentRowChanged()
 
 void Form_tableeditor::on_listWidget_tablehead_currentRowChanged(int currentRow)
 {
-    text_zeilenweise types = dbeigen->get_table_head_type(ui->listWidget_tables->currentItem()->text());
+    text_zeilenweise types = dbeigen->get_param_type_tz(ui->listWidget_tables->currentItem()->text());
     if(currentRow != -1)//ist -1 wenn noch nichts gewählt wurde
     {
          ui->label_typ->setText(types.zeile(currentRow+1));
@@ -178,10 +207,10 @@ void Form_tableeditor::on_listWidget_tablehead_currentRowChanged(int currentRow)
         ui->label_typ->setText("...");
     }
 
-    text_zeilenweise pri = dbeigen->get_table_is_primary_key(ui->listWidget_tables->currentItem()->text());
+    text_zeilenweise pri = dbeigen->get_param_primkey_tz(ui->listWidget_tables->currentItem()->text());
     if(currentRow != -1)//ist -1 wenn noch nichts gewählt wurde
     {
-        if(pri.zeile(currentRow+1) == "PRI")
+        if(pri.zeile(currentRow+1).contains("PRI"))
         {
             ui->label_pri->setText("ja");
         }else
@@ -193,7 +222,7 @@ void Form_tableeditor::on_listWidget_tablehead_currentRowChanged(int currentRow)
         ui->label_pri->setText("...");
     }
 
-    text_zeilenweise extra = dbeigen->get_table_value_extra(ui->listWidget_tables->currentItem()->text());
+    text_zeilenweise extra = dbeigen->get_param_extra_tz(ui->listWidget_tables->currentItem()->text());
     if(currentRow != -1)//ist -1 wenn noch nichts gewählt wurde
     {
          ui->label_extra->setText(extra.zeile(currentRow+1));
@@ -202,6 +231,262 @@ void Form_tableeditor::on_listWidget_tablehead_currentRowChanged(int currentRow)
         ui->label_extra->setText("...");
     }
 }
+
+//----------------------------------Buttons:
+void Form_tableeditor::on_pushButton_table_new_clicked()
+{
+    Dialog_text_input *d = new Dialog_text_input;
+    d->setup("neue Tabelle anlegen","Bitte geben Sie den Namen der neuen Tabelle ein:");
+    connect(d, SIGNAL(signal_userinput(QString)),           \
+                      this, SLOT(slot_new_table(QString))   );
+    d->exec();
+    delete d;
+}
+
+void Form_tableeditor::on_pushButton_table_del_clicked()
+{
+    if(ui->listWidget_tables->currentRow() >= 0)
+    {
+        Dialog_yes_no *d = new Dialog_yes_no;
+        QString msg;
+        msg += "Wollen Sie die Tabelle \"";
+        msg += ui->listWidget_tables->currentItem()->text();
+        msg += "\" in der Datenbank wirklich unwiederruflich entfernen?";
+        d->setup(msg);
+        connect(d, SIGNAL(signal_yes()), this, SLOT(slot_delete_table()));
+        d->exec();
+        delete d;
+    }else
+    {
+        QMessageBox mb;
+        mb.setText("Bitte waelen Sie zuerst eine Tabelle aus!");
+        mb.exec();
+    }
+}
+
+void Form_tableeditor::on_pushButton_table_edit_clicked()
+{
+    if(ui->listWidget_tables->currentRow() >= 0)
+    {
+        Dialog_text_input *d = new Dialog_text_input;
+        d->setup("Tabelle umbenennen","Bitte geben Sie den neuen Namen der Tabelle ein:");
+        d->set_default_input(ui->listWidget_tables->currentItem()->text());
+        connect(d, SIGNAL(signal_userinput(QString)),           \
+                          this, SLOT(slot_rename_table(QString))   );
+        d->exec();
+        delete d;
+    }else
+    {
+        QMessageBox mb;
+        mb.setText("Bitte waelen Sie zuerst eine Tabelle aus!");
+        mb.exec();
+    }
+}
+
+void Form_tableeditor::on_pushButton_param_new_clicked()
+{
+    if(ui->listWidget_tables->currentRow() >= 0)
+    {
+        Dialog_tableparam *d = new Dialog_tableparam;
+        d->setWindowTitle("neuen Parameter anlegen");
+        d->setup_mysql();   //derzeit wird nur mysql gebraucht, später evtl. Differenzierung
+        connect(d, SIGNAL(signal_send_dialog_data(QString,QString,QString,bool,bool,bool,bool,QString)),  \
+                this, SLOT(slot_new_param(QString,QString,QString,bool,bool,bool,bool,QString))           );
+        d->exec();
+        delete d;
+    }else
+    {
+        QMessageBox mb;
+        mb.setText("Bitte waelen Sie zuerst eine Tabelle aus!");
+        mb.exec();
+    }
+}
+
+void Form_tableeditor::on_pushButton_param_del_clicked()
+{
+    if(ui->listWidget_tables->currentRow() >= 0)
+    {
+        if(ui->listWidget_tablehead->currentRow() >= 0)
+        {
+            Dialog_yes_no *d = new Dialog_yes_no;
+            QString msg;
+            msg += "Wollen Sie diesen Parameter \"";
+            msg += ui->listWidget_tablehead->currentItem()->text();
+            msg += "\" in der Tabelle wirklich unwiederruflich entfernen?";
+            d->setup(msg);
+            connect(d, SIGNAL(signal_yes()), this, SLOT(slot_delete_param()));
+            d->exec();
+            delete d;
+        }else
+        {
+            QMessageBox mb;
+            mb.setText("Bitte waelen Sie zuerst einen Parameter aus!");
+            mb.exec();
+        }
+    }else
+    {
+        QMessageBox mb;
+        mb.setText("Bitte waelen Sie zuerst eine Tabelle aus!");
+        mb.exec();
+    }
+}
+
+void Form_tableeditor::on_pushButton_param_edit_clicked()
+{
+    if(ui->listWidget_tables->currentRow() >= 0)
+    {
+        if(ui->listWidget_tablehead->currentRow() >= 0)
+        {
+            int currentRow = ui->listWidget_tablehead->currentRow();
+            Dialog_tableparam *d = new Dialog_tableparam;
+
+            d->setWindowTitle("Parameter bearbeiten");
+            d->setup_mysql();   //derzeit wird nur mysql gebraucht, später evtl. Differenzierung
+            d->set_paramname(ui->listWidget_tablehead->currentItem()->text());
+            text_zeilenweise types = dbeigen->get_param_type_tz(ui->listWidget_tables->currentItem()->text());
+            d->set_paramtyp(types.zeile(currentRow+1));
+            text_zeilenweise pri = dbeigen->get_param_primkey_tz(ui->listWidget_tables->currentItem()->text());
+            if(pri.zeile(currentRow+1).contains("PRI"))
+            {
+                d->set_pri(true);
+            }else
+            {
+                d->set_pri(false);
+            }
+            text_zeilenweise extra = dbeigen->get_param_extra_tz(ui->listWidget_tables->currentItem()->text());
+            if(extra.zeile(currentRow+1).contains("auto_increment"))
+            {
+                d->set_autoincrement(true);
+            }else
+            {
+                d->set_autoincrement(false);
+            }
+            text_zeilenweise notnull = dbeigen->get_param_notnull_tz(ui->listWidget_tables->currentItem()->text());
+            if(notnull.zeile(currentRow+1).contains("NO"))
+            {
+                d->set_notnull(true);
+            }else
+            {
+                d->set_notnull(false);
+            }
+            text_zeilenweise defaultvalue = dbeigen->get_param_default_tz(ui->listWidget_tables->currentItem()->text());
+            QString defval = defaultvalue.zeile(currentRow+1);
+            if(defval == "---")
+            {
+                defval.clear();
+            }
+            d->set_default(defval);
+
+            connect(d, SIGNAL(signal_send_dialog_data(QString,QString,QString,bool,bool,bool,bool,QString)),  \
+                    this, SLOT(slot_edit_param(QString,QString,QString,bool,bool,bool,bool,QString))           );
+            d->exec();
+            delete d;
+        }else
+        {
+            QMessageBox mb;
+            mb.setText("Bitte waelen Sie zuerst einen Parameter aus!");
+            mb.exec();
+        }
+    }else
+    {
+        QMessageBox mb;
+        mb.setText("Bitte waelen Sie zuerst eine Tabelle aus!");
+        mb.exec();
+    }
+}
+
+//----------------------------------slots:
+void Form_tableeditor::slot_delete_table()
+{
+    if(dbeigen->table_del(ui->listWidget_tables->currentItem()->text()) == true)
+    {
+        delete ui->listWidget_tables->currentItem();
+    }
+}
+
+void Form_tableeditor::slot_delete_param()
+{
+    if(dbeigen->param_del(ui->listWidget_tables->currentItem()->text(),\
+                          ui->listWidget_tablehead->currentItem()->text())  == true)
+    {
+        delete ui->listWidget_tablehead->currentItem();
+    }
+    on_listWidget_tables_currentRowChanged();
+}
+
+void Form_tableeditor::slot_rename_table(QString tablename_new)
+{
+    if(dbeigen->table_rename(ui->listWidget_tables->currentItem()->text(), tablename_new) == true)
+    {
+        ui->listWidget_tables->currentItem()->setText(tablename_new);
+        ui->listWidget_tables->sortItems();
+    }
+}
+
+void Form_tableeditor::slot_new_table(QString tablename)
+{
+    if(dbeigen->table_new(tablename) == true)
+    {
+        ui->listWidget_tables->addItem(tablename);
+        ui->listWidget_tables->sortItems();
+    }
+}
+
+void Form_tableeditor::slot_new_param(QString name, QString typ, QString additional, \
+                                      bool ispri, bool autoincrement, bool isunsigned,\
+                                      bool notnull, QString defaultvalue)
+{
+    if(dbeigen->param_new( ui->listWidget_tables->currentItem()->text(),\
+                           name,\
+                           typ,\
+                           additional,\
+                           ispri,\
+                           autoincrement,\
+                           isunsigned,\
+                           notnull,\
+                           defaultvalue) == true
+      )
+    {
+        ui->listWidget_tablehead->addItem(name);
+        on_listWidget_tables_currentRowChanged();
+    }
+}
+
+void Form_tableeditor::slot_edit_param(QString name, QString typ, QString additional, \
+                                       bool ispri, bool autoincrement, bool isunsigned,\
+                                       bool notnull, QString defaultvalue)
+{
+    if(dbeigen->param_edit(ui->listWidget_tables->currentItem()->text(),\
+                           ui->listWidget_tablehead->currentItem()->text(),\
+                           name,\
+                           typ,\
+                           additional,\
+                           ispri,\
+                           autoincrement,\
+                           isunsigned,\
+                           notnull,\
+                           defaultvalue) == true
+      )
+    {
+        ui->listWidget_tablehead->currentItem()->setText(name);
+        on_listWidget_tables_currentRowChanged();
+    }
+}
+
+//----------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

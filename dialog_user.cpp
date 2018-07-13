@@ -39,16 +39,27 @@ void Dialog_user::on_listWidget_names_currentRowChanged(int currentRow)
     {
         ui->checkBox_isadmin->setChecked(false);
     }
+    if(user.get_use_modul_artikel_tz().zeile(currentRow+1)== "1")
+    {
+        ui->checkBox_modul_artikel->setChecked(true);
+    }else
+    {
+        ui->checkBox_modul_artikel->setChecked(false);
+    }
+
+
     if(ui->listWidget_names->currentRow() == 0)//First Admin soll nicht editierbar sein!
     {
         ui->lineEdit_name->setDisabled(true);
         ui->lineEdit_pwd->setDisabled(true);
         ui->checkBox_isadmin->setDisabled(true);
+        ui->checkBox_modul_artikel->setDisabled(true);
     }else
     {
         ui->lineEdit_name->setEnabled(true);
         ui->lineEdit_pwd->setEnabled(true);
         ui->checkBox_isadmin->setEnabled(true);
+        ui->checkBox_modul_artikel->setEnabled(true);
     }
 }
 
@@ -103,4 +114,9 @@ void Dialog_user::on_pushButton_ok_clicked()
 {
     this->close();
     emit signal_send_users(user);
+}
+
+void Dialog_user::on_checkBox_modul_artikel_toggled(bool checked)
+{
+    user.change_use_modul_artikel(ui->listWidget_names->currentRow()+1, checked);
 }

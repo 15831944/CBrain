@@ -14,6 +14,7 @@
 #include "dialog_settings_db.h"
 
 #include "form_tableeditor.h"
+#include "form_artikel.h"
 
 #include "defines_filenames.h"
 #include "users.h"
@@ -53,8 +54,8 @@ private slots:
     void on_actionProgrammeigene_Datenbank_triggered();
     void on_actionTestfunktion_triggered();
     void on_actionTabelleneditor_triggered();
-
     void on_actionKeinModul_triggered();
+    void on_actionModulArtikel_triggered();
 
 private:
     Ui::MainWindow *ui;
@@ -71,9 +72,12 @@ private:
     QString currend_modul;      //Speichert den Namen des Moduls für WindowTitle
     bool modul_kein;            //kein widget ist offen
     bool modul_tabedit;         //widget_tableeditor ist offen
+    bool modul_artikel;         //widget_artikel ist offen
 
     //eigene Widgets:
-    Form_tableeditor widget_tableeditor;
+    Form_tableeditor    widget_tableeditor;
+    Form_artikel        widget_artikel;
+
 
     //Funktionen:
     void clear();
@@ -83,6 +87,7 @@ private:
     void write_iniuser();
     void ui_rechte_admin();
     void ui_rechte_nobody();
+    void ui_rechte_modul_artikel(bool hat_rechte);
     void change_modul(QString modul);
     void chande_windowtitle();
 
