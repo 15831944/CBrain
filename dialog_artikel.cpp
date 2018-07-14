@@ -17,6 +17,7 @@ Dialog_artikel::~Dialog_artikel()
 void Dialog_artikel::on_pushButton_cancel_clicked()
 {
     this->close();
+    emit signal_cancel();
 }
 
 void Dialog_artikel::on_pushButton_ok_clicked()

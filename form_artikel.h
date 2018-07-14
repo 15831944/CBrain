@@ -9,6 +9,7 @@
 #include "dialog_dataselection.h"
 #include "text.h"
 #include "datum.h"
+#include "dialog_yes_no.h"
 
 namespace Ui {
 class Form_artikel;
@@ -30,6 +31,8 @@ public slots:
     void slot_new(text_zeilenweise data);
     void slot_delete(text_zeilenweise ids);
     void slot_edit_dialog(text_zeilenweise ids);
+    void slot_edit_dialog();
+    void slot_edit_dialog_cancel();
     void slot_edit(text_zeilenweise data, QString id);
 
 protected:
@@ -47,6 +50,9 @@ private:
     cbrainbatabase *dbeigen;
     QSqlQueryModel *model;
     QString user;
+    QString idbuffer;       //Speichert id
+                            //von void slot_edit_dialog(text_zeilenweise ids);
+                            //für void slot_edit_dialog();
 
     void update_table();
 };

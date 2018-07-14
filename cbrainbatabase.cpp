@@ -832,7 +832,62 @@ bool cbrainbatabase::data_edit(QString tablename, QString param, \
         cmd += param;
         cmd += " = \'";
         cmd += value;
-        cmd += "\' WHERE ID = ";
+        cmd += "\' WHERE ID = \'";
+        cmd += id;
+        cmd += "\'";
+
+        if(q.exec(cmd))
+        {
+            ok = true;
+        }else
+        {
+            QMessageBox mb;
+            mb.setText("Fehler:\n" + q.lastError().text());
+            mb.exec();
+        }
+        db.close();
+
+    }else
+    {
+        QMessageBox mb;
+        mb.setText("Fehler bei Datenbankverbindung!");
+        mb.exec();
+    }
+    return ok;
+}
+
+bool cbrainbatabase::data_edit(QString tablename, text_zeilenweise param, \
+                                 text_zeilenweise value, QString id)
+{
+    bool ok = false;
+
+    QSqlDatabase db;
+
+    db = QSqlDatabase::database("dbglobal");
+    db.setHostName(host);
+    db.setDatabaseName(dbname);
+    db.setUserName(user);
+    db.setPassword(pwd);
+
+    if(db.open())
+    {
+        QSqlQuery q(db);
+        QString cmd;
+        cmd += "UPDATE ";
+        cmd += tablename;
+        cmd += " SET ";
+        for(uint i=1; i<=param.zeilenanzahl() ;i++)
+        {
+            cmd += param.zeile(i);
+            cmd += " = \'";
+            cmd += value.zeile(i);
+            cmd += "\'";
+            if(i < param.zeilenanzahl())
+            {
+                cmd += ", ";
+            }
+        }
+        cmd += " WHERE ID = ";
         cmd += id;
 
         if(q.exec(cmd))
@@ -856,6 +911,51 @@ bool cbrainbatabase::data_edit(QString tablename, QString param, \
 }
 
 //----------------
+QString cbrainbatabase::get_data_qstring(QString tablename, QString param, QString id)
+{
+    QString msg;
+    QSqlDatabase db;
+
+    db = QSqlDatabase::database("dbglobal");
+    db.setHostName(host);
+    db.setDatabaseName(dbname);
+    db.setUserName(user);
+    db.setPassword(pwd);
+
+    if(db.open())
+    {
+        QSqlQuery q(db);
+        QString cmd;
+        cmd += "SELECT ";
+        cmd += param;
+        cmd += " FROM ";
+        cmd += tablename;
+        cmd += " WHERE id=\'";
+        cmd += id;
+        cmd += "\'";
+
+        if(q.exec(cmd))
+        {
+            while(q.next())
+            {
+                msg += q.value(0).toString();
+            }
+        }else
+        {
+            QMessageBox mb;
+            mb.setText("Fehler:\n" + q.lastError().text());
+            mb.exec();
+        }
+        db.close();
+
+    }else
+    {
+        QMessageBox mb;
+        mb.setText("Fehler bei Datenbankverbindung!");
+        mb.exec();
+    }
+    return msg;
+}
 
 //------------------------------------------
 //-------------------------------values:

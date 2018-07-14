@@ -336,28 +336,52 @@ void Form_artikel::slot_edit_dialog(text_zeilenweise ids)
 {
     if(ids.zeilenanzahl() == 1)
     {
-        text_zeilenweise artikel;
-                        //Wert 1 = Artikelnummer
-                        //Wert 2 = Bezeichnung
-                        //Wert 3 = Lieferant
-        QString querryfilter;
-        querryfilter += PARAM_ARTIKEL_ID;
-        querryfilter += " LIKE \'";
-        querryfilter += ids.zeile(1);
-        querryfilter += "\'";
-        artikel.zeile_anhaengen(dbeigen->get_values_from_column(TABNAME_ARTIKEL, 1, querryfilter).get_text());//Nr
-        artikel.zeile_anhaengen(dbeigen->get_values_from_column(TABNAME_ARTIKEL, 2, querryfilter).get_text());//Bez
-        artikel.zeile_anhaengen(dbeigen->get_values_from_column(TABNAME_ARTIKEL, 3, querryfilter).get_text());//Lieferant
+        idbuffer = ids.zeile(1);
+        QString blockfromuser = dbeigen->get_data_qstring(TABNAME_ARTIKEL, PARAM_ARTIKEL_BLOCK, idbuffer);
+        if(blockfromuser == USER_NOBODY || blockfromuser.isEmpty())
+        {
+            text_zeilenweise artikel;
+                            //Wert 1 = Artikelnummer
+                            //Wert 2 = Bezeichnung
+                            //Wert 3 = Lieferant
+            QString querryfilter;
+            querryfilter += PARAM_ARTIKEL_ID;
+            querryfilter += " LIKE \'";
+            querryfilter += idbuffer;
+            querryfilter += "\'";
+            artikel.zeile_anhaengen(dbeigen->get_values_from_column(TABNAME_ARTIKEL, 1, querryfilter).get_text());//Nr
+            artikel.zeile_anhaengen(dbeigen->get_values_from_column(TABNAME_ARTIKEL, 2, querryfilter).get_text());//Bez
+            artikel.zeile_anhaengen(dbeigen->get_values_from_column(TABNAME_ARTIKEL, 3, querryfilter).get_text());//Lieferant
 
 
-        Dialog_artikel *d = new Dialog_artikel;
-        d->set_db(dbeigen);
-        d->setup();
-        d->set_data(artikel, ids.zeile(1));
-        connect(d, SIGNAL(signal_send_data(text_zeilenweise, QString)),  \
-                this, SLOT(slot_edit(text_zeilenweise, QString))          );
-        d->exec();
-        delete d;
+            Dialog_artikel *d = new Dialog_artikel;
+            d->set_db(dbeigen);
+            d->setup();
+            d->set_data(artikel, idbuffer);
+            connect(d, SIGNAL(signal_send_data(text_zeilenweise, QString)),  \
+                    this, SLOT(slot_edit(text_zeilenweise, QString))          );
+            connect(d, SIGNAL(signal_cancel()), this, SLOT(slot_edit_dialog_cancel()));
+
+            dbeigen->data_edit(TABNAME_ARTIKEL, PARAM_ARTIKEL_BLOCK, user, idbuffer);
+            d->exec();
+            delete d;
+        }else
+        {
+            Dialog_yes_no *d = new Dialog_yes_no;
+            d->setWindowTitle("Datensatz bereits gesperrt");
+            QString msg;
+            msg += "Dieser Datensatz wurde bereits vom Nutzer \"";
+            msg += blockfromuser;
+            msg += "\" gesperrt.\nBitte stimmen Sie sich mit dem Benutzer ab!\n";
+            msg += "Soll dieser trotzdem zum Bearbeiten geoeffnet werden?";
+            d->setup(msg);
+            idbuffer = ids.zeile(1);
+            connect(d, SIGNAL(signal_yes()), this, SLOT(slot_edit_dialog()));
+
+            d->exec();
+            delete d;
+        }
+
     }else
     {
         QMessageBox mb;
@@ -367,31 +391,90 @@ void Form_artikel::slot_edit_dialog(text_zeilenweise ids)
 
 }
 
+void Form_artikel::slot_edit_dialog()
+{
+    text_zeilenweise artikel;
+                    //Wert 1 = Artikelnummer
+                    //Wert 2 = Bezeichnung
+                    //Wert 3 = Lieferant
+    QString querryfilter;
+    querryfilter += PARAM_ARTIKEL_ID;
+    querryfilter += " LIKE \'";
+    querryfilter += idbuffer;
+    querryfilter += "\'";
+    artikel.zeile_anhaengen(dbeigen->get_values_from_column(TABNAME_ARTIKEL, 1, querryfilter).get_text());//Nr
+    artikel.zeile_anhaengen(dbeigen->get_values_from_column(TABNAME_ARTIKEL, 2, querryfilter).get_text());//Bez
+    artikel.zeile_anhaengen(dbeigen->get_values_from_column(TABNAME_ARTIKEL, 3, querryfilter).get_text());//Lieferant
+
+    Dialog_artikel *d = new Dialog_artikel;
+    d->set_db(dbeigen);
+    d->setup();
+    d->set_data(artikel, idbuffer);
+    connect(d, SIGNAL(signal_send_data(text_zeilenweise, QString)),  \
+            this, SLOT(slot_edit(text_zeilenweise, QString))          );
+    connect(d, SIGNAL(signal_cancel()), this, SLOT(slot_edit_dialog_cancel()));
+
+    dbeigen->data_edit(TABNAME_ARTIKEL, PARAM_ARTIKEL_BLOCK, user, idbuffer);
+    d->exec();
+    delete d;
+}
+
+void Form_artikel::slot_edit_dialog_cancel()
+{
+    dbeigen->data_edit(TABNAME_ARTIKEL, PARAM_ARTIKEL_BLOCK, USER_NOBODY, idbuffer);
+}
+
 void Form_artikel::slot_edit(text_zeilenweise data, QString id)
 {
     //data:
     //  Wert 1 = Artikelnummer
     //  Wert 2 = Bezeichnung
     //  Wert 3 = Lieferant
-    bool ok = true;
 
-    ok = dbeigen->data_edit(TABNAME_ARTIKEL, PARAM_ARTIKEL_NR, data.zeile(1), id);
-    if(ok == true)
+    QString blockfromuser = dbeigen->get_data_qstring(TABNAME_ARTIKEL, PARAM_ARTIKEL_BLOCK, idbuffer);
+    QString lasteditinguser = dbeigen->get_data_qstring(TABNAME_ARTIKEL, PARAM_ARTIKEL_BEARBEITER, idbuffer);
+    if(blockfromuser != user)
     {
-        ok = dbeigen->data_edit(TABNAME_ARTIKEL, PARAM_ARTIKEL_BEZ, data.zeile(2), id);
-    }
-    if(ok == true)
+        if(blockfromuser == USER_NOBODY)
+        {
+            QString msg;
+            msg += "Die Aenderungen konnten nicht gespeichert werden, da der Nutzer \"";
+            msg += lasteditinguser;
+            msg += "\" zwischenzeitlich den Datensatz bearbeitet hat!";
+            QMessageBox mb;
+            mb.setText(msg);
+            mb.exec();
+        }else
+        {
+            QString msg;
+            msg += "Die Aenderungen konnten nicht gespeichert werden, da der Nutzer \"";
+            msg += blockfromuser;
+            msg += "\" den Datensatz derzeit bearbeitet!";
+            QMessageBox mb;
+            mb.setText(msg);
+            mb.exec();
+        }
+
+    }else
     {
-        ok = dbeigen->data_edit(TABNAME_ARTIKEL, PARAM_ARTIKEL_LIEFERANT, data.zeile(3), id);
-    }
-    if(ok == true)
-    {
-        ok = dbeigen->data_edit(TABNAME_ARTIKEL, PARAM_ARTIKEL_BEARBEITER, user, id);
-    }
-    if(ok == true)
-    {
+        text_zeilenweise param, values;
         datum today;
-        ok = dbeigen->data_edit(TABNAME_ARTIKEL, PARAM_ARTIKEL_DATBEARB, today.get_today_y_m_d(), id);
+
+        param.zeile_anhaengen(PARAM_ARTIKEL_NR);
+        param.zeile_anhaengen(PARAM_ARTIKEL_BEZ);
+        param.zeile_anhaengen(PARAM_ARTIKEL_LIEFERANT);
+        param.zeile_anhaengen(PARAM_ARTIKEL_BEARBEITER);
+        param.zeile_anhaengen(PARAM_ARTIKEL_DATBEARB);
+        param.zeile_anhaengen(PARAM_ARTIKEL_BLOCK);
+
+        values.zeile_anhaengen(data.zeile(1));
+        values.zeile_anhaengen(data.zeile(2));
+        values.zeile_anhaengen(data.zeile(3));
+        values.zeile_anhaengen(user);
+        values.zeile_anhaengen(today.get_today_y_m_d());
+        values.zeile_anhaengen(USER_NOBODY);
+
+        dbeigen->data_edit(TABNAME_ARTIKEL, param, values, id);
     }
     update_table();
 }

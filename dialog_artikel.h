@@ -28,6 +28,7 @@ public:
 signals:
     void signal_send_data(text_zeilenweise data);
     void signal_send_data(text_zeilenweise data, QString id);
+    void signal_cancel();
 
 private slots:
     void on_pushButton_cancel_clicked();

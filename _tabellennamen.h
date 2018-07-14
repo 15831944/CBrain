@@ -1,6 +1,7 @@
 #ifndef _TABELLENNAMEN_H
 #define _TABELLENNAMEN_H
 
+#define USER_NOBODY                 "nobody"
 
 #define TABNAME_ARTIKEL             "Artikel"
 #define PARAM_ARTIKEL_ID            "id"                //Wert 0
@@ -12,6 +13,8 @@
 #define PARAM_ARTIKEL_DATERST       "Erfassung"         //Wert 6    //Datum der Erfassung/Erstellung
 #define PARAM_ARTIKEL_BEARBEITER    "Bearbeiter"        //Wert 7
 #define PARAM_ARTIKEL_DATBEARB      "Bearbeitung"       //Wert 8    //Datum der letzten Bearbeitung
+#define PARAM_ARTIKEL_BLOCK         "blockiert"         //Wert 9    //Datensatz wurde vom eingetragenen Nutzer
+                                                                    //zur Bearbeitung geöffnen
 
 #define TABNAME_LIEFERANTEN         "Lieferanten"
 #define PARAM_LIEFERANT_ID          "id"                //Wert 0
