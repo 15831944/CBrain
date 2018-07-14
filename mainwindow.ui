@@ -50,12 +50,21 @@
      <string>Module</string>
     </property>
     <addaction name="actionKeinModul"/>
-    <addaction name="actionTabelleneditor"/>
     <addaction name="actionModulArtikel"/>
+    <addaction name="actionModulLieferanten"/>
+    <addaction name="actionModulLager"/>
+   </widget>
+   <widget class="QMenu" name="menuModule_Admin">
+    <property name="title">
+     <string>Module Admin</string>
+    </property>
+    <addaction name="actionTabelleneditor"/>
+    <addaction name="actionModulBackup"/>
    </widget>
    <addaction name="menuEinstellungen"/>
    <addaction name="menuExtras"/>
    <addaction name="menuModule"/>
+   <addaction name="menuModule_Admin"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -115,6 +124,21 @@
   <action name="actionModulArtikel">
    <property name="text">
     <string>Artikel</string>
+   </property>
+  </action>
+  <action name="actionModulLieferanten">
+   <property name="text">
+    <string>Lieferanten</string>
+   </property>
+  </action>
+  <action name="actionModulLager">
+   <property name="text">
+    <string>Lager</string>
+   </property>
+  </action>
+  <action name="actionModulBackup">
+   <property name="text">
+    <string>Backup</string>
    </property>
   </action>
  </widget>

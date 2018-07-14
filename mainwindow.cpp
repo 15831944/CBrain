@@ -27,6 +27,9 @@ void MainWindow::clear()
     modul_kein      = false;
     modul_tabedit   = false;
     modul_artikel   = false;
+    modul_lieferanten = false;
+    modul_lager     = false;
+    modul_backup    = false;
 }
 
 bool MainWindow::setup()
@@ -206,19 +209,21 @@ void MainWindow::slot_login(QString user, QString pwd)
         {
             ui_rechte_nobody();
         }
-        chande_windowtitle();
+        change_windowtitle();
         widget_artikel.set_user(u.get_current_user());
         //Rechte für Module setzen:
         ui_rechte_modul_artikel(  u.modul_artikel()  );
+        ui_rechte_modul_lieferanten(  u.modul_lieferanten()  );
+        ui_rechte_modul_lager(  u.modul_lager()  );
     }else
     {
         ui_rechte_nobody();
         //this->setWindowTitle(  "CBrain / Nobody / " + dbeigen.get_dbname()  );
-        chande_windowtitle();
+        change_windowtitle();
     }
 }
 
-void MainWindow::chande_windowtitle()
+void MainWindow::change_windowtitle()
 {
     QString title;
     title += "CBrain";
@@ -359,7 +364,7 @@ void MainWindow::change_modul(QString modul)
             widget_artikel.hide();
         }
     }
-    chande_windowtitle();
+    change_windowtitle();
 }
 
 //-----------------------------------------------UI den Rechten entsprechend anpassen:
@@ -371,6 +376,11 @@ void MainWindow::ui_rechte_nobody()
     ui->actionTestfunktion->setDisabled(true);
     //ui->actionKeinModul->setDisabled(true);
     ui->actionTabelleneditor->setDisabled(true);
+    ui->actionModulBackup->setDisabled(true);
+
+    ui->actionModulArtikel->setDisabled(true);
+    ui->actionModulLieferanten->setDisabled(true);
+    ui->actionModulLager->setDisabled(true);
 }
 
 void MainWindow::ui_rechte_admin()
@@ -381,6 +391,9 @@ void MainWindow::ui_rechte_admin()
     ui->actionTestfunktion->setEnabled(true);
     //ui->actionKeinModul->setEnabled(true);
     ui->actionTabelleneditor->setEnabled(true);
+    ui->actionModulBackup->setEnabled(true);
+
+    //Die Rechte der nicht-Admin-Module werden separat gesteuert
 }
 
 void MainWindow::ui_rechte_modul_artikel(bool hat_rechte)
@@ -394,6 +407,27 @@ void MainWindow::ui_rechte_modul_artikel(bool hat_rechte)
     }
 }
 
+void MainWindow::ui_rechte_modul_lieferanten(bool hat_rechte)
+{
+    if(hat_rechte == true)
+    {
+        ui->actionModulLieferanten->setEnabled(true);
+    }else
+    {
+        ui->actionModulLieferanten->setDisabled(true);
+    }
+}
+
+void MainWindow::ui_rechte_modul_lager(bool hat_rechte)
+{
+    if(hat_rechte == true)
+    {
+        ui->actionModulLager->setEnabled(true);
+    }else
+    {
+        ui->actionModulLager->setDisabled(true);
+    }
+}
 //-----------------------------------------------Testfunktion:
 void MainWindow::on_actionTestfunktion_triggered()
 {

@@ -32,17 +32,17 @@
      <x>150</x>
      <y>50</y>
      <width>265</width>
-     <height>151</height>
+     <height>231</height>
     </rect>
    </property>
    <layout class="QGridLayout" name="gridLayout">
-    <item row="1" column="1">
-     <widget class="QLineEdit" name="lineEdit_pwd"/>
+    <item row="0" column="1">
+     <widget class="QLineEdit" name="lineEdit_name"/>
     </item>
-    <item row="2" column="0" colspan="2">
-     <widget class="QCheckBox" name="checkBox_isadmin">
+    <item row="3" column="0" colspan="2">
+     <widget class="QCheckBox" name="checkBox_modul_artikel">
       <property name="text">
-       <string>hat Administrator-Rechte</string>
+       <string>Zugang zu Modul Artikel</string>
       </property>
      </widget>
     </item>
@@ -60,13 +60,27 @@
       </property>
      </widget>
     </item>
-    <item row="0" column="1">
-     <widget class="QLineEdit" name="lineEdit_name"/>
+    <item row="1" column="1">
+     <widget class="QLineEdit" name="lineEdit_pwd"/>
     </item>
-    <item row="3" column="0" colspan="2">
-     <widget class="QCheckBox" name="checkBox_modul_artikel">
+    <item row="2" column="0" colspan="2">
+     <widget class="QCheckBox" name="checkBox_isadmin">
       <property name="text">
-       <string>Zugang zu Bereich Artikel</string>
+       <string>hat Administrator-Rechte</string>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="0" colspan="2">
+     <widget class="QCheckBox" name="checkBox_modul_lieferanten">
+      <property name="text">
+       <string>Zugang zu Modul Lieferanten</string>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="0" colspan="2">
+     <widget class="QCheckBox" name="checkBox_modul_lager">
+      <property name="text">
+       <string>Zugang zu Modul Lager</string>
       </property>
      </widget>
     </item>
@@ -130,10 +144,13 @@
   <tabstop>lineEdit_name</tabstop>
   <tabstop>lineEdit_pwd</tabstop>
   <tabstop>checkBox_isadmin</tabstop>
+  <tabstop>checkBox_modul_artikel</tabstop>
+  <tabstop>checkBox_modul_lieferanten</tabstop>
+  <tabstop>checkBox_modul_lager</tabstop>
   <tabstop>pushButton_ok</tabstop>
   <tabstop>pushButton_cancel</tabstop>
-  <tabstop>pushButton_newuser</tabstop>
   <tabstop>pushButton_deleteuser</tabstop>
+  <tabstop>pushButton_newuser</tabstop>
  </tabstops>
  <resources/>
  <connections/>
