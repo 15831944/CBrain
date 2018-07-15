@@ -1,21 +1,21 @@
-#include "form_artikel.h"
-#include "ui_form_artikel.h"
+#include "form_lieferanten.h"
+#include "ui_form_lieferanten.h"
 
-Form_artikel::Form_artikel(QWidget *parent) :
+Form_lieferanten::Form_lieferanten(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::Form_artikel)
+    ui(new Ui::Form_lieferanten)
 {
     ui->setupUi(this);
     this->model = new QSqlQueryModel();
 }
 
-Form_artikel::~Form_artikel()
+Form_lieferanten::~Form_lieferanten()
 {
     delete ui;
     delete model;
 }
 
-void Form_artikel::resizeEvent(QResizeEvent *event)
+void Form_lieferanten::resizeEvent(QResizeEvent *event)
 {
     int hoehe = this->geometry().height();
     int breite = this->geometry().width();
@@ -52,23 +52,23 @@ void Form_artikel::resizeEvent(QResizeEvent *event)
     QWidget::resizeEvent(event);
 }
 
-void Form_artikel::set_db(cbrainbatabase *new_db)
+void Form_lieferanten::set_db(cbrainbatabase *new_db)
 {
     dbeigen = new_db;
 }
 
-void Form_artikel::set_user(QString u)
+void Form_lieferanten::set_user(QString u)
 {
     user = u;
 }
 
-void Form_artikel::show()
+void Form_lieferanten::show()
 {
     update_table();
     setVisible(true);
 }
 
-void Form_artikel::update_table()
+void Form_lieferanten::update_table()
 {
     //-------------------------------------------
     {
@@ -85,32 +85,26 @@ void Form_artikel::update_table()
             QSqlQuery q(db);
             QString cmd;
             cmd += "SELECT ";
-            cmd += PARAM_ARTIKEL_NR;
+            cmd += PARAM_LIEFERANT_NAME;
             cmd += ", ";
-            cmd += PARAM_ARTIKEL_BEZ;
+            cmd += PARAM_LIEFERANT_ERSTELLER;
             cmd += ", ";
-            cmd += PARAM_ARTIKEL_LIEFERANT;
+            cmd += PARAM_LIEFERANT_DATERST;
             cmd += ", ";
-            cmd += PARAM_ARTIKEL_LAGERSTAND;
+            cmd += PARAM_LIEFERANT_BEARBEITER;
             cmd += ", ";
-            cmd += PARAM_ARTIKEL_ERSTELLER;
-            cmd += ", ";
-            cmd += PARAM_ARTIKEL_DATERST;
-            cmd += ", ";
-            cmd += PARAM_ARTIKEL_BEARBEITER;
-            cmd += ", ";
-            cmd += PARAM_ARTIKEL_DATBEARB;
+            cmd += PARAM_LIEFERANT_DATBEARB;
             cmd += " FROM ";
-            cmd += TABNAME_ARTIKEL;
+            cmd += TABNAME_LIEFERANTEN;
             if(!ui->lineEdit_suche->text().isEmpty())
             {
                 cmd += " WHERE ";
-                cmd += PARAM_ARTIKEL_NR;
+                cmd += PARAM_LIEFERANT_ID;
                 cmd += " LIKE \'%";
                 cmd += ui->lineEdit_suche->text();
                 cmd += "%\'";
                 cmd += " OR ";
-                cmd += PARAM_ARTIKEL_BEZ;
+                cmd += PARAM_LIEFERANT_NAME;
                 cmd += " LIKE \'%";
                 cmd += ui->lineEdit_suche->text();
                 cmd += "%\'";
@@ -123,7 +117,7 @@ void Form_artikel::update_table()
 
                 QString msg;
                 msg += int_to_qstring(model->rowCount());
-                msg += " Artikel:";
+                msg += " Lieferanten:";
                 ui->label_suche->setText(msg);
 
             }else
@@ -144,24 +138,22 @@ void Form_artikel::update_table()
     //-------------------------------------------
 }
 
-void Form_artikel::on_lineEdit_suche_textChanged()
+void Form_lieferanten::on_lineEdit_suche_textChanged()
 {
     update_table();
 }
 
 //------------------------------------Buttons:
-void Form_artikel::on_pushButton_new_clicked()
+void Form_lieferanten::on_pushButton_new_clicked()
 {
-    Dialog_artikel *d = new Dialog_artikel;
-    d->set_db(dbeigen);
-    d->setup();
+    Dialog_lieferanten *d = new Dialog_lieferanten;
     connect(d, SIGNAL(signal_send_data(text_zeilenweise)),  \
             this, SLOT(slot_new(text_zeilenweise))          );
     d->exec();
     delete d;
 }
 
-void Form_artikel::on_pushButton_del_clicked()
+void Form_lieferanten::on_pushButton_del_clicked()
 {
     text_zeilenweise tz;
     text_zeilenweise ids;
@@ -180,16 +172,11 @@ void Form_artikel::on_pushButton_del_clicked()
             QSqlQuery q(db);
             QString cmd;
             cmd += "SELECT * FROM ";
-            cmd += TABNAME_ARTIKEL;
+            cmd += TABNAME_LIEFERANTEN;
             if(!ui->lineEdit_suche->text().isEmpty())
             {
                 cmd += " WHERE ";
-                cmd += PARAM_ARTIKEL_NR;
-                cmd += " LIKE \'%";
-                cmd += ui->lineEdit_suche->text();
-                cmd += "%\'";
-                cmd += " OR ";
-                cmd += PARAM_ARTIKEL_BEZ;
+                cmd += PARAM_LIEFERANT_NAME;
                 cmd += " LIKE \'%";
                 cmd += ui->lineEdit_suche->text();
                 cmd += "%\'";
@@ -202,9 +189,7 @@ void Form_artikel::on_pushButton_del_clicked()
                     ids.zeile_anhaengen(q.value(0).toString()); //ID
 
                     QString tmp;
-                    tmp += q.value(1).toString();   //Artikelnummer
-                    tmp += " ||| ";
-                    tmp += q.value(2).toString();   //Bezeichnung
+                    tmp += q.value(1).toString();   //Name
                     tz.zeile_anhaengen(tmp);
                 }
             }else
@@ -225,14 +210,14 @@ void Form_artikel::on_pushButton_del_clicked()
     //-------------------------------------------
     Dialog_dataselection *d = new Dialog_dataselection;
     d->set_data(tz, ids);
-    d->setWindowTitle("Artikel loeschen");
+    d->setWindowTitle("Lieferant loeschen");
     connect(d, SIGNAL(signal_send_selection(text_zeilenweise)), \
             this, SLOT(slot_delete(text_zeilenweise))           );
     d->exec();
     delete d;
 }
 
-void Form_artikel::on_pushButton_edit_clicked()
+void Form_lieferanten::on_pushButton_edit_clicked()
 {
     text_zeilenweise tz;
     text_zeilenweise ids;
@@ -251,16 +236,11 @@ void Form_artikel::on_pushButton_edit_clicked()
             QSqlQuery q(db);
             QString cmd;
             cmd += "SELECT * FROM ";
-            cmd += TABNAME_ARTIKEL;
+            cmd += TABNAME_LIEFERANTEN;
             if(!ui->lineEdit_suche->text().isEmpty())
             {
                 cmd += " WHERE ";
-                cmd += PARAM_ARTIKEL_NR;
-                cmd += " LIKE \'%";
-                cmd += ui->lineEdit_suche->text();
-                cmd += "%\'";
-                cmd += " OR ";
-                cmd += PARAM_ARTIKEL_BEZ;
+                cmd += PARAM_LIEFERANT_NAME;
                 cmd += " LIKE \'%";
                 cmd += ui->lineEdit_suche->text();
                 cmd += "%\'";
@@ -273,9 +253,7 @@ void Form_artikel::on_pushButton_edit_clicked()
                     ids.zeile_anhaengen(q.value(0).toString()); //ID
 
                     QString tmp;
-                    tmp += q.value(1).toString();   //Artikelnummer
-                    tmp += " ||| ";
-                    tmp += q.value(2).toString();   //Bezeichnung
+                    tmp += q.value(1).toString();   //Name
                     tz.zeile_anhaengen(tmp);
                 }
             }else
@@ -301,74 +279,63 @@ void Form_artikel::on_pushButton_edit_clicked()
     {
         Dialog_dataselection *d = new Dialog_dataselection;
         d->set_data(tz, ids);
-        d->setWindowTitle("Artikel bearbeiten (nur einen)");
+        d->setWindowTitle("Lieferant bearbeiten (nur einen)");
         connect(d, SIGNAL(signal_send_selection(text_zeilenweise)), \
                 this, SLOT(slot_edit_dialog(text_zeilenweise))      );
         d->exec();
         delete d;
     }
 }
+
 //------------------------------------slots:
-void Form_artikel::slot_new(text_zeilenweise data)
+void Form_lieferanten::slot_new(text_zeilenweise data)
 {
     text_zeilenweise param, values;
 
-    param.zeile_anhaengen(PARAM_ARTIKEL_NR);
-    param.zeile_anhaengen(PARAM_ARTIKEL_BEZ);
-    param.zeile_anhaengen(PARAM_ARTIKEL_LIEFERANT);
-    param.zeile_anhaengen(PARAM_ARTIKEL_LAGERSTAND);
+    param.zeile_anhaengen(PARAM_LIEFERANT_NAME);
     param.zeile_anhaengen(PARAM_ARTIKEL_ERSTELLER);
     param.zeile_anhaengen(PARAM_ARTIKEL_DATERST);
 
     values.zeile_anhaengen(data.zeile(1));
-    values.zeile_anhaengen(data.zeile(2));
-    values.zeile_anhaengen(data.zeile(3));
-    values.zeile_anhaengen("0");
     values.zeile_anhaengen(user);
     datum heute;
     values.zeile_anhaengen(heute.get_today_y_m_d());
 
-    dbeigen->data_new(TABNAME_ARTIKEL, param, values);
+    dbeigen->data_new(TABNAME_LIEFERANTEN, param, values);
     update_table();
 }
 
-void Form_artikel::slot_delete(text_zeilenweise ids)
+void Form_lieferanten::slot_delete(text_zeilenweise ids)
 {
-    dbeigen->data_del(TABNAME_ARTIKEL, ids);
+    dbeigen->data_del(TABNAME_LIEFERANTEN, ids);
     update_table();
 }
 
-void Form_artikel::slot_edit_dialog(text_zeilenweise ids)
+void Form_lieferanten::slot_edit_dialog(text_zeilenweise ids)
 {
     if(ids.zeilenanzahl() == 1)
     {
         idbuffer = ids.zeile(1);
-        QString blockfromuser = dbeigen->get_data_qstring(TABNAME_ARTIKEL, PARAM_ARTIKEL_BLOCK, idbuffer);
+        QString blockfromuser = dbeigen->get_data_qstring(TABNAME_LIEFERANTEN, PARAM_LIEFERANT_BLOCK, idbuffer);
         if(blockfromuser == USER_NOBODY || blockfromuser.isEmpty())
         {
-            text_zeilenweise artikel;
-                            //Wert 1 = Artikelnummer
-                            //Wert 2 = Bezeichnung
-                            //Wert 3 = Lieferant
+            text_zeilenweise lieferant;
+                            //Wert 1 = Name
             QString querryfilter;
-            querryfilter += PARAM_ARTIKEL_ID;
+            querryfilter += PARAM_LIEFERANT_ID;
             querryfilter += " LIKE \'";
             querryfilter += idbuffer;
             querryfilter += "\'";
-            artikel.zeile_anhaengen(dbeigen->get_values_from_column(TABNAME_ARTIKEL, 1, querryfilter).get_text());//Nr
-            artikel.zeile_anhaengen(dbeigen->get_values_from_column(TABNAME_ARTIKEL, 2, querryfilter).get_text());//Bez
-            artikel.zeile_anhaengen(dbeigen->get_values_from_column(TABNAME_ARTIKEL, 3, querryfilter).get_text());//Lieferant
+            lieferant.zeile_anhaengen(dbeigen->get_values_from_column(TABNAME_LIEFERANTEN, 1, querryfilter).get_text());//Name
 
 
-            Dialog_artikel *d = new Dialog_artikel;
-            d->set_db(dbeigen);
-            d->setup();
-            d->set_data(artikel, idbuffer);
+            Dialog_lieferanten *d = new Dialog_lieferanten;
+            d->set_data(lieferant, idbuffer);
             connect(d, SIGNAL(signal_send_data(text_zeilenweise, QString)),  \
                     this, SLOT(slot_edit(text_zeilenweise, QString))          );
             connect(d, SIGNAL(signal_cancel()), this, SLOT(slot_edit_dialog_cancel()));
 
-            dbeigen->data_edit(TABNAME_ARTIKEL, PARAM_ARTIKEL_BLOCK, user, idbuffer);
+            dbeigen->data_edit(TABNAME_LIEFERANTEN, PARAM_LIEFERANT_BLOCK, user, idbuffer);
             d->exec();
             delete d;
         }else
@@ -387,57 +354,48 @@ void Form_artikel::slot_edit_dialog(text_zeilenweise ids)
             d->exec();
             delete d;
         }
-
     }else
     {
         QMessageBox mb;
-        mb.setText("Bitte nur einen Artikel zum Bearbeiten auswaelen!");
+        mb.setText("Bitte nur einen Lieferanten zum Bearbeiten auswaelen!");
         mb.exec();
     }
 }
 
-void Form_artikel::slot_edit_dialog()
+void Form_lieferanten::slot_edit_dialog()
 {
-    text_zeilenweise artikel;
-                    //Wert 1 = Artikelnummer
-                    //Wert 2 = Bezeichnung
-                    //Wert 3 = Lieferant
+    text_zeilenweise lieferant;
+                    //Wert 1 = Name
     QString querryfilter;
-    querryfilter += PARAM_ARTIKEL_ID;
+    querryfilter += PARAM_LIEFERANT_ID;
     querryfilter += " LIKE \'";
     querryfilter += idbuffer;
     querryfilter += "\'";
-    artikel.zeile_anhaengen(dbeigen->get_values_from_column(TABNAME_ARTIKEL, 1, querryfilter).get_text());//Nr
-    artikel.zeile_anhaengen(dbeigen->get_values_from_column(TABNAME_ARTIKEL, 2, querryfilter).get_text());//Bez
-    artikel.zeile_anhaengen(dbeigen->get_values_from_column(TABNAME_ARTIKEL, 3, querryfilter).get_text());//Lieferant
+    lieferant.zeile_anhaengen(dbeigen->get_values_from_column(TABNAME_LIEFERANTEN, 1, querryfilter).get_text());//Name
 
-    Dialog_artikel *d = new Dialog_artikel;
-    d->set_db(dbeigen);
-    d->setup();
-    d->set_data(artikel, idbuffer);
+    Dialog_lieferanten *d = new Dialog_lieferanten;
+    d->set_data(lieferant, idbuffer);
     connect(d, SIGNAL(signal_send_data(text_zeilenweise, QString)),  \
             this, SLOT(slot_edit(text_zeilenweise, QString))          );
     connect(d, SIGNAL(signal_cancel()), this, SLOT(slot_edit_dialog_cancel()));
 
-    dbeigen->data_edit(TABNAME_ARTIKEL, PARAM_ARTIKEL_BLOCK, user, idbuffer);
+    dbeigen->data_edit(TABNAME_LIEFERANTEN, PARAM_LIEFERANT_BLOCK, user, idbuffer);
     d->exec();
     delete d;
 }
 
-void Form_artikel::slot_edit_dialog_cancel()
+void Form_lieferanten::slot_edit_dialog_cancel()
 {
-    dbeigen->data_edit(TABNAME_ARTIKEL, PARAM_ARTIKEL_BLOCK, USER_NOBODY, idbuffer);
+    dbeigen->data_edit(TABNAME_LIEFERANTEN, PARAM_LIEFERANT_BLOCK, USER_NOBODY, idbuffer);
 }
 
-void Form_artikel::slot_edit(text_zeilenweise data, QString id)
+void Form_lieferanten::slot_edit(text_zeilenweise data, QString id)
 {
     //data:
-    //  Wert 1 = Artikelnummer
-    //  Wert 2 = Bezeichnung
-    //  Wert 3 = Lieferant
+    //  Wert 1 = Name
 
-    QString blockfromuser = dbeigen->get_data_qstring(TABNAME_ARTIKEL, PARAM_ARTIKEL_BLOCK, idbuffer);
-    QString lasteditinguser = dbeigen->get_data_qstring(TABNAME_ARTIKEL, PARAM_ARTIKEL_BEARBEITER, idbuffer);
+    QString blockfromuser = dbeigen->get_data_qstring(TABNAME_LIEFERANTEN, PARAM_LIEFERANT_BLOCK, idbuffer);
+    QString lasteditinguser = dbeigen->get_data_qstring(TABNAME_LIEFERANTEN, PARAM_LIEFERANT_BEARBEITER, idbuffer);
     if(blockfromuser != user)
     {
         if(blockfromuser == USER_NOBODY)
@@ -465,23 +423,20 @@ void Form_artikel::slot_edit(text_zeilenweise data, QString id)
         text_zeilenweise param, values;
         datum today;
 
-        param.zeile_anhaengen(PARAM_ARTIKEL_NR);
-        param.zeile_anhaengen(PARAM_ARTIKEL_BEZ);
-        param.zeile_anhaengen(PARAM_ARTIKEL_LIEFERANT);
-        param.zeile_anhaengen(PARAM_ARTIKEL_BEARBEITER);
-        param.zeile_anhaengen(PARAM_ARTIKEL_DATBEARB);
-        param.zeile_anhaengen(PARAM_ARTIKEL_BLOCK);
+        param.zeile_anhaengen(PARAM_LIEFERANT_NAME);
+        param.zeile_anhaengen(PARAM_LIEFERANT_BEARBEITER);
+        param.zeile_anhaengen(PARAM_LIEFERANT_DATBEARB);
+        param.zeile_anhaengen(PARAM_LIEFERANT_BLOCK);
 
         values.zeile_anhaengen(data.zeile(1));
-        values.zeile_anhaengen(data.zeile(2));
-        values.zeile_anhaengen(data.zeile(3));
         values.zeile_anhaengen(user);
         values.zeile_anhaengen(today.get_today_y_m_d());
         values.zeile_anhaengen(USER_NOBODY);
 
-        dbeigen->data_edit(TABNAME_ARTIKEL, param, values, id);
+        dbeigen->data_edit(TABNAME_LIEFERANTEN, param, values, id);
     }
     update_table();
 }
 
 //------------------------------------
+

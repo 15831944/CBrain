@@ -15,6 +15,7 @@
 
 #include "form_tableeditor.h"
 #include "form_artikel.h"
+#include "form_lieferanten.h"
 
 #include "defines_filenames.h"
 #include "users.h"
@@ -56,6 +57,9 @@ private slots:
     void on_actionTabelleneditor_triggered();
     void on_actionKeinModul_triggered();
     void on_actionModulArtikel_triggered();
+    void on_actionModulLieferanten_triggered();
+    void on_actionModulLager_triggered();
+    void on_actionModulBackup_triggered();
 
 private:
     Ui::MainWindow *ui;
@@ -80,7 +84,7 @@ private:
     //eigene Widgets:
     Form_tableeditor    widget_tableeditor;
     Form_artikel        widget_artikel;
-    //widget_lieferanten
+    Form_lieferanten    widget_lieferanten;
     //widget_lager
     //widget_backup
 

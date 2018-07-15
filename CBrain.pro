@@ -31,7 +31,9 @@ SOURCES += main.cpp\
     dialog_artikel.cpp \
     dialog_dataselection.cpp \
     text.cpp \
-    datum.cpp
+    datum.cpp \
+    form_lieferanten.cpp \
+    dialog_lieferanten.cpp
 
 HEADERS  += mainwindow.h \
     defines_filenames.h \
@@ -53,7 +55,9 @@ HEADERS  += mainwindow.h \
     _tabellennamen.h \
     dialog_dataselection.h \
     text.h \
-    datum.h
+    datum.h \
+    form_lieferanten.h \
+    dialog_lieferanten.h
 
 FORMS    += mainwindow.ui \
     dialog_login.ui \
@@ -65,4 +69,6 @@ FORMS    += mainwindow.ui \
     dialog_tableparam.ui \
     form_artikel.ui \
     dialog_artikel.ui \
-    dialog_dataselection.ui
+    dialog_dataselection.ui \
+    form_lieferanten.ui \
+    dialog_lieferanten.ui

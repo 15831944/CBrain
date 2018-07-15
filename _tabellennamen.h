@@ -19,6 +19,12 @@
 #define TABNAME_LIEFERANTEN         "Lieferanten"
 #define PARAM_LIEFERANT_ID          "id"                //Wert 0
 #define PARAM_LIEFERANT_NAME        "Name"              //Wert 1
+#define PARAM_LIEFERANT_ERSTELLER   "Ersteller"         //Wert 3
+#define PARAM_LIEFERANT_DATERST     "Erfassung"         //Wert 4    //Datum der Erfassung/Erstellung
+#define PARAM_LIEFERANT_BEARBEITER  "Bearbeiter"        //Wert 5
+#define PARAM_LIEFERANT_DATBEARB    "Bearbeitung"       //Wert 6    //Datum der letzten Bearbeitung
+#define PARAM_LIEFERANT_BLOCK       "blockiert"         //Wert 7    //Datensatz wurde vom eingetragenen Nutzer
+                                                                    //zur Bearbeitung geöffnen
 
 #define TABNAME_RESERV              "Reservierungen"
 #define PARAM_RESERV_ID             "id"                //Wert 0
