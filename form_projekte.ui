@@ -1,49 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Form_artikel</class>
- <widget class="QWidget" name="Form_artikel">
+ <class>Form_projekte</class>
+ <widget class="QWidget" name="Form_projekte">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>670</width>
-    <height>300</height>
+    <width>669</width>
+    <height>288</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <widget class="QTableView" name="tableView">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>40</y>
-     <width>651</width>
-     <height>251</height>
-    </rect>
-   </property>
-   <property name="dragEnabled">
-    <bool>true</bool>
-   </property>
-   <property name="alternatingRowColors">
-    <bool>true</bool>
-   </property>
-  </widget>
   <widget class="QLineEdit" name="lineEdit_suche">
    <property name="geometry">
     <rect>
      <x>462</x>
-     <y>10</y>
+     <y>0</y>
      <width>201</width>
      <height>23</height>
     </rect>
    </property>
   </widget>
+  <widget class="QLabel" name="label_suche">
+   <property name="geometry">
+    <rect>
+     <x>380</x>
+     <y>0</y>
+     <width>81</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>xxx Projekte:</string>
+   </property>
+  </widget>
   <widget class="QPushButton" name="pushButton_new">
    <property name="geometry">
     <rect>
-     <x>10</x>
-     <y>10</y>
+     <x>0</x>
+     <y>0</y>
      <width>85</width>
      <height>26</height>
     </rect>
@@ -56,7 +53,7 @@
    <property name="geometry">
     <rect>
      <x>100</x>
-     <y>10</y>
+     <y>0</y>
      <width>85</width>
      <height>26</height>
     </rect>
@@ -69,7 +66,7 @@
    <property name="geometry">
     <rect>
      <x>200</x>
-     <y>10</y>
+     <y>0</y>
      <width>85</width>
      <height>26</height>
     </rect>
@@ -78,17 +75,20 @@
     <string>edit</string>
    </property>
   </widget>
-  <widget class="QLabel" name="label_suche">
+  <widget class="QTableView" name="tableView">
    <property name="geometry">
     <rect>
-     <x>390</x>
-     <y>10</y>
-     <width>71</width>
-     <height>20</height>
+     <x>10</x>
+     <y>30</y>
+     <width>651</width>
+     <height>251</height>
     </rect>
    </property>
-   <property name="text">
-    <string>xxx Artikel:</string>
+   <property name="dragEnabled">
+    <bool>true</bool>
+   </property>
+   <property name="alternatingRowColors">
+    <bool>true</bool>
    </property>
   </widget>
  </widget>

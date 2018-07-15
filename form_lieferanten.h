@@ -1,27 +1,27 @@
-#ifndef FORM_ARTIKEL_H
-#define FORM_ARTIKEL_H
+#ifndef FORM_LIEFERANTEN_H
+#define FORM_LIEFERANTEN_H
 
 #include <QWidget>
 
 #include "cbrainbatabase.h"
 #include "_tabellennamen.h"
-#include "dialog_artikel.h"
 #include "dialog_dataselection.h"
 #include "text.h"
 #include "datum.h"
 #include "dialog_yes_no.h"
+#include "dialog_lieferanten.h"
 
 namespace Ui {
-class Form_artikel;
+class Form_lieferanten;
 }
 
-class Form_artikel : public QWidget
+class Form_lieferanten : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit Form_artikel(QWidget *parent = 0);
-    ~Form_artikel();
+    explicit Form_lieferanten(QWidget *parent = 0);
+    ~Form_lieferanten();
 
     void set_db(cbrainbatabase *new_db);
     void set_user(QString u);
@@ -40,12 +40,12 @@ protected:
 
 private slots:
     void on_pushButton_new_clicked();
-    void on_lineEdit_suche_textChanged();
     void on_pushButton_del_clicked();
     void on_pushButton_edit_clicked();
+    void on_lineEdit_suche_textChanged();
 
 private:
-    Ui::Form_artikel *ui;
+    Ui::Form_lieferanten *ui;
 
     cbrainbatabase *dbeigen;
     QSqlQueryModel *model;
@@ -57,4 +57,4 @@ private:
     void update_table();
 };
 
-#endif // FORM_ARTIKEL_H
+#endif // FORM_LIEFERANTEN_H

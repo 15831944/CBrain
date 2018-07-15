@@ -97,8 +97,9 @@ public:
     bool data_new(QString tablename, text_zeilenweise param, text_zeilenweise values);
     bool data_del(QString tablename, text_zeilenweise ids);
     bool data_edit(QString tablename, QString param, QString value, QString id);
+    bool data_edit(QString tablename, text_zeilenweise param, text_zeilenweise value, QString id);
     //----------------
-
+    QString get_data_qstring(QString tablename, QString param, QString id);
     //------------------------------------------
     //-------------------------------values:
     text_zeilenweise get_values_from_column(QString tablename, int column, QString querryfilter);

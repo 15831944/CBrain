@@ -22,7 +22,6 @@ signals:
 
 private slots:
     void on_pushButton_yes_clicked();
-
     void on_pushButton_no_clicked();
 
 private:

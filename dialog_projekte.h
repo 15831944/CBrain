@@ -1,5 +1,5 @@
-#ifndef DIALOG_ARTIKEL_H
-#define DIALOG_ARTIKEL_H
+#ifndef DIALOG_PROJEKTE_H
+#define DIALOG_PROJEKTE_H
 
 #include <QDialog>
 #include <QMessageBox>
@@ -7,23 +7,19 @@
 #include "text_zeilenweise.h"
 #include "cbrainbatabase.h"
 #include "_tabellennamen.h"
-#include "text.h"
 
 namespace Ui {
-class Dialog_artikel;
+class Dialog_projekte;
 }
 
-class Dialog_artikel : public QDialog
+class Dialog_projekte : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit Dialog_artikel(QWidget *parent = 0);
-    ~Dialog_artikel();
+    explicit Dialog_projekte(QWidget *parent = 0);
+    ~Dialog_projekte();
 
-public:
-    void set_db(cbrainbatabase *new_db);
-    void setup();
     void set_data(text_zeilenweise daten, QString id);
 
 signals:
@@ -32,16 +28,15 @@ signals:
     void signal_cancel();
 
 private slots:
-    void on_pushButton_cancel_clicked();
     void on_pushButton_ok_clicked();
+    void on_pushButton_cancel_clicked();
 
 private:
-    Ui::Dialog_artikel *ui;
+    Ui::Dialog_projekte *ui;
 
-    cbrainbatabase *dbeigen;
     QString current_id;
 
     void clear();
 };
 
-#endif // DIALOG_ARTIKEL_H
+#endif // DIALOG_PROJEKTE_H

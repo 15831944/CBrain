@@ -28,10 +28,13 @@ void users::set_users(QString users)
         zeile.set_text(input.zeile(i));
         if(zeile.zeile(1) != USERADMIN_NAME)
         {
-            user_tz.zeile_anhaengen(zeile.zeile(1));            //Wert 1
-            pwd_tz.zeile_anhaengen(zeile.zeile(2));             //Wert 2
-            is_admin_tz.zeile_anhaengen(zeile.zeile(3));        //Wert 3
-            use_modul_artikel.zeile_anhaengen(zeile.zeile(4));  //Wert 4
+            user_tz.zeile_anhaengen(zeile.zeile(1));                //Wert 1
+            pwd_tz.zeile_anhaengen(zeile.zeile(2));                 //Wert 2
+            is_admin_tz.zeile_anhaengen(zeile.zeile(3));            //Wert 3
+            use_modul_artikel.zeile_anhaengen(zeile.zeile(4));      //Wert 4
+            use_modul_lieferanten.zeile_anhaengen(zeile.zeile(5));  //Wert 5
+            use_modul_lager.zeile_anhaengen(zeile.zeile(6));        //Wert 6
+            use_modul_projekte.zeile_anhaengen(zeile.zeile(7));     //Wert 7
         }
     }
 }
@@ -42,13 +45,19 @@ QString users::get_users()
 
     for(uint i =1; i<=user_tz.zeilenanzahl() ;i++)
     {
-        msg += user_tz.zeile(i);            //Wert 1
+        msg += user_tz.zeile(i);                //Wert 1
         msg += trzparam;
-        msg += pwd_tz.zeile(i);             //Wert 2
+        msg += pwd_tz.zeile(i);                 //Wert 2
         msg += trzparam;
-        msg += is_admin_tz.zeile(i);        //Wert 3
+        msg += is_admin_tz.zeile(i);            //Wert 3
         msg += trzparam;
-        msg += use_modul_artikel.zeile(i);  //Wert 4
+        msg += use_modul_artikel.zeile(i);      //Wert 4
+        msg += trzparam;
+        msg += use_modul_lieferanten.zeile(i);  //Wert 5
+        msg += trzparam;
+        msg += use_modul_lager.zeile(i);        //Wert 6
+        msg += trzparam;
+        msg += use_modul_projekte.zeile(i);     //Wert 7
 
         if(i != user_tz.zeilenanzahl()) //in der letzten Zeile keinen Zeilenvorschub
         {
@@ -68,6 +77,9 @@ void users::clear()
     is_admin_tz.clear();
     current_user = 0;
     use_modul_artikel.clear();
+    use_modul_lieferanten.clear();
+    use_modul_lager.clear();
+    use_modul_projekte.clear();
 }
 
 void users::set_first_admin()
@@ -77,6 +89,9 @@ void users::set_first_admin()
     pwd_tz.zeile_anhaengen(USERADMIN_PWD);
     is_admin_tz.zeile_anhaengen("1");
     use_modul_artikel.zeile_anhaengen("1");
+    use_modul_lieferanten.zeile_anhaengen("1");
+    use_modul_lager.zeile_anhaengen("1");
+    use_modul_projekte.zeile_anhaengen("1");
 }
 
 bool users::login(QString user, QString pwd)
@@ -161,6 +176,54 @@ bool users::modul_artikel()
         return false;
     }
 }
+bool users::modul_lieferanten()
+{
+    if(current_user != 0)
+    {
+        if(use_modul_lieferanten.zeile(current_user) == "1")
+        {
+            return true;
+        }else
+        {
+            return false;
+        }
+    }else
+    {
+        return false;
+    }
+}
+bool users::modul_lager()
+{
+    if(current_user != 0)
+    {
+        if(use_modul_lager.zeile(current_user) == "1")
+        {
+            return true;
+        }else
+        {
+            return false;
+        }
+    }else
+    {
+        return false;
+    }
+}
+bool users::modul_projekte()
+{
+    if(current_user != 0)
+    {
+        if(use_modul_projekte.zeile(current_user) == "1")
+        {
+            return true;
+        }else
+        {
+            return false;
+        }
+    }else
+    {
+        return false;
+    }
+}
 
 bool users::change_name(uint index, QString newname)
 {
@@ -204,6 +267,36 @@ void users::change_use_modul_artikel(uint index, bool isalowed)
         use_modul_artikel.zeile_ersaetzen(index, "0");
     }
 }
+void users::change_use_modul_lieferanten(uint index, bool isalowed)
+{
+    if(isalowed == true)
+    {
+        use_modul_lieferanten.zeile_ersaetzen(index, "1");
+    }else
+    {
+        use_modul_lieferanten.zeile_ersaetzen(index, "0");
+    }
+}
+void users::change_use_modul_lager(uint index, bool isalowed)
+{
+    if(isalowed == true)
+    {
+        use_modul_lager.zeile_ersaetzen(index, "1");
+    }else
+    {
+        use_modul_lager.zeile_ersaetzen(index, "0");
+    }
+}
+void users::change_use_modul_projekte(uint index, bool isalowed)
+{
+    if(isalowed == true)
+    {
+        use_modul_projekte.zeile_ersaetzen(index, "1");
+    }else
+    {
+        use_modul_projekte.zeile_ersaetzen(index, "0");
+    }
+}
 
 void users::newuser()
 {
@@ -211,6 +304,9 @@ void users::newuser()
     pwd_tz.zeile_anhaengen("Nutzer " + int_to_qstring(user_tz.zeilenanzahl()));
     is_admin_tz.zeile_anhaengen("0");
     use_modul_artikel.zeile_anhaengen("0");
+    use_modul_lieferanten.zeile_anhaengen("0");
+    use_modul_lager.zeile_anhaengen("0");
+    use_modul_projekte.zeile_anhaengen("0");
 }
 
 void users::removeuser(uint index)
@@ -221,6 +317,9 @@ void users::removeuser(uint index)
         pwd_tz.zeile_loeschen(index);
         is_admin_tz.zeile_loeschen(index);
         use_modul_artikel.zeile_loeschen(index);
+        use_modul_lieferanten.zeile_loeschen(index);
+        use_modul_lager.zeile_loeschen(index);
+        use_modul_projekte.zeile_loeschen(index);
     }
 }
 

@@ -25,6 +25,9 @@ public:
     bool is_admin();
     bool is_admin(uint index);
     bool modul_artikel();
+    bool modul_lieferanten();
+    bool modul_lager();
+    bool modul_projekte();
 
     inline text_zeilenweise get_names_tz()
     {
@@ -42,11 +45,26 @@ public:
     {
         return use_modul_artikel;
     }
+    inline text_zeilenweise get_use_modul_lieferanten_tz()
+    {
+        return use_modul_lieferanten;
+    }
+    inline text_zeilenweise get_use_modul_lager_tz()
+    {
+        return use_modul_lager;
+    }
+    inline text_zeilenweise get_use_modul_projekte_tz()
+    {
+        return use_modul_projekte;
+    }
 
     bool change_name(uint index, QString newname);
     void change_pwd(uint index, QString newpwd);
     void change_isadmin(uint index, bool isadmin);
     void change_use_modul_artikel(uint index, bool isalowed);
+    void change_use_modul_lieferanten(uint index, bool isalowed);
+    void change_use_modul_lager(uint index, bool isalowed);
+    void change_use_modul_projekte(uint index, bool isalowed);
 
 private:
     QString trzparam;               //Trennzeichen der einzelnen Parameter eines Nutzers
@@ -56,6 +74,9 @@ private:
     text_zeilenweise is_admin_tz;   //Liste welcher User Admin-Rechte hat
                                     // 1 == hat Rechte  |  0 == hat keine Rechte
     text_zeilenweise use_modul_artikel;     //Liste Welcher User das Modul Artikel nutzen darf 0|1
+    text_zeilenweise use_modul_lieferanten;
+    text_zeilenweise use_modul_lager;
+    text_zeilenweise use_modul_projekte;
 
 
 

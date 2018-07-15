@@ -15,6 +15,9 @@
 
 #include "form_tableeditor.h"
 #include "form_artikel.h"
+#include "form_lieferanten.h"
+#include "form_lager.h"
+#include "form_projekte.h"
 
 #include "defines_filenames.h"
 #include "users.h"
@@ -56,6 +59,11 @@ private slots:
     void on_actionTabelleneditor_triggered();
     void on_actionKeinModul_triggered();
     void on_actionModulArtikel_triggered();
+    void on_actionModulLieferanten_triggered();
+    void on_actionModulLager_triggered();
+    void on_actionModulBackup_triggered();
+
+    void on_actionModulProjekte_triggered();
 
 private:
     Ui::MainWindow *ui;
@@ -72,11 +80,20 @@ private:
     QString currend_modul;      //Speichert den Namen des Moduls für WindowTitle
     bool modul_kein;            //kein widget ist offen
     bool modul_tabedit;         //widget_tableeditor ist offen
+    bool modul_backup;          //widget_backup ist offen
     bool modul_artikel;         //widget_artikel ist offen
+    bool modul_lieferanten;     //widget_lieferanten ist offen
+    bool modul_lager;           //widget_lager ist offen
+    bool modul_projekte;        //widget_lager ist offen
+
 
     //eigene Widgets:
     Form_tableeditor    widget_tableeditor;
     Form_artikel        widget_artikel;
+    Form_lieferanten    widget_lieferanten;
+    Form_lager          widget_lager;
+    Form_projekte       widget_projekte;
+    //widget_backup
 
 
     //Funktionen:
@@ -88,8 +105,12 @@ private:
     void ui_rechte_admin();
     void ui_rechte_nobody();
     void ui_rechte_modul_artikel(bool hat_rechte);
+    void ui_rechte_modul_lieferanten(bool hat_rechte);
+    void ui_rechte_modul_lager(bool hat_rechte);
+    void ui_rechte_modul_projekte(bool hat_rechte);
+
     void change_modul(QString modul);
-    void chande_windowtitle();
+    void change_windowtitle();
 
 };
 

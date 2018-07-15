@@ -2,13 +2,9 @@
 #define _TODO_H
 /*
 
--->tabelleneditor:
-    ->rename Table
-
-
-
--->Wie DB-Teile sperren solange Datensatz bearbeitet wird?
-
+-->modul_Lager
+-->modul_Projekte
+-->modul_Backup_Restore ->Reche_admin
 
 
 

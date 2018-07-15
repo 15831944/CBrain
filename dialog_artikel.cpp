@@ -17,6 +17,7 @@ Dialog_artikel::~Dialog_artikel()
 void Dialog_artikel::on_pushButton_cancel_clicked()
 {
     this->close();
+    emit signal_cancel();
 }
 
 void Dialog_artikel::on_pushButton_ok_clicked()
@@ -32,7 +33,9 @@ void Dialog_artikel::on_pushButton_ok_clicked()
         text_zeilenweise tz;
         tz.zeile_anhaengen(ui->lineEdit_artielnummer->text());      //Wert 1
         tz.zeile_anhaengen(ui->lineEdit_bezeichnung->text());       //Wert 2
-        tz.zeile_anhaengen(ui->comboBox_lieferant->currentText());  //Wert 3
+
+        QString lief = text_links(ui->comboBox_lieferant->currentText(), " / ");
+        tz.zeile_anhaengen(lief);                                   //Wert 3
 
         this->close();
         if(current_id == "0")
@@ -66,15 +69,21 @@ void Dialog_artikel::setup()
             QSqlQuery q(db);
             QString cmd;
             cmd += "SELECT ";
+            cmd += PARAM_LIEFERANT_ID;
+            cmd += ", ";
             cmd += PARAM_LIEFERANT_NAME;
             cmd += " FROM ";
-            cmd += TABNAME_LIEFERANTEN;
+            cmd += TABNAME_LIEFERANT;
 
             if(q.exec(cmd))
             {
                 while(q.next())
                 {
-                    lieferanten.zeile_anhaengen(q.value(0).toString());
+                    QString tmp;
+                    tmp += q.value(0).toString();
+                    tmp += " / ";
+                    tmp += q.value(1).toString();
+                    lieferanten.zeile_anhaengen(tmp);
                 }
             }else
             {
@@ -103,7 +112,12 @@ void Dialog_artikel::set_data(text_zeilenweise daten, QString id)
     current_id = id;
     ui->lineEdit_artielnummer->setText(daten.zeile(1));
     ui->lineEdit_bezeichnung->setText(daten.zeile(2));
-    ui->comboBox_lieferant->setCurrentIndex(ui->comboBox_lieferant->findText(daten.zeile(3)));
+
+    QString tmp;
+    tmp += daten.zeile(3);
+    tmp += " / ";
+    tmp += dbeigen->get_data_qstring(TABNAME_LIEFERANT, PARAM_LIEFERANT_NAME, daten.zeile(3));
+    ui->comboBox_lieferant->setCurrentIndex(ui->comboBox_lieferant->findText(tmp));
 }
 
 void Dialog_artikel::clear()
