@@ -73,7 +73,7 @@ void Dialog_artikel::setup()
             cmd += ", ";
             cmd += PARAM_LIEFERANT_NAME;
             cmd += " FROM ";
-            cmd += TABNAME_LIEFERANTEN;
+            cmd += TABNAME_LIEFERANT;
 
             if(q.exec(cmd))
             {
@@ -116,7 +116,7 @@ void Dialog_artikel::set_data(text_zeilenweise daten, QString id)
     QString tmp;
     tmp += daten.zeile(3);
     tmp += " / ";
-    tmp += dbeigen->get_data_qstring(TABNAME_LIEFERANTEN, PARAM_LIEFERANT_NAME, daten.zeile(3));
+    tmp += dbeigen->get_data_qstring(TABNAME_LIEFERANT, PARAM_LIEFERANT_NAME, daten.zeile(3));
     ui->comboBox_lieferant->setCurrentIndex(ui->comboBox_lieferant->findText(tmp));
 }
 

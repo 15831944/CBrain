@@ -95,7 +95,7 @@ void Form_lieferanten::update_table()
             cmd += ", ";
             cmd += PARAM_LIEFERANT_DATBEARB;
             cmd += " FROM ";
-            cmd += TABNAME_LIEFERANTEN;
+            cmd += TABNAME_LIEFERANT;
             if(!ui->lineEdit_suche->text().isEmpty())
             {
                 cmd += " WHERE ";
@@ -109,6 +109,8 @@ void Form_lieferanten::update_table()
                 cmd += ui->lineEdit_suche->text();
                 cmd += "%\'";
             }
+            cmd += " ORDER BY ";            //Sortiert nach:
+            cmd += PARAM_LIEFERANT_NAME;
 
             if(q.exec(cmd))
             {
@@ -172,7 +174,7 @@ void Form_lieferanten::on_pushButton_del_clicked()
             QSqlQuery q(db);
             QString cmd;
             cmd += "SELECT * FROM ";
-            cmd += TABNAME_LIEFERANTEN;
+            cmd += TABNAME_LIEFERANT;
             if(!ui->lineEdit_suche->text().isEmpty())
             {
                 cmd += " WHERE ";
@@ -236,7 +238,7 @@ void Form_lieferanten::on_pushButton_edit_clicked()
             QSqlQuery q(db);
             QString cmd;
             cmd += "SELECT * FROM ";
-            cmd += TABNAME_LIEFERANTEN;
+            cmd += TABNAME_LIEFERANT;
             if(!ui->lineEdit_suche->text().isEmpty())
             {
                 cmd += " WHERE ";
@@ -293,21 +295,21 @@ void Form_lieferanten::slot_new(text_zeilenweise data)
     text_zeilenweise param, values;
 
     param.zeile_anhaengen(PARAM_LIEFERANT_NAME);
-    param.zeile_anhaengen(PARAM_ARTIKEL_ERSTELLER);
-    param.zeile_anhaengen(PARAM_ARTIKEL_DATERST);
+    param.zeile_anhaengen(PARAM_LIEFERANT_ERSTELLER);
+    param.zeile_anhaengen(PARAM_LIEFERANT_DATERST);
 
     values.zeile_anhaengen(data.zeile(1));
     values.zeile_anhaengen(user);
     datum heute;
     values.zeile_anhaengen(heute.get_today_y_m_d());
 
-    dbeigen->data_new(TABNAME_LIEFERANTEN, param, values);
+    dbeigen->data_new(TABNAME_LIEFERANT, param, values);
     update_table();
 }
 
 void Form_lieferanten::slot_delete(text_zeilenweise ids)
 {
-    dbeigen->data_del(TABNAME_LIEFERANTEN, ids);
+    dbeigen->data_del(TABNAME_LIEFERANT, ids);
     update_table();
 }
 
@@ -316,7 +318,7 @@ void Form_lieferanten::slot_edit_dialog(text_zeilenweise ids)
     if(ids.zeilenanzahl() == 1)
     {
         idbuffer = ids.zeile(1);
-        QString blockfromuser = dbeigen->get_data_qstring(TABNAME_LIEFERANTEN, PARAM_LIEFERANT_BLOCK, idbuffer);
+        QString blockfromuser = dbeigen->get_data_qstring(TABNAME_LIEFERANT, PARAM_LIEFERANT_BLOCK, idbuffer);
         if(blockfromuser == USER_NOBODY || blockfromuser.isEmpty())
         {
             text_zeilenweise lieferant;
@@ -326,7 +328,7 @@ void Form_lieferanten::slot_edit_dialog(text_zeilenweise ids)
             querryfilter += " LIKE \'";
             querryfilter += idbuffer;
             querryfilter += "\'";
-            lieferant.zeile_anhaengen(dbeigen->get_values_from_column(TABNAME_LIEFERANTEN, 1, querryfilter).get_text());//Name
+            lieferant.zeile_anhaengen(dbeigen->get_values_from_column(TABNAME_LIEFERANT, 1, querryfilter).get_text());//Name
 
 
             Dialog_lieferanten *d = new Dialog_lieferanten;
@@ -335,7 +337,7 @@ void Form_lieferanten::slot_edit_dialog(text_zeilenweise ids)
                     this, SLOT(slot_edit(text_zeilenweise, QString))          );
             connect(d, SIGNAL(signal_cancel()), this, SLOT(slot_edit_dialog_cancel()));
 
-            dbeigen->data_edit(TABNAME_LIEFERANTEN, PARAM_LIEFERANT_BLOCK, user, idbuffer);
+            dbeigen->data_edit(TABNAME_LIEFERANT, PARAM_LIEFERANT_BLOCK, user, idbuffer);
             d->exec();
             delete d;
         }else
@@ -371,7 +373,7 @@ void Form_lieferanten::slot_edit_dialog()
     querryfilter += " LIKE \'";
     querryfilter += idbuffer;
     querryfilter += "\'";
-    lieferant.zeile_anhaengen(dbeigen->get_values_from_column(TABNAME_LIEFERANTEN, 1, querryfilter).get_text());//Name
+    lieferant.zeile_anhaengen(dbeigen->get_values_from_column(TABNAME_LIEFERANT, 1, querryfilter).get_text());//Name
 
     Dialog_lieferanten *d = new Dialog_lieferanten;
     d->set_data(lieferant, idbuffer);
@@ -379,14 +381,14 @@ void Form_lieferanten::slot_edit_dialog()
             this, SLOT(slot_edit(text_zeilenweise, QString))          );
     connect(d, SIGNAL(signal_cancel()), this, SLOT(slot_edit_dialog_cancel()));
 
-    dbeigen->data_edit(TABNAME_LIEFERANTEN, PARAM_LIEFERANT_BLOCK, user, idbuffer);
+    dbeigen->data_edit(TABNAME_LIEFERANT, PARAM_LIEFERANT_BLOCK, user, idbuffer);
     d->exec();
     delete d;
 }
 
 void Form_lieferanten::slot_edit_dialog_cancel()
 {
-    dbeigen->data_edit(TABNAME_LIEFERANTEN, PARAM_LIEFERANT_BLOCK, USER_NOBODY, idbuffer);
+    dbeigen->data_edit(TABNAME_LIEFERANT, PARAM_LIEFERANT_BLOCK, USER_NOBODY, idbuffer);
 }
 
 void Form_lieferanten::slot_edit(text_zeilenweise data, QString id)
@@ -394,8 +396,8 @@ void Form_lieferanten::slot_edit(text_zeilenweise data, QString id)
     //data:
     //  Wert 1 = Name
 
-    QString blockfromuser = dbeigen->get_data_qstring(TABNAME_LIEFERANTEN, PARAM_LIEFERANT_BLOCK, idbuffer);
-    QString lasteditinguser = dbeigen->get_data_qstring(TABNAME_LIEFERANTEN, PARAM_LIEFERANT_BEARBEITER, idbuffer);
+    QString blockfromuser = dbeigen->get_data_qstring(TABNAME_LIEFERANT, PARAM_LIEFERANT_BLOCK, idbuffer);
+    QString lasteditinguser = dbeigen->get_data_qstring(TABNAME_LIEFERANT, PARAM_LIEFERANT_BEARBEITER, idbuffer);
     if(blockfromuser != user)
     {
         if(blockfromuser == USER_NOBODY)
@@ -433,7 +435,7 @@ void Form_lieferanten::slot_edit(text_zeilenweise data, QString id)
         values.zeile_anhaengen(today.get_today_y_m_d());
         values.zeile_anhaengen(USER_NOBODY);
 
-        dbeigen->data_edit(TABNAME_LIEFERANTEN, param, values, id);
+        dbeigen->data_edit(TABNAME_LIEFERANT, param, values, id);
     }
     update_table();
 }

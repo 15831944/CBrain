@@ -1,20 +1,20 @@
-#include "dialog_lieferanten.h"
-#include "ui_dialog_lieferanten.h"
+#include "dialog_projekte.h"
+#include "ui_dialog_projekte.h"
 
-Dialog_lieferanten::Dialog_lieferanten(QWidget *parent) :
+Dialog_projekte::Dialog_projekte(QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::Dialog_lieferanten)
+    ui(new Ui::Dialog_projekte)
 {
     ui->setupUi(this);
     current_id = "0";
 }
 
-Dialog_lieferanten::~Dialog_lieferanten()
+Dialog_projekte::~Dialog_projekte()
 {
     delete ui;
 }
 
-void Dialog_lieferanten::on_pushButton_ok_clicked()
+void Dialog_projekte::on_pushButton_ok_clicked()
 {
     if( ui->lineEdit_name->text().isEmpty() )
     {
@@ -37,19 +37,29 @@ void Dialog_lieferanten::on_pushButton_ok_clicked()
     }
 }
 
-void Dialog_lieferanten::on_pushButton_cancel_clicked()
+void Dialog_projekte::on_pushButton_cancel_clicked()
 {
     this->close();
     emit signal_cancel();
 }
 
-void Dialog_lieferanten::set_data(text_zeilenweise daten, QString id)
+void Dialog_projekte::set_data(text_zeilenweise daten, QString id)
 {
     current_id = id;
     ui->lineEdit_name->setText(daten.zeile(1));
 }
 
-void Dialog_lieferanten::clear()
+void Dialog_projekte::clear()
 {
     ui->lineEdit_name->clear();
 }
+
+
+
+
+
+
+
+
+
+

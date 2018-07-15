@@ -53,6 +53,7 @@
     <addaction name="actionModulArtikel"/>
     <addaction name="actionModulLieferanten"/>
     <addaction name="actionModulLager"/>
+    <addaction name="actionModulProjekte"/>
    </widget>
    <widget class="QMenu" name="menuModule_Admin">
     <property name="title">
@@ -139,6 +140,11 @@
   <action name="actionModulBackup">
    <property name="text">
     <string>Backup</string>
+   </property>
+  </action>
+  <action name="actionModulProjekte">
+   <property name="text">
+    <string>Projekte</string>
    </property>
   </action>
  </widget>

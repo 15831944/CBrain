@@ -34,6 +34,7 @@ void users::set_users(QString users)
             use_modul_artikel.zeile_anhaengen(zeile.zeile(4));      //Wert 4
             use_modul_lieferanten.zeile_anhaengen(zeile.zeile(5));  //Wert 5
             use_modul_lager.zeile_anhaengen(zeile.zeile(6));        //Wert 6
+            use_modul_projekte.zeile_anhaengen(zeile.zeile(7));     //Wert 7
         }
     }
 }
@@ -55,6 +56,8 @@ QString users::get_users()
         msg += use_modul_lieferanten.zeile(i);  //Wert 5
         msg += trzparam;
         msg += use_modul_lager.zeile(i);        //Wert 6
+        msg += trzparam;
+        msg += use_modul_projekte.zeile(i);     //Wert 7
 
         if(i != user_tz.zeilenanzahl()) //in der letzten Zeile keinen Zeilenvorschub
         {
@@ -76,6 +79,7 @@ void users::clear()
     use_modul_artikel.clear();
     use_modul_lieferanten.clear();
     use_modul_lager.clear();
+    use_modul_projekte.clear();
 }
 
 void users::set_first_admin()
@@ -87,6 +91,7 @@ void users::set_first_admin()
     use_modul_artikel.zeile_anhaengen("1");
     use_modul_lieferanten.zeile_anhaengen("1");
     use_modul_lager.zeile_anhaengen("1");
+    use_modul_projekte.zeile_anhaengen("1");
 }
 
 bool users::login(QString user, QString pwd)
@@ -203,6 +208,22 @@ bool users::modul_lager()
         return false;
     }
 }
+bool users::modul_projekte()
+{
+    if(current_user != 0)
+    {
+        if(use_modul_projekte.zeile(current_user) == "1")
+        {
+            return true;
+        }else
+        {
+            return false;
+        }
+    }else
+    {
+        return false;
+    }
+}
 
 bool users::change_name(uint index, QString newname)
 {
@@ -266,6 +287,16 @@ void users::change_use_modul_lager(uint index, bool isalowed)
         use_modul_lager.zeile_ersaetzen(index, "0");
     }
 }
+void users::change_use_modul_projekte(uint index, bool isalowed)
+{
+    if(isalowed == true)
+    {
+        use_modul_projekte.zeile_ersaetzen(index, "1");
+    }else
+    {
+        use_modul_projekte.zeile_ersaetzen(index, "0");
+    }
+}
 
 void users::newuser()
 {
@@ -275,6 +306,7 @@ void users::newuser()
     use_modul_artikel.zeile_anhaengen("0");
     use_modul_lieferanten.zeile_anhaengen("0");
     use_modul_lager.zeile_anhaengen("0");
+    use_modul_projekte.zeile_anhaengen("0");
 }
 
 void users::removeuser(uint index)
@@ -287,6 +319,7 @@ void users::removeuser(uint index)
         use_modul_artikel.zeile_loeschen(index);
         use_modul_lieferanten.zeile_loeschen(index);
         use_modul_lager.zeile_loeschen(index);
+        use_modul_projekte.zeile_loeschen(index);
     }
 }
 

@@ -37,6 +37,7 @@ private slots:
     void on_checkBox_modul_artikel_toggled(bool checked);
     void on_checkBox_modul_lieferanten_toggled(bool checked);
     void on_checkBox_modul_lager_toggled(bool checked);
+    void on_checkBox_modul_projekte_toggled(bool checked);
 
 private:
     Ui::Dialog_user *ui;

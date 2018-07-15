@@ -65,6 +65,14 @@ void Dialog_user::on_listWidget_names_currentRowChanged(int currentRow)
         ui->checkBox_modul_lager->setChecked(false);
     }
 
+    if(user.get_use_modul_projekte_tz().zeile(currentRow+1)== "1")
+    {
+        ui->checkBox_modul_projekte->setChecked(true);
+    }else
+    {
+        ui->checkBox_modul_projekte->setChecked(false);
+    }
+
 
     //------------------------------------------------------------------------------------
     if(ui->listWidget_names->currentRow() == 0)//First Admin soll nicht editierbar sein!
@@ -75,6 +83,7 @@ void Dialog_user::on_listWidget_names_currentRowChanged(int currentRow)
         ui->checkBox_modul_artikel->setDisabled(true);
         ui->checkBox_modul_lieferanten->setDisabled(true);
         ui->checkBox_modul_lager->setDisabled(true);
+        ui->checkBox_modul_projekte->setDisabled(true);
     }else
     {
         ui->lineEdit_name->setEnabled(true);
@@ -83,6 +92,7 @@ void Dialog_user::on_listWidget_names_currentRowChanged(int currentRow)
         ui->checkBox_modul_artikel->setEnabled(true);
         ui->checkBox_modul_lieferanten->setEnabled(true);
         ui->checkBox_modul_lager->setEnabled(true);
+        ui->checkBox_modul_projekte->setEnabled(true);
     }
 }
 
@@ -152,4 +162,9 @@ void Dialog_user::on_checkBox_modul_lieferanten_toggled(bool checked)
 void Dialog_user::on_checkBox_modul_lager_toggled(bool checked)
 {
     user.change_use_modul_lager(ui->listWidget_names->currentRow()+1, checked);
+}
+
+void Dialog_user::on_checkBox_modul_projekte_toggled(bool checked)
+{
+    user.change_use_modul_projekte(ui->listWidget_names->currentRow()+1, checked);
 }

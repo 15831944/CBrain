@@ -16,7 +16,7 @@
 #define PARAM_ARTIKEL_BLOCK         "blockiert"         //Wert 9    //Datensatz wurde vom eingetragenen Nutzer
                                                                     //zur Bearbeitung geöffnen
 
-#define TABNAME_LIEFERANTEN         "Lieferanten"
+#define TABNAME_LIEFERANT           "Lieferanten"
 #define PARAM_LIEFERANT_ID          "id"                //Wert 0
 #define PARAM_LIEFERANT_NAME        "Name"              //Wert 1
 #define PARAM_LIEFERANT_ERSTELLER   "Ersteller"         //Wert 3
@@ -25,6 +25,17 @@
 #define PARAM_LIEFERANT_DATBEARB    "Bearbeitung"       //Wert 6    //Datum der letzten Bearbeitung
 #define PARAM_LIEFERANT_BLOCK       "blockiert"         //Wert 7    //Datensatz wurde vom eingetragenen Nutzer
                                                                     //zur Bearbeitung geöffnen
+
+#define TABNAME_PROJEKT             "Projekte"
+#define PARAM_PROJEKT_ID            "id"                //Wert 0
+#define PARAM_PROJEKT_NAME          "Name"              //Wert 1
+#define PARAM_PROJEKT_ERSTELLER     "Ersteller"         //Wert 3
+#define PARAM_PROJEKT_DATERST       "Erfassung"         //Wert 4    //Datum der Erfassung/Erstellung
+#define PARAM_PROJEKT_BEARBEITER    "Bearbeiter"        //Wert 5
+#define PARAM_PROJEKT_DATBEARB      "Bearbeitung"       //Wert 6    //Datum der letzten Bearbeitung
+#define PARAM_PROJEKT_BLOCK         "blockiert"         //Wert 7    //Datensatz wurde vom eingetragenen Nutzer
+                                                                    //zur Bearbeitung geöffnen
+
 #define TABNAME_LAGER               "Lager"
 #define PARAM_LAGER_ID              "id"                //Wert 0
 #define PARAM_LAGER_VORGANG         "Vorgang"           //Wert 1    //Wareneingang | Warenausgang

@@ -32,7 +32,7 @@
      <x>150</x>
      <y>50</y>
      <width>265</width>
-     <height>231</height>
+     <height>351</height>
     </rect>
    </property>
    <layout class="QGridLayout" name="gridLayout">
@@ -81,6 +81,13 @@
      <widget class="QCheckBox" name="checkBox_modul_lager">
       <property name="text">
        <string>Zugang zu Modul Lager</string>
+      </property>
+     </widget>
+    </item>
+    <item row="6" column="0" colspan="2">
+     <widget class="QCheckBox" name="checkBox_modul_projekte">
+      <property name="text">
+       <string>Zugang zu Modul Projekte</string>
       </property>
      </widget>
     </item>
@@ -147,6 +154,7 @@
   <tabstop>checkBox_modul_artikel</tabstop>
   <tabstop>checkBox_modul_lieferanten</tabstop>
   <tabstop>checkBox_modul_lager</tabstop>
+  <tabstop>checkBox_modul_projekte</tabstop>
   <tabstop>pushButton_ok</tabstop>
   <tabstop>pushButton_cancel</tabstop>
   <tabstop>pushButton_deleteuser</tabstop>
