@@ -16,6 +16,7 @@
 #include "form_tableeditor.h"
 #include "form_artikel.h"
 #include "form_lieferanten.h"
+#include "form_lager.h"
 
 #include "defines_filenames.h"
 #include "users.h"
@@ -85,7 +86,7 @@ private:
     Form_tableeditor    widget_tableeditor;
     Form_artikel        widget_artikel;
     Form_lieferanten    widget_lieferanten;
-    //widget_lager
+    Form_lager          widget_lager;
     //widget_backup
 
 

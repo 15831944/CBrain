@@ -10,6 +10,7 @@ MainWindow::MainWindow(QWidget *parent) :
     widget_tableeditor.setParent(this);
     widget_artikel.setParent(this);
     widget_lieferanten.setParent(this);
+    widget_lager.setParent(this);
     on_actionKeinModul_triggered();
 
     this->setWindowState(Qt::WindowMaximized);
@@ -55,6 +56,7 @@ bool MainWindow::setup()
         widget_tableeditor.set_db(&dbeigen);    //widget Zeiger auf DB übergeben
         widget_artikel.set_db(&dbeigen);        //widget Zeiger auf DB übergeben
         widget_lieferanten.set_db(&dbeigen);    //widget Zeiger auf DB übergeben
+        widget_lager.set_db(&dbeigen);         //widget Zeiger auf DB übergeben
     }
 
     return isvalid;
@@ -121,6 +123,9 @@ void MainWindow::resizeEvent(QResizeEvent *event)
 
     widget_lieferanten.move(0, hoehe_menue);
     widget_lieferanten.setFixedSize(breite, hoehe);
+
+    widget_lager.move(0, hoehe_menue);
+    widget_lager.setFixedSize(breite, hoehe);
 
     QWidget::resizeEvent(event);
 }
@@ -217,6 +222,7 @@ void MainWindow::slot_login(QString user, QString pwd)
         change_windowtitle();
         widget_artikel.set_user(u.get_current_user());
         widget_lieferanten.set_user(u.get_current_user());
+        widget_lager.set_user(u.get_current_user());
         //Rechte für Module setzen:
         ui_rechte_modul_artikel(  u.modul_artikel()  );
         ui_rechte_modul_lieferanten(  u.modul_lieferanten()  );
@@ -319,9 +325,7 @@ void MainWindow::on_actionModulLieferanten_triggered()
 
 void MainWindow::on_actionModulLager_triggered()
 {
-    QMessageBox mb;
-    mb.setText("Dieses Modul ist derzeit leider noch nicht fertig!");
-    mb.exec();
+    change_modul("Lager");
 }
 
 void MainWindow::on_actionModulBackup_triggered()
@@ -343,11 +347,13 @@ void MainWindow::change_modul(QString modul)
                 modul_tabedit       = true;
                 modul_artikel       = false;
                 modul_lieferanten   = false;
+                modul_lager         = false;
 
                 currend_modul = "Tabelleneditor";
                 //widget_tableeditor.set_db(&dbeigen);    //widget Zeiger auf DB übergeben
                 widget_artikel.hide();
                 widget_lieferanten.hide();
+                widget_lager.hide();
                 widget_tableeditor.show();
             }else
             {
@@ -366,11 +372,13 @@ void MainWindow::change_modul(QString modul)
                 modul_tabedit       = false;
                 modul_artikel       = true;
                 modul_lieferanten   = false;
+                modul_lager         = false;
 
                 currend_modul = "Artikel";
                 //widget_artikel.set_db(&dbeigen);    //widget Zeiger auf DB übergeben
                 widget_tableeditor.hide();
                 widget_lieferanten.hide();
+                widget_lager.hide();
                 widget_artikel.show();
             }else
             {
@@ -389,12 +397,39 @@ void MainWindow::change_modul(QString modul)
                 modul_tabedit       = false;
                 modul_artikel       = false;
                 modul_lieferanten   = true;
+                modul_lager         = false;
 
                 currend_modul = "Lieferanten";
                 //widget_artikel.set_db(&dbeigen);    //widget Zeiger auf DB übergeben
                 widget_tableeditor.hide();
                 widget_artikel.hide();
+                widget_lager.hide();
                 widget_lieferanten.show();
+            }else
+            {
+                QMessageBox mb;
+                mb.setText("Datenbank nicht erreichbar!\nModul wurden nicht geladen.");
+                mb.exec();
+            }
+        }
+    }else if(modul == "Lager")
+    {
+        if(modul_lager == false)
+        {
+            if(dbeigen.pingdb() == true)
+            {
+                modul_kein          = false;
+                modul_tabedit       = false;
+                modul_artikel       = false;
+                modul_lieferanten   = false;
+                modul_lager         = true;
+
+                currend_modul = "Lager";
+                //widget_artikel.set_db(&dbeigen);    //widget Zeiger auf DB übergeben
+                widget_tableeditor.hide();
+                widget_artikel.hide();
+                widget_lieferanten.hide();
+                widget_lager.show();
             }else
             {
                 QMessageBox mb;
@@ -410,11 +445,13 @@ void MainWindow::change_modul(QString modul)
             modul_tabedit       = false;
             modul_artikel       = false;
             modul_lieferanten   = false;
+            modul_lager         = false;
 
             currend_modul = "kein Modul geladen";
             widget_tableeditor.hide();
             widget_artikel.hide();
             widget_lieferanten.hide();
+            widget_lager.hide();
         }
     }
     change_windowtitle();
