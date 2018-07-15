@@ -85,23 +85,61 @@ void Form_artikel::update_table()
             QSqlQuery q(db);
             QString cmd;
             cmd += "SELECT ";
+            //------------------------
+            cmd += TABNAME_ARTIKEL;
+            cmd += ".";
             cmd += PARAM_ARTIKEL_NR;
             cmd += ", ";
+            //------------------------
+            cmd += TABNAME_ARTIKEL;
+            cmd += ".";
             cmd += PARAM_ARTIKEL_BEZ;
             cmd += ", ";
-            cmd += PARAM_ARTIKEL_LIEFERANT;
+            //------------------------
+            cmd += TABNAME_LIEFERANTEN;
+            cmd += ".";
+            cmd += PARAM_LIEFERANT_NAME;
+            cmd += " AS ";
+            cmd += "Lieferant";
             cmd += ", ";
+            //------------------------
+            cmd += TABNAME_ARTIKEL;
+            cmd += ".";
             cmd += PARAM_ARTIKEL_LAGERSTAND;
             cmd += ", ";
+            //------------------------
+            cmd += TABNAME_ARTIKEL;
+            cmd += ".";
             cmd += PARAM_ARTIKEL_ERSTELLER;
             cmd += ", ";
+            //------------------------
+            cmd += TABNAME_ARTIKEL;
+            cmd += ".";
             cmd += PARAM_ARTIKEL_DATERST;
             cmd += ", ";
+            //------------------------
+            cmd += TABNAME_ARTIKEL;
+            cmd += ".";
             cmd += PARAM_ARTIKEL_BEARBEITER;
             cmd += ", ";
+            //------------------------
+            cmd += TABNAME_ARTIKEL;
+            cmd += ".";
             cmd += PARAM_ARTIKEL_DATBEARB;
             cmd += " FROM ";
             cmd += TABNAME_ARTIKEL;
+            //------------------------
+            cmd += " LEFT JOIN ";
+            cmd += TABNAME_LIEFERANTEN;
+            cmd += " ON ";
+            cmd += TABNAME_ARTIKEL;
+            cmd += ".";
+            cmd += PARAM_ARTIKEL_LIEFERANT;
+            cmd += " = ";
+            cmd += TABNAME_LIEFERANTEN;
+            cmd += ".";
+            cmd += PARAM_LIEFERANT_ID;
+
             if(!ui->lineEdit_suche->text().isEmpty())
             {
                 cmd += " WHERE ";
