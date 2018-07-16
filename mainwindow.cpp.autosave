@@ -61,13 +61,7 @@ bool MainWindow::setup()
         widget_lieferanten.set_db(&dbeigen);    //widget Zeiger auf DB übergeben
         widget_lager.set_db(&dbeigen);          //widget Zeiger auf DB übergeben
         widget_projekte.set_db(&dbeigen);       //widget Zeiger auf DB übergeben
-    }else
-    {
-        QMessageBox mb;
-        mb.setText("ist nicht vallid");
-        mb.exec();
     }
-
     return isvalid;
 }
 
