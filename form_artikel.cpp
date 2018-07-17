@@ -126,6 +126,8 @@ void Form_artikel::update_table()
             cmd += TABNAME_ARTIKEL;
             cmd += ".";
             cmd += PARAM_ARTIKEL_DATBEARB;
+            //cmd += ", ";
+            //------------------------
             cmd += " FROM ";
             cmd += TABNAME_ARTIKEL;
             //------------------------

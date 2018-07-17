@@ -66,7 +66,6 @@ void Form_lager::show()
 
 void Form_lager::update_table()
 {
-    /*
     //-------------------------------------------
     {
         QSqlDatabase db;
@@ -82,31 +81,101 @@ void Form_lager::update_table()
             QSqlQuery q(db);
             QString cmd;
             cmd += "SELECT ";
-            cmd += PARAM_ARTIKEL_NR;
+            //------------------------
+            cmd += TABNAME_LAGER;
+            cmd += ".";
+            cmd += PARAM_LAGER_VORGANG;
+            cmd += " AS ";
+            cmd += "Vorgang";
             cmd += ", ";
-            cmd += PARAM_ARTIKEL_BEZ;
-            cmd += ", ";
-            cmd += PARAM_ARTIKEL_LIEFERANT;
-            cmd += ", ";
-            cmd += PARAM_ARTIKEL_LAGERSTAND;
-            cmd += ", ";
-            cmd += PARAM_ARTIKEL_ERSTELLER;
-            cmd += ", ";
-            cmd += PARAM_ARTIKEL_DATERST;
-            cmd += ", ";
-            cmd += PARAM_ARTIKEL_BEARBEITER;
-            cmd += ", ";
-            cmd += PARAM_ARTIKEL_DATBEARB;
-            cmd += " FROM ";
+            //------------------------
             cmd += TABNAME_ARTIKEL;
+            cmd += ".";
+            cmd += PARAM_ARTIKEL_BEZ;
+            cmd += " AS ";
+            cmd += "Artikelbez";
+            cmd += ", ";
+            //------------------------
+            cmd += TABNAME_ARTIKEL;
+            cmd += ".";
+            cmd += PARAM_ARTIKEL_NR;
+            cmd += " AS ";
+            cmd += "Artikelnr";
+            cmd += ", ";
+            //------------------------
+            cmd += TABNAME_LAGER;
+            cmd += ".";
+            cmd += PARAM_LAGER_MENGE;
+            cmd += " AS ";
+            cmd += "Menge";
+            cmd += ", ";
+            //------------------------
+            cmd += TABNAME_PROJEKT;
+            cmd += ".";
+            cmd += PARAM_PROJEKT_NAME;
+            cmd += " AS ";
+            cmd += "Kommission";
+            cmd += ", ";
+            //------------------------
+            cmd += TABNAME_LAGER;
+            cmd += ".";
+            cmd += PARAM_LAGER_ERSTELLER;
+            cmd += " AS ";
+            cmd += "Ersteller";
+            cmd += ", ";
+            //------------------------
+            cmd += TABNAME_LAGER;
+            cmd += ".";
+            cmd += PARAM_LAGER_DATERST;
+            cmd += " AS ";
+            cmd += "Erfassung";
+            //cmd += ", ";
+            //------------------------
+            //------------------------
+            cmd += " FROM ";
+            cmd += TABNAME_LAGER;
+            //------------------------
+            //------------------------
+            cmd += " LEFT JOIN ";
+            cmd += TABNAME_ARTIKEL;
+            cmd += " ON ";
+            cmd += TABNAME_LAGER;
+            cmd += ".";
+            cmd += PARAM_LAGER_ARTIKELID;
+            cmd += " = ";
+            cmd += TABNAME_ARTIKEL;
+            cmd += ".";
+            cmd += PARAM_ARTIKEL_ID;
+            //------------------------
+            //------------------------
+            cmd += " LEFT JOIN ";
+            cmd += TABNAME_PROJEKT;
+            cmd += " ON ";
+            cmd += TABNAME_LAGER;
+            cmd += ".";
+            cmd += PARAM_LAGER_KOMMISSION;
+            cmd += " = ";
+            cmd += TABNAME_PROJEKT;
+            cmd += ".";
+            cmd += PARAM_PROJEKT_ID;
+            //------------------------
+            cmd += " ORDER BY ";            //Sortiert nach:
+            cmd += TABNAME_LAGER;
+            cmd += ".";
+            cmd += PARAM_LAGER_DATERST;
+
             if(!ui->lineEdit_suche->text().isEmpty())
             {
                 cmd += " WHERE ";
+                cmd += TABNAME_ARTIKEL;
+                cmd += ".";
                 cmd += PARAM_ARTIKEL_NR;
                 cmd += " LIKE \'%";
                 cmd += ui->lineEdit_suche->text();
                 cmd += "%\'";
                 cmd += " OR ";
+                cmd += TABNAME_ARTIKEL;
+                cmd += ".";
                 cmd += PARAM_ARTIKEL_BEZ;
                 cmd += " LIKE \'%";
                 cmd += ui->lineEdit_suche->text();
@@ -120,7 +189,7 @@ void Form_lager::update_table()
 
                 QString msg;
                 msg += int_to_qstring(model->rowCount());
-                msg += " Artikel:";
+                msg += " Buchungen:";
                 ui->label_suche->setText(msg);
 
             }else
@@ -139,7 +208,6 @@ void Form_lager::update_table()
         }
     }
     //-------------------------------------------
-    */
 }
 
 void Form_lager::on_lineEdit_suche_textChanged()
