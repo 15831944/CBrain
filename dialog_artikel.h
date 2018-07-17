@@ -34,12 +34,15 @@ signals:
 private slots:
     void on_pushButton_cancel_clicked();
     void on_pushButton_ok_clicked();
+    void on_lineEdit_textChanged(const QString &arg1);
 
 private:
     Ui::Dialog_artikel *ui;
 
     cbrainbatabase *dbeigen;
     QString current_id;
+
+    text_zeilenweise lieferanten;
 
     void clear();
 };
