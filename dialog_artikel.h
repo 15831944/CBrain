@@ -21,7 +21,6 @@ public:
     explicit Dialog_artikel(QWidget *parent = 0);
     ~Dialog_artikel();
 
-public:
     void set_db(cbrainbatabase *new_db);
     void setup();
     void set_data(text_zeilenweise daten, QString id);

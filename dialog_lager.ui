@@ -42,7 +42,7 @@
     </item>
    </layout>
   </widget>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>10</x>
@@ -105,6 +105,15 @@
    </layout>
   </widget>
  </widget>
+ <tabstops>
+  <tabstop>lineEdit_artikelfilter</tabstop>
+  <tabstop>comboBox_artikel</tabstop>
+  <tabstop>lineEdit_menge</tabstop>
+  <tabstop>lineEdit_komfilter</tabstop>
+  <tabstop>comboBox_kom</tabstop>
+  <tabstop>pushButton_ok</tabstop>
+  <tabstop>pushButton_cancel</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

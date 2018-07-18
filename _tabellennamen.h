@@ -39,6 +39,8 @@
 #define TABNAME_LAGER               "tabLager"
 #define PARAM_LAGER_ID              "id"                //Wert 0
 #define PARAM_LAGER_VORGANG         "Vorgang"           //Wert 1    //Wareneingang | Warenausgang
+    #define VORGANG_WARENEINGANG        "Waren-Eingang"
+    #define VORGANG_WARENAUSGANG        "Waren-Ausgang"
 #define PARAM_LAGER_ARTIKELID       "Artikel_id"        //Wert 2
 #define PARAM_LAGER_MENGE           "Menge"             //Wert 3    //Eingelagerte bzw. ausgelagerte Menge
 #define PARAM_LAGER_ERSTELLER       "Ersteller"         //Wert 4

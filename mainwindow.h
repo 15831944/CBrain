@@ -1,7 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#define VERSIONSNUMMER  "1.2018.07.04"
+#define VERSIONSNUMMER  "1.2018.07.18"
 
 #include <QMainWindow>
 #include <QFile>

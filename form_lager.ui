@@ -41,7 +41,7 @@
     <rect>
      <x>10</x>
      <y>40</y>
-     <width>651</width>
+     <width>351</width>
      <height>251</height>
     </rect>
    </property>
@@ -76,6 +76,22 @@
    </property>
    <property name="text">
     <string>Waren-Ausgang</string>
+   </property>
+  </widget>
+  <widget class="QTableView" name="tableView_artikel">
+   <property name="geometry">
+    <rect>
+     <x>370</x>
+     <y>40</y>
+     <width>291</width>
+     <height>251</height>
+    </rect>
+   </property>
+   <property name="dragEnabled">
+    <bool>true</bool>
+   </property>
+   <property name="alternatingRowColors">
+    <bool>true</bool>
    </property>
   </widget>
  </widget>
