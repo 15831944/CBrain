@@ -44,8 +44,15 @@ void Form_backup::set_db(cbrainbatabase *new_db)
     dbeigen = new_db;
 }
 
+void Form_backup::set_ini(inifile *in)
+{
+    ini = in;
+}
+
 void Form_backup::show()
 {
+    ui->lineEdit_backupto->setText(ini->get_modul_backup_to());
+    ui->lineEdit_restorefrom->setText(ini->get_modul_backup_from());
     setVisible(true);
 }
 
@@ -70,32 +77,33 @@ void Form_backup::on_pushButton_backup_clicked()
         msg += tables.zeile(i);
         msg += "\n";
 
+        msg += "Field"; //Spaltenname
+        msg += ezpar;
+        msg += "Type";
+        msg += ezpar;
+        msg += "Null";  //Not Null
+        msg += ezpar;
+        msg += "Key";   //Is Primary Key
+        msg += ezpar;
+        msg += "Default"; //Default value
+        msg += ezpar;
+        msg += "Extra";
+        msg += "\n";
+
         for(uint ii=1; ii<=param.zeilenanzahl() ;ii++)
         {
-            msg += "<Name>";
             msg += param.zeile(ii);
             msg += ezpar;
-
-            msg += "<TYP>";
             msg += param_type.zeile(ii);
             msg += ezpar;
-
-            msg += "<NotNull>";
             msg += param_notnull.zeile(ii);
             msg += ezpar;
-
-            msg += "<IsPri>";
             msg += param_primkey.zeile(ii);
             msg += ezpar;
-
-            msg += "<Default>";
             msg += param_default.zeile(ii);
-            msg += ezpar;
-
-            msg += "<Extra>";
+            msg += ezpar;;
             msg += param_extra.zeile(ii);
             msg += ezpar;
-
             msg += "\n";
         }
 
@@ -106,7 +114,100 @@ void Form_backup::on_pushButton_backup_clicked()
     }
 
     //msg in Datei speichern:
-    QMessageBox mb;
-    mb.setText(msg);
-    mb.exec();
+
+    QString filename;
+    filename =  ui->lineEdit_backupto->text();
+    filename += QDir::separator();
+    filename += "backup_teblestrukture.csv";
+    QFile file(filename);
+
+    if(file.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+        file.write(msg.toUtf8());
+        file.close();
+    }else
+    {
+        QMessageBox mb;
+        mb.setText("Backup fehlgeschlagen!\nDatei konnte nicht geschrieben werden.");
+        mb.exec();
+    }
 }
+
+void Form_backup::on_pushButton_restore_clicked()
+{
+    QString filename;
+    filename =  ui->lineEdit_restorefrom->text();
+    QFile file(filename);
+
+    text_zeilenweise filetext;
+
+    if(file.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        filetext.set_text(file.readAll());
+        //Tabellenstruktur aus der db auslesen:
+        text_zeilenweise tables_db = dbeigen->get_tables_tz();
+
+        //Datei auswerten:
+        int current_table = -1;
+        for(uint i=1; i<=filetext.zeilenanzahl() ;i++)
+        {
+            QString zeile = filetext.zeile(i);
+            if(zeile.contains("<BEGIN_Tabelle>"))
+            {
+                QString tablename_csv = text_rechts(zeile, "<BEGIN_Tabelle>");
+                for(uint ii=1; ii<=tables_db.zeilenanzahl() ;ii++)
+                {
+                    if(tablename_csv == tables_db.zeile(ii))
+                    {
+                        current_table = ii;
+                        break;
+                    }
+                }
+                if(current_table != -1)//Wenn es die Tabelle bereits gibt
+                {
+                    //Tabelle ggf ergänzen:
+                    //...
+                    //...
+                    //...
+                    //...
+                    //...
+                }else   //Es gibt die Tabelle noch nicht
+                {
+                    //Tabelle anlegen
+                    //...
+                    //...
+                    //...
+                    //...
+                    //...
+                }
+            }else if(zeile.contains("<ENDE_Tabelle>"))
+            {
+                current_table = -1;
+            }
+        }
+    }else
+    {
+        QString msg;
+        msg += "Fehler beim Zugriff auf die Datei \"";
+        msg += filename;
+        msg += "\"!";
+
+        QMessageBox mb;
+        mb.setText(msg);
+        mb.exec();
+    }
+}
+
+void Form_backup::on_lineEdit_backupto_editingFinished()
+{
+    ini->set_modul_backup_to(ui->lineEdit_backupto->text());
+    emit signal_save_ini();
+}
+
+void Form_backup::on_lineEdit_restorefrom_editingFinished()
+{
+    ini->set_modul_backup_from(ui->lineEdit_restorefrom->text());
+    emit signal_save_ini();
+}
+
+

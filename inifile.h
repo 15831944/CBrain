@@ -25,6 +25,23 @@ public:
     text_zeilenweise get_settings_db_eigen();
     void set_settings_db_eigen(text_zeilenweise data);
 
+    inline void set_modul_backup_to(QString path)
+    {
+        settings_modul_backup_to = path;
+    }
+    inline QString get_modul_backup_to()
+    {
+        return settings_modul_backup_to;
+    }
+    inline void set_modul_backup_from(QString path)
+    {
+        settings_modul_backup_from = path;
+    }
+    inline QString get_modul_backup_from()
+    {
+        return settings_modul_backup_from;
+    }
+
 private:
     QString rootdir;
 
@@ -33,6 +50,9 @@ private:
     QString settings_db_eigen_driver;
     QString settings_db_eigen_username;
     QString settings_db_eigen_userpwd;
+
+    QString settings_modul_backup_to;
+    QString settings_modul_backup_from;
 
 
 };
