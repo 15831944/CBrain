@@ -227,6 +227,12 @@ bool users::modul_projekte()
 
 bool users::change_name(uint index, QString newname)
 {
+    //Prüfen, ob sich der Name überhaupt geänder hat:
+    if(user_tz.zeile(index) == newname)
+    {
+        return true;
+    }
+
     //Prüfen ob Name bereits verwendet wird:
     bool isvalid = true;
     for(uint i=1; i<=user_tz.zeilenanzahl() ;i++)

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Form_backup</class>
+ <widget class="QWidget" name="Form_backup">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>685</width>
+    <height>423</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <widget class="QPushButton" name="pushButton_backup">
+   <property name="geometry">
+    <rect>
+     <x>11</x>
+     <y>16</y>
+     <width>191</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Backup Tabellenstruktur nach Pfad:</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_restore">
+   <property name="geometry">
+    <rect>
+     <x>11</x>
+     <y>50</y>
+     <width>191</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Restore Tabellenstruktur von Pfad:</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="lineEdit_backupto">
+   <property name="geometry">
+    <rect>
+     <x>240</x>
+     <y>17</y>
+     <width>110</width>
+     <height>20</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="lineEdit_restorefrom">
+   <property name="geometry">
+    <rect>
+     <x>240</x>
+     <y>51</y>
+     <width>110</width>
+     <height>20</height>
+    </rect>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
