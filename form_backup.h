@@ -2,8 +2,11 @@
 #define FORM_BACKUP_H
 
 #include <QWidget>
+#include <QFile>
 
 #include "cbrainbatabase.h"
+#include "inifile.h"
+#include "text.h"
 
 namespace Ui {
 class Form_backup;
@@ -19,17 +22,25 @@ public:
 
     void set_db(cbrainbatabase *new_db);
     void show();
+    void set_ini(inifile *in);
+
+signals:
+    void signal_save_ini();
 
 protected:
     void resizeEvent(QResizeEvent *event);
 
 private slots:
     void on_pushButton_backup_clicked();
+    void on_pushButton_restore_clicked();
+    void on_lineEdit_backupto_editingFinished();
+    void on_lineEdit_restorefrom_editingFinished();
 
 private:
     Ui::Form_backup *ui;
 
     cbrainbatabase *dbeigen;
+    inifile *ini;
 };
 
 #endif // FORM_BACKUP_H

@@ -21,6 +21,8 @@ void inifile::set_text(QString text)
     settings_db_eigen_driver = tz.zeile(4);
     settings_db_eigen_username = tz.zeile(5);
     settings_db_eigen_userpwd = tz.zeile(6);
+    settings_modul_backup_to = tz.zeile(7);
+    settings_modul_backup_from = tz.zeile(8);
 }
 
 QString inifile::get_text()
@@ -38,6 +40,10 @@ QString inifile::get_text()
     msg += settings_db_eigen_username;      //Zeile  5
     msg += "\n";
     msg += settings_db_eigen_userpwd;       //Zeile  6
+    msg += "\n";
+    msg += settings_modul_backup_to; //Zeile  7
+    msg += "\n";
+    msg += settings_modul_backup_from;//Zeile  8
 
     return msg;
 }

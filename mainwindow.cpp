@@ -16,6 +16,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     on_actionKeinModul_triggered();
 
+    connect(&widget_backup, SIGNAL(signal_save_ini()),\
+            this, SLOT(slot_write_inifile()));
+
     this->setWindowState(Qt::WindowMaximized);
 }
 
@@ -64,6 +67,8 @@ bool MainWindow::setup()
         widget_lager.set_db(&dbeigen);          //widget Zeiger auf DB übergeben
         widget_projekte.set_db(&dbeigen);       //widget Zeiger auf DB übergeben
         widget_backup.set_db(&dbeigen);         //widget Zeiger auf DB übergeben
+
+        widget_backup.set_ini(&ini);
     }
     return isvalid;
 }
@@ -284,6 +289,11 @@ void MainWindow::slot_get_settings_db_eigen(text_zeilenweise data)
             mb.exec();
         }
     }
+}
+
+void MainWindow::slot_write_inifile()
+{
+    write_inifile();
 }
 
 //-----------------------------------------------Dialoge und Widgets ansprechen:

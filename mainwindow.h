@@ -49,6 +49,7 @@ public slots:
     void slot_login(QString user, QString pwd);
     void slot_get_users(users new_users);
     void slot_get_settings_db_eigen(text_zeilenweise data);
+    void slot_write_inifile();
 
 private slots:
     void on_actionNetzwerkordner_aendern_triggered();
