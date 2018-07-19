@@ -36,7 +36,8 @@ SOURCES += main.cpp\
     dialog_lieferanten.cpp \
     form_lager.cpp \
     form_projekte.cpp \
-    dialog_projekte.cpp
+    dialog_projekte.cpp \
+    form_backup.cpp
 
 HEADERS  += mainwindow.h \
     defines_filenames.h \
@@ -63,7 +64,8 @@ HEADERS  += mainwindow.h \
     dialog_lieferanten.h \
     form_lager.h \
     form_projekte.h \
-    dialog_projekte.h
+    dialog_projekte.h \
+    form_backup.h
 
 FORMS    += mainwindow.ui \
     dialog_login.ui \
@@ -80,4 +82,5 @@ FORMS    += mainwindow.ui \
     dialog_lieferanten.ui \
     form_lager.ui \
     form_projekte.ui \
-    dialog_projekte.ui
+    dialog_projekte.ui \
+    form_backup.ui
