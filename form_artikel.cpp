@@ -126,6 +126,8 @@ void Form_artikel::update_table()
             cmd += TABNAME_ARTIKEL;
             cmd += ".";
             cmd += PARAM_ARTIKEL_DATBEARB;
+            //cmd += ", ";
+            //------------------------
             cmd += " FROM ";
             cmd += TABNAME_ARTIKEL;
             //------------------------
@@ -140,11 +142,6 @@ void Form_artikel::update_table()
             cmd += ".";
             cmd += PARAM_LIEFERANT_ID;
             //------------------------
-            cmd += " ORDER BY ";            //Sortiert nach:
-            cmd += TABNAME_ARTIKEL;
-            cmd += ".";
-            cmd += PARAM_ARTIKEL_NR;
-
             if(!ui->lineEdit_suche->text().isEmpty())
             {
                 cmd += " WHERE ";
@@ -158,6 +155,11 @@ void Form_artikel::update_table()
                 cmd += ui->lineEdit_suche->text();
                 cmd += "%\'";
             }
+            //------------------------
+            cmd += " ORDER BY ";            //Sortiert nach:
+            cmd += TABNAME_ARTIKEL;
+            cmd += ".";
+            cmd += PARAM_ARTIKEL_NR;
 
             if(q.exec(cmd))
             {

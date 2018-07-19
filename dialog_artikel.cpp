@@ -52,7 +52,7 @@ void Dialog_artikel::setup()
 {
     //Unbedingt vorher Pointer auf DB zuweisen, sonst Programmabsturz!
     clear();
-    text_zeilenweise lieferanten;
+    //text_zeilenweise lieferanten;
     //lieferanten aus Tabelle einlesen:
     if(dbeigen != NULL)
     {
@@ -117,6 +117,7 @@ void Dialog_artikel::set_data(text_zeilenweise daten, QString id)
     tmp += daten.zeile(3);
     tmp += " / ";
     tmp += dbeigen->get_data_qstring(TABNAME_LIEFERANT, PARAM_LIEFERANT_NAME, daten.zeile(3));
+
     ui->comboBox_lieferant->setCurrentIndex(ui->comboBox_lieferant->findText(tmp));
 }
 
@@ -130,4 +131,16 @@ void Dialog_artikel::clear()
 void Dialog_artikel::set_db(cbrainbatabase *new_db)
 {
     dbeigen = new_db;
+}
+
+void Dialog_artikel::on_lineEdit_textChanged(const QString &arg1)
+{
+    ui->comboBox_lieferant->clear();
+    for(uint i=1; i<=lieferanten.zeilenanzahl() ;i++)
+    {
+        if(text_rechts(lieferanten.zeile(i), " / ").toUpper().contains(arg1.toUpper()))
+        {
+            ui->comboBox_lieferant->addItem(lieferanten.zeile(i));
+        }
+    }
 }

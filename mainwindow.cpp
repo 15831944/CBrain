@@ -565,6 +565,7 @@ void MainWindow::ui_rechte_nobody()
     //ui->actionKeinModul->setDisabled(true);
     ui->actionTabelleneditor->setDisabled(true);
     ui->actionModulBackup->setDisabled(true);
+    ui->actionTestfunktion->setVisible(false);
 
     ui->actionModulArtikel->setDisabled(true);
     ui->actionModulLieferanten->setDisabled(true);
@@ -581,6 +582,7 @@ void MainWindow::ui_rechte_admin()
     //ui->actionKeinModul->setEnabled(true);
     ui->actionTabelleneditor->setEnabled(true);
     ui->actionModulBackup->setEnabled(true);
+    ui->actionTestfunktion->setVisible(true);
 
     //Die Rechte der nicht-Admin-Module werden separat gesteuert
 }
