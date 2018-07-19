@@ -21,7 +21,6 @@ public:
     explicit Dialog_artikel(QWidget *parent = 0);
     ~Dialog_artikel();
 
-public:
     void set_db(cbrainbatabase *new_db);
     void setup();
     void set_data(text_zeilenweise daten, QString id);
@@ -34,12 +33,15 @@ signals:
 private slots:
     void on_pushButton_cancel_clicked();
     void on_pushButton_ok_clicked();
+    void on_lineEdit_textChanged(const QString &arg1);
 
 private:
     Ui::Dialog_artikel *ui;
 
     cbrainbatabase *dbeigen;
     QString current_id;
+
+    text_zeilenweise lieferanten;
 
     void clear();
 };

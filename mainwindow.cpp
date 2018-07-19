@@ -12,6 +12,7 @@ MainWindow::MainWindow(QWidget *parent) :
     widget_lieferanten.setParent(this);
     widget_lager.setParent(this);
     widget_projekte.setParent(this);
+    widget_backup.setParent(this);
 
     on_actionKeinModul_triggered();
 
@@ -35,6 +36,7 @@ void MainWindow::clear()
     modul_lager     = false;
     modul_backup    = false;
     modul_projekte  = false;
+    modul_backup    = false;
 }
 
 bool MainWindow::setup()
@@ -61,8 +63,8 @@ bool MainWindow::setup()
         widget_lieferanten.set_db(&dbeigen);    //widget Zeiger auf DB übergeben
         widget_lager.set_db(&dbeigen);          //widget Zeiger auf DB übergeben
         widget_projekte.set_db(&dbeigen);       //widget Zeiger auf DB übergeben
+        widget_backup.set_db(&dbeigen);         //widget Zeiger auf DB übergeben
     }
-
     return isvalid;
 }
 
@@ -134,6 +136,9 @@ void MainWindow::resizeEvent(QResizeEvent *event)
     widget_projekte.move(0, hoehe_menue);
     widget_projekte.setFixedSize(breite, hoehe);
 
+    widget_backup.move(0, hoehe_menue);
+    widget_backup.setFixedSize(breite, hoehe);
+
     QWidget::resizeEvent(event);
 }
 
@@ -196,6 +201,9 @@ void MainWindow::read_iniuser()
     {
         u.set_users(file.readAll());
         file.close();
+    }else
+    {
+        write_iniuser();
     }
 }
 
@@ -344,9 +352,7 @@ void MainWindow::on_actionModulProjekte_triggered()
 
 void MainWindow::on_actionModulBackup_triggered()
 {
-    QMessageBox mb;
-    mb.setText("Dieses Modul ist derzeit leider noch nicht fertig!");
-    mb.exec();
+    change_modul("Backup");
 }
 
 void MainWindow::change_modul(QString modul)
@@ -363,6 +369,7 @@ void MainWindow::change_modul(QString modul)
                 modul_lieferanten   = false;
                 modul_lager         = false;
                 modul_projekte      = false;
+                modul_backup        = false;
 
                 currend_modul = "Tabelleneditor";
                 //widget_tableeditor.set_db(&dbeigen);    //widget Zeiger auf DB übergeben
@@ -371,6 +378,7 @@ void MainWindow::change_modul(QString modul)
                 widget_lager.hide();
                 widget_tableeditor.show();
                 widget_projekte.hide();
+                widget_backup.hide();
             }else
             {
                 QMessageBox mb;
@@ -390,6 +398,7 @@ void MainWindow::change_modul(QString modul)
                 modul_lieferanten   = false;
                 modul_lager         = false;
                 modul_projekte      = false;
+                modul_backup        = false;
 
                 currend_modul = "Artikel";
                 //widget_artikel.set_db(&dbeigen);    //widget Zeiger auf DB übergeben
@@ -398,6 +407,7 @@ void MainWindow::change_modul(QString modul)
                 widget_lager.hide();
                 widget_artikel.show();
                 widget_projekte.hide();
+                widget_backup.hide();
             }else
             {
                 QMessageBox mb;
@@ -417,6 +427,7 @@ void MainWindow::change_modul(QString modul)
                 modul_lieferanten   = true;
                 modul_lager         = false;
                 modul_projekte      = false;
+                modul_backup        = false;
 
                 currend_modul = "Lieferanten";
                 //widget_artikel.set_db(&dbeigen);    //widget Zeiger auf DB übergeben
@@ -425,6 +436,7 @@ void MainWindow::change_modul(QString modul)
                 widget_lager.hide();
                 widget_lieferanten.show();
                 widget_projekte.hide();
+                widget_backup.hide();
             }else
             {
                 QMessageBox mb;
@@ -444,6 +456,7 @@ void MainWindow::change_modul(QString modul)
                 modul_lieferanten   = false;
                 modul_lager         = true;
                 modul_projekte      = false;
+                modul_backup        = false;
 
                 currend_modul = "Lager";
                 //widget_artikel.set_db(&dbeigen);    //widget Zeiger auf DB übergeben
@@ -452,6 +465,7 @@ void MainWindow::change_modul(QString modul)
                 widget_lieferanten.hide();
                 widget_lager.show();
                 widget_projekte.hide();
+                widget_backup.hide();
             }else
             {
                 QMessageBox mb;
@@ -471,6 +485,7 @@ void MainWindow::change_modul(QString modul)
                 modul_lieferanten   = false;
                 modul_lager         = false;
                 modul_projekte      = true;
+                modul_backup        = false;
 
                 currend_modul = "Projekte";
                 //widget_artikel.set_db(&dbeigen);    //widget Zeiger auf DB übergeben
@@ -479,6 +494,36 @@ void MainWindow::change_modul(QString modul)
                 widget_lieferanten.hide();
                 widget_lager.hide();
                 widget_projekte.show();
+                widget_backup.hide();
+            }else
+            {
+                QMessageBox mb;
+                mb.setText("Datenbank nicht erreichbar!\nModul wurden nicht geladen.");
+                mb.exec();
+            }
+        }
+    }else if(modul == "Backup")
+    {
+        if(modul_backup == false)
+        {
+            if(dbeigen.pingdb() == true)
+            {
+                modul_kein          = false;
+                modul_tabedit       = false;
+                modul_artikel       = false;
+                modul_lieferanten   = false;
+                modul_lager         = false;
+                modul_projekte      = false;
+                modul_backup        = true;
+
+                currend_modul = "Backup";
+                //widget_artikel.set_db(&dbeigen);    //widget Zeiger auf DB übergeben
+                widget_tableeditor.hide();
+                widget_artikel.hide();
+                widget_lieferanten.hide();
+                widget_lager.hide();
+                widget_projekte.hide();
+                widget_backup.show();
             }else
             {
                 QMessageBox mb;
@@ -496,6 +541,7 @@ void MainWindow::change_modul(QString modul)
             modul_lieferanten   = false;
             modul_lager         = false;
             modul_projekte      = false;
+            modul_backup        = false;
 
             currend_modul = "kein Modul geladen";
             widget_tableeditor.hide();
@@ -503,6 +549,7 @@ void MainWindow::change_modul(QString modul)
             widget_lieferanten.hide();
             widget_lager.hide();
             widget_projekte.hide();
+            widget_backup.hide();
         }
     }
     change_windowtitle();
@@ -518,6 +565,7 @@ void MainWindow::ui_rechte_nobody()
     //ui->actionKeinModul->setDisabled(true);
     ui->actionTabelleneditor->setDisabled(true);
     ui->actionModulBackup->setDisabled(true);
+    ui->actionTestfunktion->setVisible(false);
 
     ui->actionModulArtikel->setDisabled(true);
     ui->actionModulLieferanten->setDisabled(true);
@@ -534,6 +582,7 @@ void MainWindow::ui_rechte_admin()
     //ui->actionKeinModul->setEnabled(true);
     ui->actionTabelleneditor->setEnabled(true);
     ui->actionModulBackup->setEnabled(true);
+    ui->actionTestfunktion->setVisible(true);
 
     //Die Rechte der nicht-Admin-Module werden separat gesteuert
 }

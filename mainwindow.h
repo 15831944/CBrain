@@ -1,7 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#define VERSIONSNUMMER  "1.2018.07.04"
+#define VERSIONSNUMMER  "1.2018.07.18"
 
 #include <QMainWindow>
 #include <QFile>
@@ -18,6 +18,7 @@
 #include "form_lieferanten.h"
 #include "form_lager.h"
 #include "form_projekte.h"
+#include "form_backup.h"
 
 #include "defines_filenames.h"
 #include "users.h"
@@ -62,7 +63,6 @@ private slots:
     void on_actionModulLieferanten_triggered();
     void on_actionModulLager_triggered();
     void on_actionModulBackup_triggered();
-
     void on_actionModulProjekte_triggered();
 
 private:
@@ -93,7 +93,7 @@ private:
     Form_lieferanten    widget_lieferanten;
     Form_lager          widget_lager;
     Form_projekte       widget_projekte;
-    //widget_backup
+    Form_backup         widget_backup;
 
 
     //Funktionen:
