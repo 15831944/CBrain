@@ -74,6 +74,7 @@ void Form_backup::on_pushButton_backup_clicked()
         text_zeilenweise param_default = dbeigen->get_param_default_tz(tables.zeile(i));
 
         msg += "<BEGIN_Tabelle>";
+        msg += "\n";
         msg += tables.zeile(i);
         msg += "\n";
 
@@ -108,7 +109,6 @@ void Form_backup::on_pushButton_backup_clicked()
         }
 
         msg += "<ENDE_Tabelle>";
-        msg += tables.zeile(i);
         msg += "\n";
 
     }
@@ -148,37 +148,221 @@ void Form_backup::on_pushButton_restore_clicked()
         text_zeilenweise tables_db = dbeigen->get_tables_tz();
 
         //Datei auswerten:
-        int current_table = -1;
+
         for(uint i=1; i<=filetext.zeilenanzahl() ;i++)
         {
+            QString current_table;
             QString zeile = filetext.zeile(i);
             if(zeile.contains("<BEGIN_Tabelle>"))
             {
-                QString tablename_csv = text_rechts(zeile, "<BEGIN_Tabelle>");
+                i++;
+                zeile = filetext.zeile(i);
+                QString tablename_csv = zeile;
+                tablename_csv.replace("\t","");
                 for(uint ii=1; ii<=tables_db.zeilenanzahl() ;ii++)
                 {
-                    if(tablename_csv == tables_db.zeile(ii))
+                    if(tablename_csv.toUpper() == tables_db.zeile(ii).toUpper())
                     {
-                        current_table = ii;
+                        current_table = tablename_csv;
                         break;
                     }
                 }
-                if(current_table != -1)//Wenn es die Tabelle bereits gibt
+
+
+
+                //Param erfassen:
+                text_zeilenweise param;
+                text_zeilenweise param_type;
+                text_zeilenweise param_notnull;
+                text_zeilenweise param_primkey;
+                text_zeilenweise param_default;
+                text_zeilenweise param_extra;
+
+                i = i+2;
+                zeile = filetext.zeile(i);
+                for( ; i<=filetext.zeilenanzahl() ;i++)
+                {
+                    zeile = filetext.zeile(i);
+                    if(zeile.contains("<ENDE_Tabelle>"))
+                    {
+                        break;
+                    }
+                    text_zeilenweise zeile_tz;
+                    zeile_tz.set_trennzeichen('\t');
+                    zeile_tz.set_text(zeile);
+
+                    param.zeile_anhaengen(zeile_tz.zeile(1));
+                    param_type.zeile_anhaengen(zeile_tz.zeile(2));
+                    param_notnull.zeile_anhaengen(zeile_tz.zeile(3));
+                    param_primkey.zeile_anhaengen(zeile_tz.zeile(4));
+                    param_default.zeile_anhaengen(zeile_tz.zeile(5));
+                    param_extra.zeile_anhaengen(zeile_tz.zeile(6));
+                }
+
+                if(!current_table.isEmpty())//Wenn es die Tabelle bereits gibt
                 {
                     //Tabelle ggf ergänzen:
-                    //...
-                    //...
-                    //...
-                    //...
-                    //...
+                    //bereits vorhandene Param erfassen:
+                    text_zeilenweise oldparam = dbeigen->get_param_tz(current_table);
+
+                    bool sindanfangsgleich = true;
+                    for(uint ii=1; ii<=oldparam.zeilenanzahl() ;ii++)
+                    {
+                        if(param.zeile(ii) != oldparam.zeile(ii))
+                        {
+                            sindanfangsgleich = false;
+                            break;
+                        }
+                    }
+                    if(sindanfangsgleich == true)
+                    {
+                        if(param.zeilenanzahl() > oldparam.zeilenanzahl())
+                        {
+                            for(uint ii=oldparam.zeilenanzahl()+1; ii<=param.zeilenanzahl() ;ii++)
+                            {
+                                QString typ = param_type.zeile(ii);
+                                QString additional;
+                                bool isunsigned = false;
+                                if(typ.contains("("))
+                                {
+                                    additional = text_mitte(typ, "(",")");
+                                    if(text_rechts(typ, ")").contains("unsigned"))
+                                    {
+                                        isunsigned = true;
+                                    }
+                                    typ = text_links(typ, "(");
+                                }
+                                bool ispri;
+                                if(param_primkey.zeile(ii) == "PRI")
+                                {
+                                    ispri = true;
+                                }else
+                                {
+                                    ispri = false;
+                                }
+                                bool isautoincrement;
+                                if(param_extra.zeile(ii) == "auto_increment")
+                                {
+                                    isautoincrement = true;
+                                }else
+                                {
+                                    isautoincrement = false;
+                                }
+                                bool isnotnull;
+                                if(param_notnull.zeile(ii) == "NO")
+                                {
+                                    isnotnull = true;
+                                }else
+                                {
+                                    isnotnull = false;
+                                }
+                                QString defaultvalue = param_default.zeile(ii);
+                                if(defaultvalue == "---")
+                                {
+                                    defaultvalue.clear();
+                                }
+                                dbeigen->param_new(current_table,\
+                                                   param.zeile(ii),\
+                                                   typ,\
+                                                   additional,\
+                                                   ispri,\
+                                                   isautoincrement,\
+                                                   isunsigned,\
+                                                   isnotnull,\
+                                                   defaultvalue);
+                            }
+                        }
+
+                    }else
+                    {
+                        QString msg;
+                        msg += "Die Tabelle \"";
+                        msg += current_table;
+                        msg += "\" konnte nicht automatisch abgeglichen werden!";
+                        QMessageBox mb;
+                        mb.setText(msg);
+                        mb.exec();
+                    }
                 }else   //Es gibt die Tabelle noch nicht
                 {
                     //Tabelle anlegen
-                    //...
-                    //...
-                    //...
-                    //...
-                    //...
+                    //-------------------------------------
+                    QSqlDatabase db;
+
+                    db = QSqlDatabase::database("dbglobal");
+                    db.setHostName(dbeigen->get_host());
+                    db.setDatabaseName(dbeigen->get_dbname());
+                    db.setUserName(dbeigen->get_user());
+                    db.setPassword(dbeigen->get_pwd());
+
+                    if(db.open())
+                    {
+                        QSqlQuery q(db);
+                        QString cmd;
+                        cmd += "CREATE TABLE ";
+                        cmd += tablename_csv;
+                        cmd += "(";
+                        // not null
+                        for(uint ii=1; ii<=param.zeilenanzahl() ;ii++)
+                        {
+                            QString tmp;
+                            tmp = param.zeile(ii);
+                            cmd += param.zeile(ii);
+
+                            tmp = param_type.zeile(ii);
+                            if(tmp != "---")
+                            {
+                                cmd += " ";
+                                cmd += param_type.zeile(ii);
+                            }
+                            tmp = param_notnull.zeile(ii);
+                            if(tmp == "NO")
+                            {
+                                cmd += " ";
+                                cmd += "NOT NULL";
+                            }
+                            tmp = param_extra.zeile(ii);
+                            if(tmp != "---")
+                            {
+                                cmd += " ";
+                                cmd += param_extra.zeile(ii);
+                            }
+                            tmp = param_primkey.zeile(ii);
+                            if(tmp != "---")
+                            {
+                                cmd += " ";
+                                cmd += "primary key";
+                            }
+                            tmp = param_default.zeile(ii);
+                            if(tmp != "---")
+                            {
+                                cmd += " DEFAULT \'";
+                                cmd += param_default.zeile(ii);
+                                cmd += "\'";
+                            }
+
+                            if(ii != param.zeilenanzahl())
+                            {
+                                cmd += ", ";
+                            }
+                        }
+                        cmd += ") ENGINE=InnoDB";
+
+                        if(!q.exec(cmd))
+                        {
+                            QMessageBox mb;
+                            mb.setText("Fehler:\n" + q.lastError().text());
+                            mb.exec();
+                        }
+                        db.close();
+
+                    }else
+                    {
+                        QMessageBox mb;
+                        mb.setText("Fehler bei Datenbankverbindung!");
+                        mb.exec();
+                    }
+                    //-------------------------------------
                 }
             }else if(zeile.contains("<ENDE_Tabelle>"))
             {

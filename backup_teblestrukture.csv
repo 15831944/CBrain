@@ -1,4 +1,5 @@
-<BEGIN_Tabelle>tabArtikel
+<BEGIN_Tabelle>
+tabartikel
 Field	Type	Null	Key	Default	Extra
 id	int(11) unsigned	NO	PRI	---	auto_increment	
 Artikelnummer	varchar(40)	YES	---	---	---	
@@ -10,8 +11,9 @@ Erfassung	date	YES	---	---	---
 Bearbeiter	varchar(40)	YES	---	---	---	
 Bearbeitung	date	YES	---	---	---	
 blockiert	varchar(40)	YES	---	---	---	
-<ENDE_Tabelle>tabArtikel
-<BEGIN_Tabelle>tabLager
+<ENDE_Tabelle>
+<BEGIN_Tabelle>
+tablager
 Field	Type	Null	Key	Default	Extra
 id	int(11) unsigned	NO	PRI	---	auto_increment	
 Vorgang	varchar(40)	YES	---	---	---	
@@ -20,8 +22,9 @@ Menge	int(11)	NO	---	---	---
 Ersteller	varchar(40)	YES	---	---	---	
 Erfassung	date	YES	---	---	---	
 Kommission	varchar(40)	YES	---	---	---	
-<ENDE_Tabelle>tabLager
-<BEGIN_Tabelle>tabLieferanten
+<ENDE_Tabelle>
+<BEGIN_Tabelle>
+tablieferanten
 Field	Type	Null	Key	Default	Extra
 id	int(11) unsigned	NO	PRI	---	auto_increment	
 Name	varchar(40)	YES	---	---	---	
@@ -30,8 +33,9 @@ Erfassung	date	YES	---	---	---
 Bearbeiter	varchar(40)	YES	---	---	---	
 Bearbeitung	date	YES	---	---	---	
 blockiert	varchar(40)	YES	---	---	---	
-<ENDE_Tabelle>tabLieferanten
-<BEGIN_Tabelle>tabProjekte
+<ENDE_Tabelle>
+<BEGIN_Tabelle>
+tabprojekte
 Field	Type	Null	Key	Default	Extra
 id	int(11) unsigned	NO	PRI	---	auto_increment	
 Name	varchar(40)	YES	---	---	---	
@@ -40,11 +44,12 @@ Erfassung	date	YES	---	---	---
 Bearbeiter	varchar(40)	YES	---	---	---	
 Bearbeitung	date	YES	---	---	---	
 blockiert	varchar(40)	YES	---	---	---	
-<ENDE_Tabelle>tabProjekte
-<BEGIN_Tabelle>tabReservierungen
+<ENDE_Tabelle>
+<BEGIN_Tabelle>
+tabreservierungen
 Field	Type	Null	Key	Default	Extra
 id	int(11) unsigned	NO	PRI	---	auto_increment	
 Artikel	int(11)	YES	---	---	---	
 Menge	int(11)	YES	---	---	---	
 Kommission	varchar(40)	YES	---	---	---	
-<ENDE_Tabelle>tabReservierungen
+<ENDE_Tabelle>
