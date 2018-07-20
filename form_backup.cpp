@@ -157,12 +157,14 @@ void Form_backup::on_pushButton_restore_clicked()
                 QString tablename_csv = text_rechts(zeile, "<BEGIN_Tabelle>");
                 for(uint ii=1; ii<=tables_db.zeilenanzahl() ;ii++)
                 {
-                    if(tablename_csv == tables_db.zeile(ii))
+                    if(tablename_csv.toUpper() == tables_db.zeile(ii).toUpper())
                     {
                         current_table = ii;
                         break;
                     }
                 }
+
+
                 if(current_table != -1)//Wenn es die Tabelle bereits gibt
                 {
                     //Tabelle ggf ergänzen:
