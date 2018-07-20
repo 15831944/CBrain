@@ -22,6 +22,7 @@ public:
 
     void set_db(cbrainbatabase *new_db);
     void clear();
+    void update_tablnames();
 
 protected:
     void resizeEvent(QResizeEvent *event);

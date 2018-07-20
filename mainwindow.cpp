@@ -382,6 +382,7 @@ void MainWindow::change_modul(QString modul)
                 modul_backup        = false;
 
                 currend_modul = "Tabelleneditor";
+                widget_tableeditor.update_tablnames();
                 //widget_tableeditor.set_db(&dbeigen);    //widget Zeiger auf DB übergeben
                 widget_artikel.hide();
                 widget_lieferanten.hide();

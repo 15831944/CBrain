@@ -139,12 +139,7 @@ void Form_tableeditor::set_db(cbrainbatabase *new_db)
     clear();
     dbeigen = new_db;
 
-    text_zeilenweise tables = dbeigen->get_tables_tz();
-
-    for(uint i=1; i<=tables.zeilenanzahl() ;i++)
-    {
-        ui->listWidget_tables->addItem(tables.zeile(i));
-    }
+    update_tablnames();
 }
 
 void Form_tableeditor::on_listWidget_tables_currentRowChanged()
@@ -229,6 +224,17 @@ void Form_tableeditor::on_listWidget_tablehead_currentRowChanged(int currentRow)
     }else
     {
         ui->label_extra->setText("...");
+    }
+}
+
+void Form_tableeditor::update_tablnames()
+{
+    ui->listWidget_tables->clear();
+    text_zeilenweise tables = dbeigen->get_tables_tz();
+
+    for(uint i=1; i<=tables.zeilenanzahl() ;i++)
+    {
+        ui->listWidget_tables->addItem(tables.zeile(i));
     }
 }
 

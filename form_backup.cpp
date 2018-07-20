@@ -173,12 +173,113 @@ void Form_backup::on_pushButton_restore_clicked()
                     //...
                 }else   //Es gibt die Tabelle noch nicht
                 {
+                    //Param erfassen:
+                    text_zeilenweise param;
+                    text_zeilenweise param_type;
+                    text_zeilenweise param_notnull;
+                    text_zeilenweise param_primkey;
+                    text_zeilenweise param_default;
+                    text_zeilenweise param_extra;
+
+                    i = i+2;
+                    zeile = filetext.zeile(i);
+                    for( ; i<=filetext.zeilenanzahl() ;i++)
+                    {
+                        zeile = filetext.zeile(i);
+                        if(zeile.contains("<ENDE_Tabelle>"))
+                        {
+                            break;
+                        }
+                        text_zeilenweise zeile_tz;
+                        zeile_tz.set_trennzeichen('\t');
+                        zeile_tz.set_text(zeile);
+
+                        param.zeile_anhaengen(zeile_tz.zeile(1));
+                        param_type.zeile_anhaengen(zeile_tz.zeile(2));
+                        param_notnull.zeile_anhaengen(zeile_tz.zeile(3));
+                        param_primkey.zeile_anhaengen(zeile_tz.zeile(4));
+                        param_default.zeile_anhaengen(zeile_tz.zeile(5));
+                        param_extra.zeile_anhaengen(zeile_tz.zeile(6));
+                    }
+
                     //Tabelle anlegen
-                    //...
-                    //...
-                    //...
-                    //...
-                    //...
+                    //-------------------------------------
+                    QSqlDatabase db;
+
+                    db = QSqlDatabase::database("dbglobal");
+                    db.setHostName(dbeigen->get_host());
+                    db.setDatabaseName(dbeigen->get_dbname());
+                    db.setUserName(dbeigen->get_user());
+                    db.setPassword(dbeigen->get_pwd());
+
+                    if(db.open())
+                    {
+                        QSqlQuery q(db);
+                        QString cmd;
+                        cmd += "CREATE TABLE ";
+                        cmd += tablename_csv;
+                        cmd += "(";
+                        // not null
+                        for(uint ii=1; ii<=param.zeilenanzahl() ;ii++)
+                        {
+                            QString tmp;
+                            tmp = param.zeile(ii);
+                            cmd += param.zeile(ii);
+
+                            tmp = param_type.zeile(ii);
+                            if(tmp != "---")
+                            {
+                                cmd += " ";
+                                cmd += param_type.zeile(ii);
+                            }
+                            tmp = param_notnull.zeile(ii);
+                            if(tmp == "NO")
+                            {
+                                cmd += " ";
+                                cmd += "NOT NULL";
+                            }
+                            tmp = param_extra.zeile(ii);
+                            if(tmp != "---")
+                            {
+                                cmd += " ";
+                                cmd += param_extra.zeile(ii);
+                            }
+                            tmp = param_primkey.zeile(ii);
+                            if(tmp != "---")
+                            {
+                                cmd += " ";
+                                cmd += "primary key";
+                            }
+                            tmp = param_default.zeile(ii);
+                            if(tmp != "---")
+                            {
+                                cmd += " DEFAULT \'";
+                                cmd += param_default.zeile(ii);
+                                cmd += "\'";
+                            }
+
+                            if(ii != param.zeilenanzahl())
+                            {
+                                cmd += ", ";
+                            }
+                        }
+                        cmd += ") ENGINE=InnoDB";
+
+                        if(!q.exec(cmd))
+                        {
+                            QMessageBox mb;
+                            mb.setText("Fehler:\n" + q.lastError().text());
+                            mb.exec();
+                        }
+                        db.close();
+
+                    }else
+                    {
+                        QMessageBox mb;
+                        mb.setText("Fehler bei Datenbankverbindung!");
+                        mb.exec();
+                    }
+                    //-------------------------------------
                 }
             }else if(zeile.contains("<ENDE_Tabelle>"))
             {
