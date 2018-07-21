@@ -125,6 +125,10 @@ void Form_backup::on_pushButton_backup_clicked()
     {
         file.write(msg.toUtf8());
         file.close();
+
+        QMessageBox mb;
+        mb.setText("Backup erfolgreich abgeschlossen.");
+        mb.exec();
     }else
     {
         QMessageBox mb;
@@ -270,7 +274,7 @@ void Form_backup::on_pushButton_restore_clicked()
                                                    isunsigned,\
                                                    isnotnull,\
                                                    defaultvalue);
-                            }
+                            }                            
                         }
 
                     }else

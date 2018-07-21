@@ -87,6 +87,8 @@ void Form_projekte::update_table()
             cmd += "SELECT ";
             cmd += PARAM_PROJEKT_NAME;
             cmd += ", ";
+            cmd += PARAM_PROJEKT_KOMMENT;
+            cmd += ", ";
             cmd += PARAM_PROJEKT_ERSTELLER;
             cmd += ", ";
             cmd += PARAM_PROJEKT_DATERST;
@@ -149,6 +151,7 @@ void Form_projekte::on_lineEdit_suche_textChanged()
 void Form_projekte::on_pushButton_new_clicked()
 {
     Dialog_projekte *d = new Dialog_projekte;
+    d->setWindowTitle("Projekt anlegen");
     connect(d, SIGNAL(signal_send_data(text_zeilenweise)),  \
             this, SLOT(slot_new(text_zeilenweise))          );
     d->exec();
@@ -297,11 +300,13 @@ void Form_projekte::slot_new(text_zeilenweise data)
     param.zeile_anhaengen(PARAM_PROJEKT_NAME);
     param.zeile_anhaengen(PARAM_PROJEKT_ERSTELLER);
     param.zeile_anhaengen(PARAM_PROJEKT_DATERST);
+    param.zeile_anhaengen(PARAM_PROJEKT_KOMMENT);
 
-    values.zeile_anhaengen(data.zeile(1));
+    values.zeile_anhaengen(data.zeile(1));//Name
     values.zeile_anhaengen(user);
     datum heute;
     values.zeile_anhaengen(heute.get_today_y_m_d());
+    values.zeile_anhaengen(data.zeile(2));//Kommentar
 
     dbeigen->data_new(TABNAME_PROJEKT, param, values);
     update_table();
@@ -329,9 +334,10 @@ void Form_projekte::slot_edit_dialog(text_zeilenweise ids)
             querryfilter += idbuffer;
             querryfilter += "\'";
             projekt.zeile_anhaengen(dbeigen->get_values_from_column(TABNAME_PROJEKT, 1, querryfilter).get_text());//Name
-
+            projekt.zeile_anhaengen(dbeigen->get_values_from_column(TABNAME_PROJEKT, 7, querryfilter).get_text());//Kommentar
 
             Dialog_projekte *d = new Dialog_projekte;
+            d->setWindowTitle("Projekt bearbeiten");
             d->set_data(projekt, idbuffer);
             connect(d, SIGNAL(signal_send_data(text_zeilenweise, QString)),  \
                     this, SLOT(slot_edit(text_zeilenweise, QString))          );
@@ -374,8 +380,10 @@ void Form_projekte::slot_edit_dialog()
     querryfilter += idbuffer;
     querryfilter += "\'";
     projekt.zeile_anhaengen(dbeigen->get_values_from_column(TABNAME_PROJEKT, 1, querryfilter).get_text());//Name
+    projekt.zeile_anhaengen(dbeigen->get_values_from_column(TABNAME_PROJEKT, 7, querryfilter).get_text());//Kommentar
 
     Dialog_projekte *d = new Dialog_projekte;
+    d->setWindowTitle("Projekt bearbeiten");
     d->set_data(projekt, idbuffer);
     connect(d, SIGNAL(signal_send_data(text_zeilenweise, QString)),  \
             this, SLOT(slot_edit(text_zeilenweise, QString))          );
@@ -429,11 +437,13 @@ void Form_projekte::slot_edit(text_zeilenweise data, QString id)
         param.zeile_anhaengen(PARAM_PROJEKT_BEARBEITER);
         param.zeile_anhaengen(PARAM_PROJEKT_DATBEARB);
         param.zeile_anhaengen(PARAM_PROJEKT_BLOCK);
+        param.zeile_anhaengen(PARAM_PROJEKT_KOMMENT);
 
         values.zeile_anhaengen(data.zeile(1));
         values.zeile_anhaengen(user);
         values.zeile_anhaengen(today.get_today_y_m_d());
         values.zeile_anhaengen(USER_NOBODY);
+        values.zeile_anhaengen(data.zeile(2));
 
         dbeigen->data_edit(TABNAME_PROJEKT, param, values, id);
     }

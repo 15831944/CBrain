@@ -24,7 +24,8 @@ void Dialog_lieferanten::on_pushButton_ok_clicked()
     }else
     {
         text_zeilenweise tz;
-        tz.zeile_anhaengen(ui->lineEdit_name->text().replace(" / ","/"));      //Wert 1
+        tz.zeile_anhaengen(ui->lineEdit_name->text().replace(" / ","/"));       //Wert 1
+        tz.zeile_anhaengen(ui->lineEdit_komment->text());                       //Wert 2
 
         this->close();
         if(current_id == "0")
@@ -47,6 +48,7 @@ void Dialog_lieferanten::set_data(text_zeilenweise daten, QString id)
 {
     current_id = id;
     ui->lineEdit_name->setText(daten.zeile(1));
+    ui->lineEdit_komment->setText(daten.zeile(2));
 }
 
 void Dialog_lieferanten::clear()

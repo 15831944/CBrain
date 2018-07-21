@@ -49,6 +49,7 @@ private slots:
     void on_pushButton_param_del_clicked();
     void on_pushButton_param_edit_clicked();
     void on_pushButton_table_edit_clicked();
+    void on_lineEdit_table_seach_textChanged();
 
 private:
     Ui::Form_tableeditor *ui;

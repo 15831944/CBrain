@@ -87,6 +87,8 @@ void Form_lieferanten::update_table()
             cmd += "SELECT ";
             cmd += PARAM_LIEFERANT_NAME;
             cmd += ", ";
+            cmd += PARAM_LIEFERANT_KOMMENT;
+            cmd += ", ";
             cmd += PARAM_LIEFERANT_ERSTELLER;
             cmd += ", ";
             cmd += PARAM_LIEFERANT_DATERST;
@@ -149,6 +151,7 @@ void Form_lieferanten::on_lineEdit_suche_textChanged()
 void Form_lieferanten::on_pushButton_new_clicked()
 {
     Dialog_lieferanten *d = new Dialog_lieferanten;
+    d->setWindowTitle("Lieferant anlegen");
     connect(d, SIGNAL(signal_send_data(text_zeilenweise)),  \
             this, SLOT(slot_new(text_zeilenweise))          );
     d->exec();
@@ -297,11 +300,13 @@ void Form_lieferanten::slot_new(text_zeilenweise data)
     param.zeile_anhaengen(PARAM_LIEFERANT_NAME);
     param.zeile_anhaengen(PARAM_LIEFERANT_ERSTELLER);
     param.zeile_anhaengen(PARAM_LIEFERANT_DATERST);
+    param.zeile_anhaengen(PARAM_LIEFERANT_KOMMENT);
 
-    values.zeile_anhaengen(data.zeile(1));
+    values.zeile_anhaengen(data.zeile(1));//Name
     values.zeile_anhaengen(user);
     datum heute;
     values.zeile_anhaengen(heute.get_today_y_m_d());
+    values.zeile_anhaengen(data.zeile(2));//Kommentar
 
     dbeigen->data_new(TABNAME_LIEFERANT, param, values);
     update_table();
@@ -322,16 +327,16 @@ void Form_lieferanten::slot_edit_dialog(text_zeilenweise ids)
         if(blockfromuser == USER_NOBODY || blockfromuser.isEmpty())
         {
             text_zeilenweise lieferant;
-                            //Wert 1 = Name
             QString querryfilter;
             querryfilter += PARAM_LIEFERANT_ID;
             querryfilter += " LIKE \'";
             querryfilter += idbuffer;
             querryfilter += "\'";
             lieferant.zeile_anhaengen(dbeigen->get_values_from_column(TABNAME_LIEFERANT, 1, querryfilter).get_text());//Name
-
+            lieferant.zeile_anhaengen(dbeigen->get_values_from_column(TABNAME_LIEFERANT, 7, querryfilter).get_text());//Kommenter
 
             Dialog_lieferanten *d = new Dialog_lieferanten;
+            d->setWindowTitle("Lieferant bearbeiten");
             d->set_data(lieferant, idbuffer);
             connect(d, SIGNAL(signal_send_data(text_zeilenweise, QString)),  \
                     this, SLOT(slot_edit(text_zeilenweise, QString))          );
@@ -367,15 +372,16 @@ void Form_lieferanten::slot_edit_dialog(text_zeilenweise ids)
 void Form_lieferanten::slot_edit_dialog()
 {
     text_zeilenweise lieferant;
-                    //Wert 1 = Name
     QString querryfilter;
     querryfilter += PARAM_LIEFERANT_ID;
     querryfilter += " LIKE \'";
     querryfilter += idbuffer;
     querryfilter += "\'";
     lieferant.zeile_anhaengen(dbeigen->get_values_from_column(TABNAME_LIEFERANT, 1, querryfilter).get_text());//Name
+    lieferant.zeile_anhaengen(dbeigen->get_values_from_column(TABNAME_LIEFERANT, 8, querryfilter).get_text());//Kommenter
 
     Dialog_lieferanten *d = new Dialog_lieferanten;
+    d->setWindowTitle("Lieferant bearbeiten");
     d->set_data(lieferant, idbuffer);
     connect(d, SIGNAL(signal_send_data(text_zeilenweise, QString)),  \
             this, SLOT(slot_edit(text_zeilenweise, QString))          );
@@ -429,11 +435,13 @@ void Form_lieferanten::slot_edit(text_zeilenweise data, QString id)
         param.zeile_anhaengen(PARAM_LIEFERANT_BEARBEITER);
         param.zeile_anhaengen(PARAM_LIEFERANT_DATBEARB);
         param.zeile_anhaengen(PARAM_LIEFERANT_BLOCK);
+        param.zeile_anhaengen(PARAM_LIEFERANT_KOMMENT);
 
-        values.zeile_anhaengen(data.zeile(1));
+        values.zeile_anhaengen(data.zeile(1));//Name
         values.zeile_anhaengen(user);
         values.zeile_anhaengen(today.get_today_y_m_d());
         values.zeile_anhaengen(USER_NOBODY);
+        values.zeile_anhaengen(data.zeile(2));//Kommenter
 
         dbeigen->data_edit(TABNAME_LIEFERANT, param, values, id);
     }

@@ -29,7 +29,7 @@ void Form_tableeditor::resizeEvent(QResizeEvent *event)
     int hoehe = rect_main.height();
     int breite = rect_main.width();
 
-    hoehe = hoehe - ui->label_tables->geometry().height();
+    hoehe = hoehe - ui->label_tables->height();
 
     //Spalte 1 Tabellen-Namen:
     //--label:
@@ -39,48 +39,60 @@ void Form_tableeditor::resizeEvent(QResizeEvent *event)
     ui->listWidget_tables->move( 1 ,                                                \
                                  1 + ui->label_tables->geometry().height() + 1      );
     ui->listWidget_tables->setFixedSize(breite/5, \
-                                        hoehe - ui->pushButton_table_new->geometry().height() - 5);
+                                        hoehe - \
+                                        ui->pushButton_table_new->height() - \
+                                        ui->lineEdit_table_seach->height() - \
+                                        7);
+    //--Suchleiste:
+    ui->lineEdit_table_seach->move( 1 ,\
+                                    1 +\
+                                    ui->label_tables->height() +\
+                                    1 + \
+                                    ui->listWidget_tables->height() + \
+                                    1);
+    ui->lineEdit_table_seach->setFixedWidth(ui->listWidget_tables->width());
+
     //--buttons:
-    ui->pushButton_table_new->setFixedWidth(ui->listWidget_tables->geometry().width() / 3);
-    ui->pushButton_table_del->setFixedWidth(ui->listWidget_tables->geometry().width() / 3 - 1);
-    ui->pushButton_table_edit->setFixedWidth(ui->listWidget_tables->geometry().width() / 3 - 1);
+    ui->pushButton_table_new->setFixedWidth(ui->listWidget_tables->width() / 3);
+    ui->pushButton_table_del->setFixedWidth(ui->listWidget_tables->width() / 3 - 1);
+    ui->pushButton_table_edit->setFixedWidth(ui->listWidget_tables->width() / 3 - 1);
     ui->pushButton_table_new->move(1, \
-                                   this->geometry().height() - ui->pushButton_table_new->geometry().height());
-    ui->pushButton_table_del->move(1 + ui->pushButton_table_new->geometry().width() + 1, \
-                                   this->geometry().height() - ui->pushButton_table_new->geometry().height());
-    ui->pushButton_table_edit->move(1 + ui->pushButton_table_new->geometry().width()*2 + 2, \
-                                   this->geometry().height() - ui->pushButton_table_new->geometry().height());
+                                   this->height() - ui->pushButton_table_new->height());
+    ui->pushButton_table_del->move(1 + ui->pushButton_table_new->width() + 1, \
+                                   this->height() - ui->pushButton_table_new->height());
+    ui->pushButton_table_edit->move(1 + ui->pushButton_table_new->width()*2 + 2, \
+                                   this->height() - ui->pushButton_table_new->height());
 
 
     //Spalte 2 Tabellen-Kopft:
     //--label:
-    ui->label_tablehead->move(1+ui->listWidget_tables->geometry().width()+1 , 1 );
+    ui->label_tablehead->move(1+ui->listWidget_tables->width()+1 , 1 );
     ui->label_tablehead->setFixedWidth(breite/5);
     //--listWidget
-    ui->listWidget_tablehead->move( 1+ui->listWidget_tables->geometry().width()+1 , \
-                                    1 + ui->label_tables->geometry().height() + 1   );
+    ui->listWidget_tablehead->move( 1+ui->listWidget_tables->width()+1 , \
+                                    1 + ui->label_tables->height() + 1   );
     ui->listWidget_tablehead->setFixedSize(breite/5, \
-                                           hoehe - ui->pushButton_table_new->geometry().height() - 5);
+                                           hoehe - ui->pushButton_table_new->height() - 5);
     //--buttons:
-    ui->pushButton_param_new->setFixedWidth(ui->listWidget_tables->geometry().width() / 3);
-    ui->pushButton_param_del->setFixedWidth(ui->listWidget_tables->geometry().width() / 3 - 1);
-    ui->pushButton_param_edit->setFixedWidth(ui->listWidget_tables->geometry().width() / 3 - 1);
+    ui->pushButton_param_new->setFixedWidth(ui->listWidget_tables->width() / 3);
+    ui->pushButton_param_del->setFixedWidth(ui->listWidget_tables->width() / 3 - 1);
+    ui->pushButton_param_edit->setFixedWidth(ui->listWidget_tables->width() / 3 - 1);
     ui->pushButton_param_new->move(breite/5 +1 , \
-                                   this->geometry().height() - ui->pushButton_table_new->geometry().height());
-    ui->pushButton_param_del->move(breite/5 + 1 + ui->pushButton_param_new->geometry().width() + 1, \
-                                   this->geometry().height() - ui->pushButton_table_new->geometry().height());
-    ui->pushButton_param_edit->move(breite/5 + 1 + ui->pushButton_param_new->geometry().width()*2 + 2, \
-                                   this->geometry().height() - ui->pushButton_table_new->geometry().height());
+                                   this->height() - ui->pushButton_table_new->height());
+    ui->pushButton_param_del->move(breite/5 + 1 + ui->pushButton_param_new->width() + 1, \
+                                   this->height() - ui->pushButton_table_new->height());
+    ui->pushButton_param_edit->move(breite/5 + 1 + ui->pushButton_param_new->width()*2 + 2, \
+                                   this->height() - ui->pushButton_table_new->height());
 
 
 
     //Spalte 3 :
-    int labelbreite = ui->label_typlabel->geometry().width();
-    if(labelbreite < ui->label_prilabel->geometry().width())
+    int labelbreite = ui->label_typlabel->width();
+    if(labelbreite < ui->label_prilabel->width())
     {
         labelbreite = ui->label_prilabel->geometry().width();
     }
-    if(labelbreite < ui->label_extralabel->geometry().width())
+    if(labelbreite < ui->label_extralabel->width())
     {
         labelbreite = ui->label_extralabel->geometry().width();
     }
@@ -91,9 +103,9 @@ void Form_tableeditor::resizeEvent(QResizeEvent *event)
 
     int labelbreite2 =  breite -                                        \
                         1-                                              \
-                        ui->listWidget_tables->geometry().width()-      \
+                        ui->listWidget_tables->width()-      \
                         1-                                              \
-                        ui->listWidget_tablehead->geometry().width()-   \
+                        ui->listWidget_tablehead->width()-   \
                         1-                                              \
                         labelbreite-                                    \
                         1;
@@ -108,24 +120,24 @@ void Form_tableeditor::resizeEvent(QResizeEvent *event)
     ui->label_extra->setFixedWidth(labelbreite2);
 
     int xposlabel = 1 +                                           \
-                    ui->label_tables->geometry().width() +        \
+                    ui->label_tables->width() +        \
                     1 +                                           \
-                    ui->label_tablehead->geometry().width() +     \
+                    ui->label_tablehead->width() +     \
                     1;
     int xposlabel2 = xposlabel + labelbreite + 1;
 
-    ui->label_typlabel->move( xposlabel , 1 + ui->label_tables->geometry().height() + 1 );
-    ui->label_typ->move     ( xposlabel2 , 1 + ui->label_tables->geometry().height() + 1 );
+    ui->label_typlabel->move( xposlabel , 1 + ui->label_tables->height() + 1 );
+    ui->label_typ->move     ( xposlabel2 , 1 + ui->label_tables->height() + 1 );
 
-    ui->label_prilabel->move( xposlabel , (1 + ui->label_tables->geometry().height())*2 + 1 );
-    ui->label_pri->move     ( xposlabel2 , (1 + ui->label_tables->geometry().height())*2 + 1 );
+    ui->label_prilabel->move( xposlabel , (1 + ui->label_tables->height())*2 + 1 );
+    ui->label_pri->move     ( xposlabel2 , (1 + ui->label_tables->height())*2 + 1 );
 
-    ui->label_extralabel->move( xposlabel , (1 + ui->label_tables->geometry().height())*3 + 1 );
-    ui->label_extra->move     ( xposlabel2 , (1 + ui->label_tables->geometry().height())*3 + 1 );
+    ui->label_extralabel->move( xposlabel , (1 + ui->label_tables->height())*3 + 1 );
+    ui->label_extra->move     ( xposlabel2 , (1 + ui->label_tables->height())*3 + 1 );
 
-    ui->tableView->move(xposlabel, (1 + ui->label_tables->geometry().height())*4 + 1);
+    ui->tableView->move(xposlabel, (1 + ui->label_tables->height())*4 + 1);
     ui->tableView->setFixedWidth(labelbreite + labelbreite2 -1);
-    int tablehight = hoehe - ui->tableView->pos().ry()+ui->label_tables->geometry().height() -3;
+    int tablehight = hoehe - ui->tableView->pos().ry()+ui->label_tables->height() -3;
     if(tablehight > 0)
     {
         ui->tableView->setFixedHeight(tablehight);
@@ -146,11 +158,11 @@ void Form_tableeditor::on_listWidget_tables_currentRowChanged()
 {
     //-------------------------------------------
     ui->listWidget_tablehead->clear();
-    text_zeilenweise tables = dbeigen->get_param_tz(ui->listWidget_tables->currentItem()->text());
+    text_zeilenweise params = dbeigen->get_param_tz(ui->listWidget_tables->currentItem()->text());
 
-    for(uint i=1; i<=tables.zeilenanzahl() ;i++)
+    for(uint i=1; i<=params.zeilenanzahl() ;i++)
     {
-        ui->listWidget_tablehead->addItem(tables.zeile(i));
+        ui->listWidget_tablehead->addItem(params.zeile(i));
     }
     //-------------------------------------------
     {
@@ -234,10 +246,24 @@ void Form_tableeditor::update_tablnames()
 
     for(uint i=1; i<=tables.zeilenanzahl() ;i++)
     {
-        ui->listWidget_tables->addItem(tables.zeile(i));
+        QString name = tables.zeile(i);
+        if(ui->lineEdit_table_seach->text().isEmpty())
+        {
+            ui->listWidget_tables->addItem(name);
+        }else
+        {
+            if(name.toUpper().contains(  ui->lineEdit_table_seach->text().toUpper()  ))
+            {
+                ui->listWidget_tables->addItem(name);
+            }
+        }
     }
 }
 
+void Form_tableeditor::on_lineEdit_table_seach_textChanged()
+{
+    update_tablnames();
+}
 //----------------------------------Buttons:
 void Form_tableeditor::on_pushButton_table_new_clicked()
 {
@@ -480,6 +506,9 @@ void Form_tableeditor::slot_edit_param(QString name, QString typ, QString additi
 }
 
 //----------------------------------
+
+
+
 
 
 
