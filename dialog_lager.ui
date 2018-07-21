@@ -36,7 +36,7 @@
     <item>
      <widget class="QPushButton" name="pushButton_cancel">
       <property name="text">
-       <string>Abbrechen</string>
+       <string>Abbrechen / Fertig</string>
       </property>
      </widget>
     </item>
@@ -52,13 +52,6 @@
     </rect>
    </property>
    <layout class="QGridLayout" name="gridLayout">
-    <item row="2" column="0">
-     <widget class="QLabel" name="label_3">
-      <property name="text">
-       <string>Menge</string>
-      </property>
-     </widget>
-    </item>
     <item row="0" column="0">
      <widget class="QLabel" name="label">
       <property name="text">
@@ -66,28 +59,8 @@
       </property>
      </widget>
     </item>
-    <item row="0" column="1">
-     <widget class="QLineEdit" name="lineEdit_artikelfilter"/>
-    </item>
-    <item row="1" column="0">
-     <widget class="QLabel" name="label_2">
-      <property name="text">
-       <string>Artikel</string>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="0">
-     <widget class="QLabel" name="label_4">
-      <property name="text">
-       <string>Kommissions-Filter</string>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="1">
-     <widget class="QLineEdit" name="lineEdit_menge"/>
-    </item>
-    <item row="1" column="1">
-     <widget class="QComboBox" name="comboBox_artikel"/>
+    <item row="4" column="1">
+     <widget class="QComboBox" name="comboBox_kom"/>
     </item>
     <item row="4" column="0">
      <widget class="QLabel" name="label_5">
@@ -99,8 +72,55 @@
     <item row="3" column="1">
      <widget class="QLineEdit" name="lineEdit_komfilter"/>
     </item>
-    <item row="4" column="1">
-     <widget class="QComboBox" name="comboBox_kom"/>
+    <item row="3" column="0">
+     <widget class="QLabel" name="label_4">
+      <property name="text">
+       <string>Kommissions-Filter</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="1">
+     <widget class="QComboBox" name="comboBox_artikel"/>
+    </item>
+    <item row="2" column="0">
+     <widget class="QLabel" name="label_3">
+      <property name="text">
+       <string>Menge</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <widget class="QLabel" name="label_2">
+      <property name="text">
+       <string>Artikel</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1">
+     <widget class="QLineEdit" name="lineEdit_artikelfilter"/>
+    </item>
+    <item row="5" column="0">
+     <widget class="QLabel" name="label_komment">
+      <property name="text">
+       <string>Kommentar</string>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="1">
+     <widget class="QLineEdit" name="lineEdit_komment"/>
+    </item>
+    <item row="2" column="1">
+     <widget class="QSpinBox" name="spinBox_menge">
+      <property name="minimum">
+       <number>1</number>
+      </property>
+      <property name="maximum">
+       <number>999999999</number>
+      </property>
+      <property name="value">
+       <number>1</number>
+      </property>
+     </widget>
     </item>
    </layout>
   </widget>
@@ -108,9 +128,10 @@
  <tabstops>
   <tabstop>lineEdit_artikelfilter</tabstop>
   <tabstop>comboBox_artikel</tabstop>
-  <tabstop>lineEdit_menge</tabstop>
+  <tabstop>spinBox_menge</tabstop>
   <tabstop>lineEdit_komfilter</tabstop>
   <tabstop>comboBox_kom</tabstop>
+  <tabstop>lineEdit_komment</tabstop>
   <tabstop>pushButton_ok</tabstop>
   <tabstop>pushButton_cancel</tabstop>
  </tabstops>

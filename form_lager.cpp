@@ -128,6 +128,13 @@ void Form_lager::update_table()
             //------------------------
             cmd += TABNAME_LAGER;
             cmd += ".";
+            cmd += PARAM_LAGER_KOMMENT;
+            cmd += " AS ";
+            cmd += "Kommentar";
+            cmd += ", ";
+            //------------------------
+            cmd += TABNAME_LAGER;
+            cmd += ".";
             cmd += PARAM_LAGER_ERSTELLER;
             cmd += " AS ";
             cmd += "Ersteller";
@@ -332,6 +339,7 @@ void Form_lager::slot_in(text_zeilenweise data)
     QString artikelid   = data.zeile(1);
     QString menge       = data.zeile(2);
     QString projektid   = data.zeile(3);
+    QString kommentar   = data.zeile(4);
 
     param.zeile_anhaengen(PARAM_LAGER_VORGANG);
     param.zeile_anhaengen(PARAM_LAGER_ARTIKELID);
@@ -339,6 +347,7 @@ void Form_lager::slot_in(text_zeilenweise data)
     param.zeile_anhaengen(PARAM_LAGER_ERSTELLER);
     param.zeile_anhaengen(PARAM_LAGER_DATERST);
     param.zeile_anhaengen(PARAM_LAGER_KOMMISSION);
+    param.zeile_anhaengen(PARAM_LAGER_KOMMENT);
 
     values.zeile_anhaengen(VORGANG_WARENEINGANG);
     values.zeile_anhaengen(artikelid);
@@ -347,6 +356,7 @@ void Form_lager::slot_in(text_zeilenweise data)
     datum heute;
     values.zeile_anhaengen(heute.get_today_y_m_d());
     values.zeile_anhaengen(projektid);
+    values.zeile_anhaengen(kommentar);
 
     //Aktuelle Lagermenge des Artikeln abfragen:
     QString menge_vorher = dbeigen->get_data_qstring(TABNAME_ARTIKEL, PARAM_ARTIKEL_LAGERSTAND, artikelid);
@@ -365,6 +375,7 @@ void Form_lager::slot_out(text_zeilenweise data)
     QString artikelid   = data.zeile(1);
     QString menge       = data.zeile(2);
     QString projektid   = data.zeile(3);
+    QString kommentar   = data.zeile(4);
 
     param.zeile_anhaengen(PARAM_LAGER_VORGANG);
     param.zeile_anhaengen(PARAM_LAGER_ARTIKELID);
@@ -372,6 +383,7 @@ void Form_lager::slot_out(text_zeilenweise data)
     param.zeile_anhaengen(PARAM_LAGER_ERSTELLER);
     param.zeile_anhaengen(PARAM_LAGER_DATERST);
     param.zeile_anhaengen(PARAM_LAGER_KOMMISSION);
+    param.zeile_anhaengen(PARAM_LAGER_KOMMENT);
 
     values.zeile_anhaengen(VORGANG_WARENEINGANG);
     values.zeile_anhaengen(artikelid);
@@ -380,6 +392,7 @@ void Form_lager::slot_out(text_zeilenweise data)
     datum heute;
     values.zeile_anhaengen(heute.get_today_y_m_d());
     values.zeile_anhaengen(projektid);
+    values.zeile_anhaengen(kommentar);
 
     //Aktuelle Lagermenge des Artikeln abfragen:
     QString menge_vorher = dbeigen->get_data_qstring(TABNAME_ARTIKEL, PARAM_ARTIKEL_LAGERSTAND, artikelid);

@@ -33,7 +33,7 @@ signals:
 private slots:
     void on_pushButton_cancel_clicked();
     void on_pushButton_ok_clicked();
-    void on_lineEdit_textChanged(const QString &arg1);
+    void on_lineEdit_filter_lieferant_textChanged(const QString &arg1);
 
 private:
     Ui::Dialog_artikel *ui;

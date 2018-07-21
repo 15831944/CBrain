@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>300</height>
+    <height>385</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -22,7 +22,7 @@
      <x>10</x>
      <y>10</y>
      <width>381</width>
-     <height>241</height>
+     <height>331</height>
     </rect>
    </property>
    <layout class="QGridLayout" name="gridLayout">
@@ -57,12 +57,49 @@
      <widget class="QLineEdit" name="lineEdit_bezeichnung"/>
     </item>
     <item row="2" column="1">
-     <widget class="QLineEdit" name="lineEdit"/>
+     <widget class="QLineEdit" name="lineEdit_filter_lieferant"/>
     </item>
     <item row="2" column="0">
-     <widget class="QLabel" name="label_4">
+     <widget class="QLabel" name="label_filter_lieferant">
       <property name="text">
        <string>Filter Lieferanten</string>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="0">
+     <widget class="QLabel" name="label_lagerort">
+      <property name="text">
+       <string>Lagerort</string>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="0">
+     <widget class="QLabel" name="label_ve">
+      <property name="text">
+       <string>VE</string>
+      </property>
+     </widget>
+    </item>
+    <item row="6" column="0">
+     <widget class="QLabel" name="label_komment">
+      <property name="text">
+       <string>Kommentar</string>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="1">
+     <widget class="QLineEdit" name="lineEdit_lagerort"/>
+    </item>
+    <item row="6" column="1">
+     <widget class="QLineEdit" name="lineEdit_komment"/>
+    </item>
+    <item row="5" column="1">
+     <widget class="QSpinBox" name="spinBox_ve">
+      <property name="maximum">
+       <number>9999</number>
+      </property>
+      <property name="value">
+       <number>1</number>
       </property>
      </widget>
     </item>
@@ -72,7 +109,7 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>260</y>
+     <y>350</y>
      <width>381</width>
      <height>29</height>
     </rect>
@@ -98,8 +135,11 @@
  <tabstops>
   <tabstop>lineEdit_artielnummer</tabstop>
   <tabstop>lineEdit_bezeichnung</tabstop>
-  <tabstop>lineEdit</tabstop>
+  <tabstop>lineEdit_filter_lieferant</tabstop>
   <tabstop>comboBox_lieferant</tabstop>
+  <tabstop>lineEdit_lagerort</tabstop>
+  <tabstop>spinBox_ve</tabstop>
+  <tabstop>lineEdit_komment</tabstop>
   <tabstop>pushButton_ok</tabstop>
   <tabstop>pushButton_cancel</tabstop>
  </tabstops>

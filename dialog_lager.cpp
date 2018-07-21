@@ -109,10 +109,12 @@ void Dialog_lager::setup()
         }
     }
 
+    ui->comboBox_artikel->addItem("---");
     for(uint i=1; i<=artikel.zeilenanzahl() ;i++)
     {
         ui->comboBox_artikel->addItem(artikel.zeile(i));
     }
+    ui->comboBox_kom->addItem("---");
     for(uint i=1; i<=projekte.zeilenanzahl() ;i++)
     {
         ui->comboBox_kom->addItem(projekte.zeile(i));
@@ -122,32 +124,23 @@ void Dialog_lager::setup()
 
 void Dialog_lager::on_pushButton_ok_clicked()
 {
-    if( ui->lineEdit_menge->text().isEmpty() )
+    if(ui->comboBox_artikel->currentText() == "---")//nichts gewählt
     {
         QMessageBox mb;
-        mb.setText("Das Datenfeld \"Menge\" darfen nicht leer sein!");
+        mb.setText("Das Datenfeld \"Artikel\" darf nicht leer sein!");
         mb.exec();
-    }else if(ui->comboBox_artikel->currentIndex() == -1)//nichts gewählt
+    }else if(ui->comboBox_kom->currentText() == "---")//nichts gewählt
     {
         QMessageBox mb;
-        mb.setText("Das Datenfeld \"Artikel\" darfen nicht leer sein!");
-        mb.exec();
-    }else if(ui->comboBox_kom->currentIndex() == -1)//nichts gewählt
-    {
-        QMessageBox mb;
-        mb.setText("Das Datenfeld \"Kommission\" darfen nicht leer sein!");
-        mb.exec();
-    }else if(ui->lineEdit_menge->text().toDouble() <= 0)
-    {
-        QMessageBox mb;
-        mb.setText("Bitte eine Menge > 0 eintragen");
+        mb.setText("Das Datenfeld \"Kommission\" darf nicht leer sein!");
         mb.exec();
     }else
     {
         text_zeilenweise tz;
         tz.zeile_anhaengen(text_links(ui->comboBox_artikel->currentText(), " / "));    //Wert 1
-        tz.zeile_anhaengen(ui->lineEdit_menge->text());                                //Wert 2
+        tz.zeile_anhaengen(int_to_qstring(ui->spinBox_menge->value()));                //Wert 2
         tz.zeile_anhaengen(text_links(ui->comboBox_kom->currentText(), " / "));        //Wert 3
+        tz.zeile_anhaengen(ui->lineEdit_komment->text());                              //Wert 4
 
         emit signal_send_data(tz);
     }

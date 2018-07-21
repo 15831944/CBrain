@@ -110,6 +110,21 @@ void Form_artikel::update_table()
             //------------------------
             cmd += TABNAME_ARTIKEL;
             cmd += ".";
+            cmd += PARAM_ARTIKEL_LAGERORT;
+            cmd += ", ";
+            //------------------------
+            cmd += TABNAME_ARTIKEL;
+            cmd += ".";
+            cmd += PARAM_ARTIKEL_VE;
+            cmd += ", ";
+            //------------------------
+            cmd += TABNAME_ARTIKEL;
+            cmd += ".";
+            cmd += PARAM_ARTIKEL_KOMENT;
+            cmd += ", ";
+            //------------------------
+            cmd += TABNAME_ARTIKEL;
+            cmd += ".";
             cmd += PARAM_ARTIKEL_ERSTELLER;
             cmd += ", ";
             //------------------------
@@ -364,6 +379,9 @@ void Form_artikel::slot_new(text_zeilenweise data)
     param.zeile_anhaengen(PARAM_ARTIKEL_LAGERSTAND);
     param.zeile_anhaengen(PARAM_ARTIKEL_ERSTELLER);
     param.zeile_anhaengen(PARAM_ARTIKEL_DATERST);
+    param.zeile_anhaengen(PARAM_ARTIKEL_LAGERORT);
+    param.zeile_anhaengen(PARAM_ARTIKEL_VE);
+    param.zeile_anhaengen(PARAM_ARTIKEL_KOMENT);
 
     values.zeile_anhaengen(data.zeile(1));
     values.zeile_anhaengen(data.zeile(2));
@@ -372,6 +390,9 @@ void Form_artikel::slot_new(text_zeilenweise data)
     values.zeile_anhaengen(user);
     datum heute;
     values.zeile_anhaengen(heute.get_today_y_m_d());
+    values.zeile_anhaengen(data.zeile(4));
+    values.zeile_anhaengen(data.zeile(5));
+    values.zeile_anhaengen(data.zeile(6));
 
     dbeigen->data_new(TABNAME_ARTIKEL, param, values);
     update_table();
@@ -392,9 +413,6 @@ void Form_artikel::slot_edit_dialog(text_zeilenweise ids)
         if(blockfromuser == USER_NOBODY || blockfromuser.isEmpty())
         {
             text_zeilenweise artikel;
-                            //Wert 1 = Artikelnummer
-                            //Wert 2 = Bezeichnung
-                            //Wert 3 = Lieferant
             QString querryfilter;
             querryfilter += PARAM_ARTIKEL_ID;
             querryfilter += " LIKE \'";
@@ -403,7 +421,9 @@ void Form_artikel::slot_edit_dialog(text_zeilenweise ids)
             artikel.zeile_anhaengen(dbeigen->get_values_from_column(TABNAME_ARTIKEL, 1, querryfilter).get_text());//Nr
             artikel.zeile_anhaengen(dbeigen->get_values_from_column(TABNAME_ARTIKEL, 2, querryfilter).get_text());//Bez
             artikel.zeile_anhaengen(dbeigen->get_values_from_column(TABNAME_ARTIKEL, 3, querryfilter).get_text());//Lieferant
-
+            artikel.zeile_anhaengen(dbeigen->get_values_from_column(TABNAME_ARTIKEL, 10, querryfilter).get_text());//Lagerort
+            artikel.zeile_anhaengen(dbeigen->get_values_from_column(TABNAME_ARTIKEL, 11, querryfilter).get_text());//VE
+            artikel.zeile_anhaengen(dbeigen->get_values_from_column(TABNAME_ARTIKEL, 12, querryfilter).get_text());//Kommentar
 
             Dialog_artikel *d = new Dialog_artikel;
             d->set_db(dbeigen);
@@ -444,9 +464,6 @@ void Form_artikel::slot_edit_dialog(text_zeilenweise ids)
 void Form_artikel::slot_edit_dialog()
 {
     text_zeilenweise artikel;
-                    //Wert 1 = Artikelnummer
-                    //Wert 2 = Bezeichnung
-                    //Wert 3 = Lieferant
     QString querryfilter;
     querryfilter += PARAM_ARTIKEL_ID;
     querryfilter += " LIKE \'";
@@ -455,6 +472,9 @@ void Form_artikel::slot_edit_dialog()
     artikel.zeile_anhaengen(dbeigen->get_values_from_column(TABNAME_ARTIKEL, 1, querryfilter).get_text());//Nr
     artikel.zeile_anhaengen(dbeigen->get_values_from_column(TABNAME_ARTIKEL, 2, querryfilter).get_text());//Bez
     artikel.zeile_anhaengen(dbeigen->get_values_from_column(TABNAME_ARTIKEL, 3, querryfilter).get_text());//Lieferant
+    artikel.zeile_anhaengen(dbeigen->get_values_from_column(TABNAME_ARTIKEL, 10, querryfilter).get_text());//Lagerort
+    artikel.zeile_anhaengen(dbeigen->get_values_from_column(TABNAME_ARTIKEL, 11, querryfilter).get_text());//VE
+    artikel.zeile_anhaengen(dbeigen->get_values_from_column(TABNAME_ARTIKEL, 12, querryfilter).get_text());//Kommentar
 
     Dialog_artikel *d = new Dialog_artikel;
     d->set_db(dbeigen);
@@ -516,6 +536,9 @@ void Form_artikel::slot_edit(text_zeilenweise data, QString id)
         param.zeile_anhaengen(PARAM_ARTIKEL_BEARBEITER);
         param.zeile_anhaengen(PARAM_ARTIKEL_DATBEARB);
         param.zeile_anhaengen(PARAM_ARTIKEL_BLOCK);
+        param.zeile_anhaengen(PARAM_ARTIKEL_LAGERORT);
+        param.zeile_anhaengen(PARAM_ARTIKEL_VE);
+        param.zeile_anhaengen(PARAM_ARTIKEL_KOMENT);
 
         values.zeile_anhaengen(data.zeile(1));
         values.zeile_anhaengen(data.zeile(2));
@@ -523,6 +546,9 @@ void Form_artikel::slot_edit(text_zeilenweise data, QString id)
         values.zeile_anhaengen(user);
         values.zeile_anhaengen(today.get_today_y_m_d());
         values.zeile_anhaengen(USER_NOBODY);
+        values.zeile_anhaengen(data.zeile(4));
+        values.zeile_anhaengen(data.zeile(5));
+        values.zeile_anhaengen(data.zeile(6));
 
         dbeigen->data_edit(TABNAME_ARTIKEL, param, values, id);
     }
