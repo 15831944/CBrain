@@ -1,5 +1,5 @@
 <BEGIN_Tabelle>
-tab_Artikel
+table_Artikel
 Field	Type	Null	Key	Default	Extra
 id	int(11) unsigned	NO	PRI	---	auto_increment	
 Artikelnummer	varchar(40)	YES	---	---	---	
@@ -16,7 +16,7 @@ VE	int(11)	YES	---	---	---
 Kommentar	varchar(400)	YES	---	---	---	
 <ENDE_Tabelle>
 <BEGIN_Tabelle>
-tab_Lager
+table_Lager
 Field	Type	Null	Key	Default	Extra
 id	int(11) unsigned	NO	PRI	---	auto_increment	
 Vorgang	varchar(40)	YES	---	---	---	
@@ -28,7 +28,7 @@ Kommission	varchar(40)	YES	---	---	---
 Kommentar	varchar(400)	YES	---	---	---	
 <ENDE_Tabelle>
 <BEGIN_Tabelle>
-tab_Lieferanten
+table_Lieferanten
 Field	Type	Null	Key	Default	Extra
 id	int(11) unsigned	NO	PRI	---	auto_increment	
 Name	varchar(40)	YES	---	---	---	
@@ -40,7 +40,7 @@ blockiert	varchar(40)	YES	---	---	---
 Kommentar	varchar(400)	YES	---	---	---	
 <ENDE_Tabelle>
 <BEGIN_Tabelle>
-tab_Projekte
+table_Projekte
 Field	Type	Null	Key	Default	Extra
 id	int(11) unsigned	NO	PRI	---	auto_increment	
 Name	varchar(40)	YES	---	---	---	
@@ -52,10 +52,15 @@ blockiert	varchar(40)	YES	---	---	---
 Kommentar	varchar(400)	YES	---	---	---	
 <ENDE_Tabelle>
 <BEGIN_Tabelle>
-tab_Reservierungen
+table_Reservierungen
 Field	Type	Null	Key	Default	Extra
 id	int(11) unsigned	NO	PRI	---	auto_increment	
 Artikel	int(11)	YES	---	---	---	
 Menge	int(11)	YES	---	---	---	
 Kommission	varchar(40)	YES	---	---	---	
+<ENDE_Tabelle>
+<BEGIN_Tabelle>
+template_Materialliste
+Field	Type	Null	Key	Default	Extra
+id	int(11) unsigned	NO	PRI	---	auto_increment	
 <ENDE_Tabelle>

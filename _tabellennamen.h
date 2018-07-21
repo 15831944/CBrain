@@ -4,7 +4,7 @@
 #define USER_NOBODY                 "nobody"
 
 //--------------------------------------------------------------------------------------------------------
-#define TABNAME_ARTIKEL             "tab_Artikel"
+#define TABNAME_ARTIKEL             "table_Artikel"
 #define PARAM_ARTIKEL_ID            "id"                //Wert 0
 #define PARAM_ARTIKEL_NR            "Artikelnummer"     //Wert 1
 #define PARAM_ARTIKEL_BEZ           "Bezeichnung"       //Wert 2
@@ -21,7 +21,7 @@
 #define PARAM_ARTIKEL_KOMENT        "Kommentar"         //Wert 12
 
 //--------------------------------------------------------------------------------------------------------
-#define TABNAME_LIEFERANT           "tab_Lieferanten"
+#define TABNAME_LIEFERANT           "table_Lieferanten"
 #define PARAM_LIEFERANT_ID          "id"                //Wert 0
 #define PARAM_LIEFERANT_NAME        "Name"              //Wert 1
 #define PARAM_LIEFERANT_ERSTELLER   "Ersteller"         //Wert 2
@@ -33,7 +33,7 @@
 #define PARAM_LIEFERANT_KOMMENT     "Kommentar"         //Wert 7
 
 //--------------------------------------------------------------------------------------------------------
-#define TABNAME_PROJEKT             "tab_Projekte"
+#define TABNAME_PROJEKT             "table_Projekte"
 #define PARAM_PROJEKT_ID            "id"                //Wert 0
 #define PARAM_PROJEKT_NAME          "Name"              //Wert 1
 #define PARAM_PROJEKT_ERSTELLER     "Ersteller"         //Wert 2
@@ -44,7 +44,7 @@
                                                                     //zur Bearbeitung geöffnen
 #define PARAM_PROJEKT_KOMMENT       "Kommentar"         //Wert 7
 //--------------------------------------------------------------------------------------------------------
-#define TABNAME_LAGER               "tab_Lager"
+#define TABNAME_LAGER               "table_Lager"
 #define PARAM_LAGER_ID              "id"                //Wert 0
 #define PARAM_LAGER_VORGANG         "Vorgang"           //Wert 1    //Wareneingang | Warenausgang
     #define VORGANG_WARENEINGANG        "Waren-Eingang"
@@ -57,7 +57,7 @@
 #define PARAM_LAGER_KOMMENT         "Kommentar"         //Wert 7
 
 //--------------------------------------------------------------------------------------------------------
-#define TABNAME_RESERV              "tab_Reservierungen"
+#define TABNAME_RESERV              "table_Reservierungen"
 #define PARAM_RESERV_ID             "id"                //Wert 0
 #define PARAM_RESERV_ARTIKELID      "ArtikelID"         //Wert 1
 #define PARAM_RESERV_MENGE          "Menge"             //Wert 2
