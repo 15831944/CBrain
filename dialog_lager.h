@@ -8,6 +8,7 @@
 #include "cbrainbatabase.h"
 #include "_tabellennamen.h"
 #include "text.h"
+#include "dialog_printbox.h"
 
 namespace Ui {
 class Dialog_lager;
@@ -30,10 +31,9 @@ signals:
 private slots:
     void on_pushButton_ok_clicked();
     void on_pushButton_cancel_clicked();
-
-    void on_lineEdit_artikelfilter_textChanged(const QString &arg1);
-
+    void on_lineEdit_artikelfilter_textChanged();
     void on_lineEdit_komfilter_textChanged(const QString &arg1);
+    void on_pushButton_print_clicked();
 
 private:
     Ui::Dialog_lager *ui;
@@ -43,8 +43,10 @@ private:
 
     text_zeilenweise artikel;
     text_zeilenweise projekte;
+    text_zeilenweise lieferanten;
 
     void clear();
+    void update_artikel();
 };
 
 #endif // DIALOG_LAGER_H

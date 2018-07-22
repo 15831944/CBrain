@@ -23,7 +23,7 @@ Vorgang	varchar(40)	YES	---	---	---
 Artikel_id	int(11)	NO	---	---	---	
 Menge	int(11)	NO	---	---	---	
 Ersteller	varchar(40)	YES	---	---	---	
-Erfassung	date	YES	---	---	---	
+Erfassung	datetime	YES	---	---	---	
 Kommission	varchar(40)	YES	---	---	---	
 Kommentar	varchar(400)	YES	---	---	---	
 <ENDE_Tabelle>
