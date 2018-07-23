@@ -3,7 +3,9 @@
 
 #include <QDialog>
 #include <QFileDialog>
-#include <QPrintDialog>
+//#include <QPrintDialog>
+#include <QtPrintSupport/QPrinter>
+#include <QtPrintSupport/QPrintDialog>
 #include <QDebug>
 #include <QtGui>
 #include <QtCore>

@@ -5,6 +5,8 @@
 template_Materialliste:
 soll als Template zum Anlegen von neuen projektbezogenen Materiallisten dienen
 
+-->Benutzerverwaltung in der Datenbank führen nicht in der user.ini
+    ->Dann mit der User-ID arbeiten und nicht mit dem Namen
 
 -->CBraindatabase:
     ->Funktion schreiben um über den Index in der einen Liste den dazu gehörenden Wert in der anderen Liste

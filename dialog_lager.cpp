@@ -52,6 +52,8 @@ void Dialog_lager::setup()
             cmd += "SELECT ";
             cmd += PARAM_ARTIKEL_ID;
             cmd += ", ";
+            cmd += PARAM_ARTIKEL_NR;
+            cmd += ", ";
             cmd += PARAM_ARTIKEL_BEZ;
             cmd += " FROM ";
             cmd += TABNAME_ARTIKEL;
@@ -64,6 +66,8 @@ void Dialog_lager::setup()
                     tmp += q.value(0).toString();
                     tmp += " / ";
                     tmp += q.value(1).toString();
+                    tmp += " / ";
+                    tmp += q.value(2).toString();
                     artikel.zeile_anhaengen(tmp);
                 }
             }else
@@ -157,7 +161,7 @@ void Dialog_lager::on_lineEdit_artikelfilter_textChanged()
     ui->comboBox_artikel->clear();
     for(uint i=1; i<=artikel.zeilenanzahl() ;i++)
     {
-        if(text_rechts(artikel.zeile(i), " / ").toUpper().contains(ui->lineEdit_artikelfilter->text().toUpper()))
+        if(text_mitte(artikel.zeile(i), " / ", " / ").toUpper().contains(ui->lineEdit_artikelfilter->text().toUpper()))
         {
             ui->comboBox_artikel->addItem(artikel.zeile(i));
         }
@@ -196,7 +200,7 @@ void Dialog_lager::on_pushButton_print_clicked()
     msg += "\n";
 
     Dialog_printbox *d = new Dialog_printbox;
-    d->setText(msg+msg+msg+msg);
+    d->setText(msg);
     d->exec();
     delete d;
 }
