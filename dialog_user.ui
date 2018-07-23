@@ -36,13 +36,48 @@
     </rect>
    </property>
    <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="1">
-     <widget class="QLineEdit" name="lineEdit_name"/>
+    <item row="2" column="1">
+     <widget class="QSpinBox" name="spinBox_id">
+      <property name="maximum">
+       <number>999999</number>
+      </property>
+     </widget>
+    </item>
+    <item row="7" column="0" colspan="2">
+     <widget class="QCheckBox" name="checkBox_modul_projekte">
+      <property name="text">
+       <string>Zugang zu Modul Projekte</string>
+      </property>
+     </widget>
+    </item>
+    <item row="6" column="0" colspan="2">
+     <widget class="QCheckBox" name="checkBox_modul_lager">
+      <property name="text">
+       <string>Zugang zu Modul Lager</string>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="0" colspan="2">
+     <widget class="QCheckBox" name="checkBox_modul_lieferanten">
+      <property name="text">
+       <string>Zugang zu Modul Lieferanten</string>
+      </property>
+     </widget>
     </item>
     <item row="3" column="0" colspan="2">
-     <widget class="QCheckBox" name="checkBox_modul_artikel">
+     <widget class="QCheckBox" name="checkBox_isadmin">
       <property name="text">
-       <string>Zugang zu Modul Artikel</string>
+       <string>hat Administrator-Rechte</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="1">
+     <widget class="QLineEdit" name="lineEdit_pwd"/>
+    </item>
+    <item row="0" column="0">
+     <widget class="QLabel" name="label_name">
+      <property name="text">
+       <string>Name</string>
       </property>
      </widget>
     </item>
@@ -53,41 +88,27 @@
       </property>
      </widget>
     </item>
-    <item row="0" column="0">
-     <widget class="QLabel" name="label_name">
-      <property name="text">
-       <string>Name</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="1">
-     <widget class="QLineEdit" name="lineEdit_pwd"/>
-    </item>
-    <item row="2" column="0" colspan="2">
-     <widget class="QCheckBox" name="checkBox_isadmin">
-      <property name="text">
-       <string>hat Administrator-Rechte</string>
-      </property>
-     </widget>
-    </item>
     <item row="4" column="0" colspan="2">
-     <widget class="QCheckBox" name="checkBox_modul_lieferanten">
+     <widget class="QCheckBox" name="checkBox_modul_artikel">
       <property name="text">
-       <string>Zugang zu Modul Lieferanten</string>
+       <string>Zugang zu Modul Artikel</string>
       </property>
      </widget>
     </item>
-    <item row="5" column="0" colspan="2">
-     <widget class="QCheckBox" name="checkBox_modul_lager">
+    <item row="0" column="1">
+     <widget class="QLineEdit" name="lineEdit_name"/>
+    </item>
+    <item row="2" column="0">
+     <widget class="QLabel" name="label_2">
       <property name="text">
-       <string>Zugang zu Modul Lager</string>
+       <string>ID</string>
       </property>
      </widget>
     </item>
-    <item row="6" column="0" colspan="2">
-     <widget class="QCheckBox" name="checkBox_modul_projekte">
+    <item row="8" column="0" colspan="2">
+     <widget class="QCheckBox" name="checkBox_modul_personal">
       <property name="text">
-       <string>Zugang zu Modul Projekte</string>
+       <string>Zugang zu Modul Personal</string>
       </property>
      </widget>
     </item>
@@ -150,6 +171,7 @@
   <tabstop>listWidget_names</tabstop>
   <tabstop>lineEdit_name</tabstop>
   <tabstop>lineEdit_pwd</tabstop>
+  <tabstop>spinBox_id</tabstop>
   <tabstop>checkBox_isadmin</tabstop>
   <tabstop>checkBox_modul_artikel</tabstop>
   <tabstop>checkBox_modul_lieferanten</tabstop>

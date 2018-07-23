@@ -35,6 +35,8 @@ void users::set_users(QString users)
             use_modul_lieferanten.zeile_anhaengen(zeile.zeile(5));  //Wert 5
             use_modul_lager.zeile_anhaengen(zeile.zeile(6));        //Wert 6
             use_modul_projekte.zeile_anhaengen(zeile.zeile(7));     //Wert 7
+            id_tz.zeile_anhaengen(zeile.zeile(8));                  //Wert 8
+            use_modul_personal.zeile_anhaengen(zeile.zeile(9));     //Wert 9
         }
     }
 }
@@ -58,6 +60,10 @@ QString users::get_users()
         msg += use_modul_lager.zeile(i);        //Wert 6
         msg += trzparam;
         msg += use_modul_projekte.zeile(i);     //Wert 7
+        msg += trzparam;
+        msg += id_tz.zeile(i);                  //Wert 8
+        msg += trzparam;
+        msg += use_modul_personal.zeile(i);     //Wert 9
 
         if(i != user_tz.zeilenanzahl()) //in der letzten Zeile keinen Zeilenvorschub
         {
@@ -80,6 +86,8 @@ void users::clear()
     use_modul_lieferanten.clear();
     use_modul_lager.clear();
     use_modul_projekte.clear();
+    id_tz.clear();
+    use_modul_personal.clear();
 }
 
 void users::set_first_admin()
@@ -92,6 +100,8 @@ void users::set_first_admin()
     use_modul_lieferanten.zeile_anhaengen("1");
     use_modul_lager.zeile_anhaengen("1");
     use_modul_projekte.zeile_anhaengen("1");
+    use_modul_personal.zeilen_anhaengen("1");
+    id_tz.zeilen_anhaengen("1");                //der Admin muss die id 1 in der Tabelle haben!!
 }
 
 bool users::login(QString user, QString pwd)
@@ -224,6 +234,22 @@ bool users::modul_projekte()
         return false;
     }
 }
+bool users::modul_personal()
+{
+    if(current_user != 0)
+    {
+        if(use_modul_personal.zeile(current_user) == "1")
+        {
+            return true;
+        }else
+        {
+            return false;
+        }
+    }else
+    {
+        return false;
+    }
+}
 
 bool users::change_name(uint index, QString newname)
 {
@@ -252,6 +278,10 @@ bool users::change_name(uint index, QString newname)
 void users::change_pwd(uint index, QString newpwd)
 {
     pwd_tz.zeile_ersaetzen(index, newpwd);
+}
+void users::change_id(uint index, QString newid)
+{
+    id_tz.zeile_ersaetzen(index, newid);
 }
 void users::change_isadmin(uint index, bool isadmin)
 {
@@ -303,6 +333,16 @@ void users::change_use_modul_projekte(uint index, bool isalowed)
         use_modul_projekte.zeile_ersaetzen(index, "0");
     }
 }
+void users::change_use_modul_personal(uint index, bool isalowed)
+{
+    if(isalowed == true)
+    {
+        use_modul_personal.zeile_ersaetzen(index, "1");
+    }else
+    {
+        use_modul_personal.zeile_ersaetzen(index, "0");
+    }
+}
 
 void users::newuser()
 {
@@ -313,6 +353,8 @@ void users::newuser()
     use_modul_lieferanten.zeile_anhaengen("0");
     use_modul_lager.zeile_anhaengen("0");
     use_modul_projekte.zeile_anhaengen("0");
+    id_tz.zeile_anhaengen("0");
+    use_modul_personal.zeile_anhaengen("0");
 }
 
 void users::removeuser(uint index)
@@ -326,6 +368,8 @@ void users::removeuser(uint index)
         use_modul_lieferanten.zeile_loeschen(index);
         use_modul_lager.zeile_loeschen(index);
         use_modul_projekte.zeile_loeschen(index);
+        id_tz.zeile_loeschen(index);
+        use_modul_personal.zeile_loeschen(index);
     }
 }
 

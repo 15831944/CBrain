@@ -57,6 +57,12 @@
 #define PARAM_LAGER_KOMMENT         "Kommentar"         //Wert 7
 
 //--------------------------------------------------------------------------------------------------------
+#define TABNAME_PERSONAL            "table_Personal"
+#define PARAM_PERSONAL_ID           "id"                //Wert 0
+#define PARAM_PERSONAL_VORNAME      "Vorname"           //Wert 1
+#define PARAM_PERSONAL_NACHNAME     "Nachname"          //Wert 2
+
+//--------------------------------------------------------------------------------------------------------
 #define TABNAME_RESERV              "table_Reservierungen"
 #define PARAM_RESERV_ID             "id"                //Wert 0
 #define PARAM_RESERV_ARTIKELID      "ArtikelID"         //Wert 1
