@@ -1,5 +1,5 @@
 <BEGIN_Tabelle>
-table_Artikel
+table_artikel
 Field	Type	Null	Key	Default	Extra
 id	int(11) unsigned	NO	PRI	---	auto_increment	
 Artikelnummer	varchar(40)	YES	---	---	---	
@@ -16,19 +16,19 @@ VE	int(11)	YES	---	---	---
 Kommentar	varchar(400)	YES	---	---	---	
 <ENDE_Tabelle>
 <BEGIN_Tabelle>
-table_Lager
+table_lager
 Field	Type	Null	Key	Default	Extra
 id	int(11) unsigned	NO	PRI	---	auto_increment	
 Vorgang	varchar(40)	YES	---	---	---	
 Artikel_id	int(11)	NO	---	---	---	
 Menge	int(11)	NO	---	---	---	
 Ersteller	varchar(40)	YES	---	---	---	
-Erfassung	date	YES	---	---	---	
+Erfassung	datetime	YES	---	---	---	
 Kommission	varchar(40)	YES	---	---	---	
 Kommentar	varchar(400)	YES	---	---	---	
 <ENDE_Tabelle>
 <BEGIN_Tabelle>
-table_Lieferanten
+table_lieferanten
 Field	Type	Null	Key	Default	Extra
 id	int(11) unsigned	NO	PRI	---	auto_increment	
 Name	varchar(40)	YES	---	---	---	
@@ -40,7 +40,19 @@ blockiert	varchar(40)	YES	---	---	---
 Kommentar	varchar(400)	YES	---	---	---	
 <ENDE_Tabelle>
 <BEGIN_Tabelle>
-table_Projekte
+table_personal
+Field	Type	Null	Key	Default	Extra
+id	int(11) unsigned	NO	PRI	---	auto_increment	
+Vorname	varchar(40)	YES	---	---	---	
+Nachname	varchar(40)	YES	---	---	---	
+Ersteller	varchar(40)	YES	---	---	---	
+Erfassung	date	YES	---	---	---	
+Bearbeiter	varchar(40)	YES	---	---	---	
+Bearbeitung	date	YES	---	---	---	
+blockiert	varchar(40)	YES	---	---	---	
+<ENDE_Tabelle>
+<BEGIN_Tabelle>
+table_projekte
 Field	Type	Null	Key	Default	Extra
 id	int(11) unsigned	NO	PRI	---	auto_increment	
 Name	varchar(40)	YES	---	---	---	
@@ -52,7 +64,7 @@ blockiert	varchar(40)	YES	---	---	---
 Kommentar	varchar(400)	YES	---	---	---	
 <ENDE_Tabelle>
 <BEGIN_Tabelle>
-table_Reservierungen
+table_reservierungen
 Field	Type	Null	Key	Default	Extra
 id	int(11) unsigned	NO	PRI	---	auto_increment	
 Artikel	int(11)	YES	---	---	---	
@@ -60,7 +72,7 @@ Menge	int(11)	YES	---	---	---
 Kommission	varchar(40)	YES	---	---	---	
 <ENDE_Tabelle>
 <BEGIN_Tabelle>
-template_Materialliste
+template_materialliste
 Field	Type	Null	Key	Default	Extra
 id	int(11) unsigned	NO	PRI	---	auto_increment	
 <ENDE_Tabelle>

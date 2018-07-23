@@ -204,6 +204,7 @@ void Form_lager::update_table()
             cmd += TABNAME_LAGER;
             cmd += ".";
             cmd += PARAM_LAGER_DATERST;
+            cmd += " DESC";
             //------------------------
 
             if(q.exec(cmd))
@@ -354,7 +355,7 @@ void Form_lager::slot_in(text_zeilenweise data)
     values.zeile_anhaengen(menge);
     values.zeile_anhaengen(user);
     datum heute;
-    values.zeile_anhaengen(heute.get_today_y_m_d());
+    values.zeile_anhaengen(heute.get_today_y_m_d_h_m_s());
     values.zeile_anhaengen(projektid);
     values.zeile_anhaengen(kommentar);
 

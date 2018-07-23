@@ -52,6 +52,8 @@ void Dialog_lager::setup()
             cmd += "SELECT ";
             cmd += PARAM_ARTIKEL_ID;
             cmd += ", ";
+            cmd += PARAM_ARTIKEL_NR;
+            cmd += ", ";
             cmd += PARAM_ARTIKEL_BEZ;
             cmd += " FROM ";
             cmd += TABNAME_ARTIKEL;
@@ -64,6 +66,8 @@ void Dialog_lager::setup()
                     tmp += q.value(0).toString();
                     tmp += " / ";
                     tmp += q.value(1).toString();
+                    tmp += " / ";
+                    tmp += q.value(2).toString();
                     artikel.zeile_anhaengen(tmp);
                 }
             }else
@@ -99,6 +103,7 @@ void Dialog_lager::setup()
                 mb.exec();
             }
             //-----------------------------------------------------
+
             db.close();
 
         }else
@@ -151,13 +156,12 @@ void Dialog_lager::on_pushButton_cancel_clicked()
     this->close();
 }
 
-
-void Dialog_lager::on_lineEdit_artikelfilter_textChanged(const QString &arg1)
+void Dialog_lager::on_lineEdit_artikelfilter_textChanged()
 {
     ui->comboBox_artikel->clear();
     for(uint i=1; i<=artikel.zeilenanzahl() ;i++)
     {
-        if(text_rechts(artikel.zeile(i), " / ").toUpper().contains(arg1.toUpper()))
+        if(text_mitte(artikel.zeile(i), " / ", " / ").toUpper().contains(ui->lineEdit_artikelfilter->text().toUpper()))
         {
             ui->comboBox_artikel->addItem(artikel.zeile(i));
         }
@@ -175,3 +179,30 @@ void Dialog_lager::on_lineEdit_komfilter_textChanged(const QString &arg1)
         }
     }
 }
+
+void Dialog_lager::on_pushButton_print_clicked()
+{
+    QString msg;
+    msg += "-------------------------------------------------";
+    msg += "\n";
+    msg += "Artikel: \"";
+    msg += text_rechts(ui->comboBox_artikel->currentText(), " / ");
+    msg += "\"\n";
+    msg += "Menge: ";
+    msg += int_to_qstring(ui->spinBox_menge->value());
+    msg += "\n";
+    msg += "Projekt: \"";
+    msg += text_rechts(ui->comboBox_kom->currentText(), " / ");
+    msg += "\"\n";
+    msg += ui->lineEdit_komment->text();
+    msg += "\n";
+    msg += "-------------------------------------------------";
+    msg += "\n";
+
+    Dialog_printbox *d = new Dialog_printbox;
+    d->setText(msg);
+    d->exec();
+    delete d;
+}
+
+
