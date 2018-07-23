@@ -13,6 +13,7 @@ MainWindow::MainWindow(QWidget *parent) :
     widget_lager.setParent(this);
     widget_projekte.setParent(this);
     widget_backup.setParent(this);
+    widget_personal.setParent(this);
 
     on_actionKeinModul_triggered();
 
@@ -40,6 +41,7 @@ void MainWindow::clear()
     modul_backup    = false;
     modul_projekte  = false;
     modul_backup    = false;
+    modul_personal  = false;
 }
 
 bool MainWindow::setup()
@@ -67,6 +69,7 @@ bool MainWindow::setup()
         widget_lager.set_db(&dbeigen);          //widget Zeiger auf DB übergeben
         widget_projekte.set_db(&dbeigen);       //widget Zeiger auf DB übergeben
         widget_backup.set_db(&dbeigen);         //widget Zeiger auf DB übergeben
+        widget_personal.set_db(&dbeigen);       //widget Zeiger auf DB übergeben
 
         widget_backup.set_ini(&ini);
     }
@@ -143,6 +146,9 @@ void MainWindow::resizeEvent(QResizeEvent *event)
 
     widget_backup.move(0, hoehe_menue);
     widget_backup.setFixedSize(breite, hoehe);
+
+    widget_personal.move(0, hoehe_menue);
+    widget_personal.setFixedSize(breite, hoehe);
 
     QWidget::resizeEvent(event);
 }
@@ -244,11 +250,13 @@ void MainWindow::slot_login(QString user, QString pwd)
         widget_lieferanten.set_user(u.get_current_user());
         widget_lager.set_user(u.get_current_user());
         widget_projekte.set_user(u.get_current_user());
+        widget_personal.set_user(u.get_current_user());
         //Rechte für Module setzen:
         ui_rechte_modul_artikel(  u.modul_artikel()  );
         ui_rechte_modul_lieferanten(  u.modul_lieferanten()  );
         ui_rechte_modul_lager(  u.modul_lager()  );
         ui_rechte_modul_projekte(  u.modul_projekte()  );
+        ui_rechte_modul_perrsonal(  u.modul_personal()  );
     }else
     {
         ui_rechte_nobody();
@@ -365,6 +373,11 @@ void MainWindow::on_actionModulBackup_triggered()
     change_modul("Backup");
 }
 
+void MainWindow::on_actionModulPersonal_triggered()
+{
+    change_modul("Personal");
+}
+
 void MainWindow::change_modul(QString modul)
 {
     if(modul == "Tableeditor")
@@ -380,6 +393,7 @@ void MainWindow::change_modul(QString modul)
                 modul_lager         = false;
                 modul_projekte      = false;
                 modul_backup        = false;
+                modul_personal      = false;
 
                 currend_modul = "Tabelleneditor";
                 widget_tableeditor.update_tablnames();
@@ -390,6 +404,7 @@ void MainWindow::change_modul(QString modul)
                 widget_tableeditor.show();
                 widget_projekte.hide();
                 widget_backup.hide();
+                widget_personal.hide();
             }else
             {
                 QMessageBox mb;
@@ -410,6 +425,7 @@ void MainWindow::change_modul(QString modul)
                 modul_lager         = false;
                 modul_projekte      = false;
                 modul_backup        = false;
+                modul_personal      = false;
 
                 currend_modul = "Artikel";
                 //widget_artikel.set_db(&dbeigen);    //widget Zeiger auf DB übergeben
@@ -419,6 +435,7 @@ void MainWindow::change_modul(QString modul)
                 widget_artikel.show();
                 widget_projekte.hide();
                 widget_backup.hide();
+                widget_personal.hide();
             }else
             {
                 QMessageBox mb;
@@ -439,6 +456,7 @@ void MainWindow::change_modul(QString modul)
                 modul_lager         = false;
                 modul_projekte      = false;
                 modul_backup        = false;
+                modul_personal      = false;
 
                 currend_modul = "Lieferanten";
                 //widget_artikel.set_db(&dbeigen);    //widget Zeiger auf DB übergeben
@@ -448,6 +466,7 @@ void MainWindow::change_modul(QString modul)
                 widget_lieferanten.show();
                 widget_projekte.hide();
                 widget_backup.hide();
+                widget_personal.hide();
             }else
             {
                 QMessageBox mb;
@@ -468,6 +487,7 @@ void MainWindow::change_modul(QString modul)
                 modul_lager         = true;
                 modul_projekte      = false;
                 modul_backup        = false;
+                modul_personal      = false;
 
                 currend_modul = "Lager";
                 //widget_artikel.set_db(&dbeigen);    //widget Zeiger auf DB übergeben
@@ -477,6 +497,7 @@ void MainWindow::change_modul(QString modul)
                 widget_lager.show();
                 widget_projekte.hide();
                 widget_backup.hide();
+                widget_personal.hide();
             }else
             {
                 QMessageBox mb;
@@ -497,6 +518,7 @@ void MainWindow::change_modul(QString modul)
                 modul_lager         = false;
                 modul_projekte      = true;
                 modul_backup        = false;
+                modul_personal      = false;
 
                 currend_modul = "Projekte";
                 //widget_artikel.set_db(&dbeigen);    //widget Zeiger auf DB übergeben
@@ -506,6 +528,7 @@ void MainWindow::change_modul(QString modul)
                 widget_lager.hide();
                 widget_projekte.show();
                 widget_backup.hide();
+                widget_personal.hide();
             }else
             {
                 QMessageBox mb;
@@ -526,6 +549,7 @@ void MainWindow::change_modul(QString modul)
                 modul_lager         = false;
                 modul_projekte      = false;
                 modul_backup        = true;
+                modul_personal      = false;
 
                 currend_modul = "Backup";
                 //widget_artikel.set_db(&dbeigen);    //widget Zeiger auf DB übergeben
@@ -535,6 +559,38 @@ void MainWindow::change_modul(QString modul)
                 widget_lager.hide();
                 widget_projekte.hide();
                 widget_backup.show();
+                widget_personal.hide();
+            }else
+            {
+                QMessageBox mb;
+                mb.setText("Datenbank nicht erreichbar!\nModul wurden nicht geladen.");
+                mb.exec();
+            }
+        }
+    }else if(modul == "Personal")
+    {
+        if(modul_personal == false)
+        {
+            if(dbeigen.pingdb() == true)
+            {
+                modul_kein          = false;
+                modul_tabedit       = false;
+                modul_artikel       = false;
+                modul_lieferanten   = false;
+                modul_lager         = false;
+                modul_projekte      = false;
+                modul_backup        = false;
+                modul_personal      = true;
+
+                currend_modul = "Personal";
+                //widget_artikel.set_db(&dbeigen);    //widget Zeiger auf DB übergeben
+                widget_tableeditor.hide();
+                widget_artikel.hide();
+                widget_lieferanten.hide();
+                widget_lager.hide();
+                widget_projekte.hide();
+                widget_backup.hide();
+                widget_personal.show();
             }else
             {
                 QMessageBox mb;
@@ -553,6 +609,7 @@ void MainWindow::change_modul(QString modul)
             modul_lager         = false;
             modul_projekte      = false;
             modul_backup        = false;
+            modul_personal      = false;
 
             currend_modul = "kein Modul geladen";
             widget_tableeditor.hide();
@@ -561,6 +618,7 @@ void MainWindow::change_modul(QString modul)
             widget_lager.hide();
             widget_projekte.hide();
             widget_backup.hide();
+            widget_personal.hide();
         }
     }
     change_windowtitle();
@@ -582,6 +640,7 @@ void MainWindow::ui_rechte_nobody()
     ui->actionModulLieferanten->setDisabled(true);
     ui->actionModulLager->setDisabled(true);
     ui->actionModulProjekte->setDisabled(true);
+    ui->actionModulPersonal->setDisabled(true);
 }
 
 void MainWindow::ui_rechte_admin()
@@ -641,6 +700,17 @@ void MainWindow::ui_rechte_modul_projekte(bool hat_rechte)
         ui->actionModulProjekte->setDisabled(true);
     }
 }
+
+void MainWindow::ui_rechte_modul_perrsonal(bool hat_rechte)
+{
+    if(hat_rechte == true)
+    {
+        ui->actionModulPersonal->setEnabled(true);
+    }else
+    {
+        ui->actionModulPersonal->setDisabled(true);
+    }
+}
 //-----------------------------------------------Testfunktion:
 void MainWindow::on_actionTestfunktion_triggered()
 {
@@ -666,6 +736,8 @@ void MainWindow::on_actionTestfunktion_triggered()
 }
 
 //-----------------------------------------------
+
+
 
 
 

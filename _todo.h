@@ -8,8 +8,8 @@ soll als Template zum Anlegen von neuen projektbezogenen Materiallisten dienen
 -->Benutzerverwaltung um Nutzer-id erweitern //fetig
     ->Dann innerhalb der db mit der User-ID arbeiten und nicht mit dem Namen(Speicherplatz sparen)
         >Modul_personal erstellen  //fetig
-        >Modul_personal in MainWindow einbinden
-        >Die Datenfelder "Ersteller" und "Bearberiter" ändern auf int(11)
+        >Modul_personal in MainWindow einbinden //fetig
+        >Die Datenfelder "Ersteller" und "Bearberiter" ändern auf int(11) und die form_... entsprechend anpassen
 
 -->CBraindatabase:
     ->Funktion schreiben um über den Index in der einen Liste den dazu gehörenden Wert in der anderen Liste

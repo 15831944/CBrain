@@ -19,6 +19,7 @@
 #include "form_lager.h"
 #include "form_projekte.h"
 #include "form_backup.h"
+#include "form_personal.h"
 
 #include "defines_filenames.h"
 #include "users.h"
@@ -65,6 +66,7 @@ private slots:
     void on_actionModulLager_triggered();
     void on_actionModulBackup_triggered();
     void on_actionModulProjekte_triggered();
+    void on_actionModulPersonal_triggered();
 
 private:
     Ui::MainWindow *ui;
@@ -86,6 +88,7 @@ private:
     bool modul_lieferanten;     //widget_lieferanten ist offen
     bool modul_lager;           //widget_lager ist offen
     bool modul_projekte;        //widget_lager ist offen
+    bool modul_personal;        //widget_personal ist offen
 
 
     //eigene Widgets:
@@ -95,6 +98,7 @@ private:
     Form_lager          widget_lager;
     Form_projekte       widget_projekte;
     Form_backup         widget_backup;
+    Form_personal       widget_personal;
 
 
     //Funktionen:
@@ -109,6 +113,7 @@ private:
     void ui_rechte_modul_lieferanten(bool hat_rechte);
     void ui_rechte_modul_lager(bool hat_rechte);
     void ui_rechte_modul_projekte(bool hat_rechte);
+    void ui_rechte_modul_perrsonal(bool hat_rechte);
 
     void change_modul(QString modul);
     void change_windowtitle();

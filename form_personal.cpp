@@ -307,10 +307,14 @@ void Form_personal::slot_new(text_zeilenweise data)
 
     param.zeile_anhaengen(PARAM_PERSONAL_VORNAME);
     param.zeile_anhaengen(PARAM_PERSONAL_NACHNAME);
-
+    param.zeile_anhaengen(PARAM_PERSONAL_ERSTELLER);
+    param.zeile_anhaengen(PARAM_PERSONAL_DATERST);
 
     values.zeile_anhaengen(data.zeile(1));//Vorname
     values.zeile_anhaengen(data.zeile(2));//Nachname
+    values.zeile_anhaengen(user);
+    datum heute;
+    values.zeile_anhaengen(heute.get_today_y_m_d());
 
     dbeigen->data_new(TABNAME_PERSONAL, param, values);
     update_table();
@@ -327,24 +331,45 @@ void Form_personal::slot_edit_dialog(text_zeilenweise ids)
     if(ids.zeilenanzahl() == 1)
     {
         idbuffer = ids.zeile(1);
-        text_zeilenweise person;
+        QString blockfromuser = dbeigen->get_data_qstring(TABNAME_PERSONAL, PARAM_PERSONAL_BLOCK, idbuffer);
+        if(blockfromuser == USER_NOBODY || blockfromuser.isEmpty())
+        {
+            text_zeilenweise person;
 
-        QString querryfilter;
-        querryfilter += PARAM_PERSONAL_ID;
-        querryfilter += " LIKE \'";
-        querryfilter += idbuffer;
-        querryfilter += "\'";
-        person.zeile_anhaengen(dbeigen->get_values_from_column(TABNAME_PERSONAL, 1, querryfilter).get_text());//Vorame
-        person.zeile_anhaengen(dbeigen->get_values_from_column(TABNAME_PERSONAL, 2, querryfilter).get_text());//Nachname
+            QString querryfilter;
+            querryfilter += PARAM_PERSONAL_ID;
+            querryfilter += " LIKE \'";
+            querryfilter += idbuffer;
+            querryfilter += "\'";
+            person.zeile_anhaengen(dbeigen->get_values_from_column(TABNAME_PERSONAL, 1, querryfilter).get_text());//Vorame
+            person.zeile_anhaengen(dbeigen->get_values_from_column(TABNAME_PERSONAL, 2, querryfilter).get_text());//Nachname
 
-        Dialog_personal *d = new Dialog_personal;
-        d->setWindowTitle("Personaleintrag bearbeiten");
-        d->set_data(person, idbuffer);
-        connect(d, SIGNAL(signal_send_data(text_zeilenweise, QString)),  \
-                this, SLOT(slot_edit(text_zeilenweise, QString))          );
+            Dialog_personal *d = new Dialog_personal;
+            d->setWindowTitle("Personaleintrag bearbeiten");
+            d->set_data(person, idbuffer);
+            connect(d, SIGNAL(signal_send_data(text_zeilenweise, QString)),  \
+                    this, SLOT(slot_edit(text_zeilenweise, QString))          );
+            connect(d, SIGNAL(signal_cancel()), this, SLOT(slot_edit_dialog_cancel()));
 
-        d->exec();
-        delete d;
+            dbeigen->data_edit(TABNAME_PERSONAL, PARAM_PERSONAL_BLOCK, user, idbuffer);
+            d->exec();
+            delete d;
+        }else
+        {
+            Dialog_yes_no *d = new Dialog_yes_no;
+            d->setWindowTitle("Datensatz bereits gesperrt");
+            QString msg;
+            msg += "Dieser Datensatz wurde bereits vom Nutzer \"";
+            msg += blockfromuser;
+            msg += "\" gesperrt.\nBitte stimmen Sie sich mit dem Benutzer ab!\n";
+            msg += "Soll dieser trotzdem zum Bearbeiten geoeffnet werden?";
+            d->setup(msg);
+            idbuffer = ids.zeile(1);
+            connect(d, SIGNAL(signal_yes()), this, SLOT(slot_edit_dialog()));
+
+            d->exec();
+            delete d;
+        }
     }else
     {
         QMessageBox mb;
@@ -353,17 +378,80 @@ void Form_personal::slot_edit_dialog(text_zeilenweise ids)
     }
 }
 
+void Form_personal::slot_edit_dialog()
+{
+    text_zeilenweise person;
+                    //Wert 1 = Name
+    QString querryfilter;
+    querryfilter += PARAM_PERSONAL_ID;
+    querryfilter += " LIKE \'";
+    querryfilter += idbuffer;
+    querryfilter += "\'";
+    person.zeile_anhaengen(dbeigen->get_values_from_column(TABNAME_PERSONAL, 1, querryfilter).get_text());//Vorname
+    person.zeile_anhaengen(dbeigen->get_values_from_column(TABNAME_PERSONAL, 2, querryfilter).get_text());//Nachname
+
+    Dialog_personal *d = new Dialog_personal;
+    d->setWindowTitle("Personaleintrag bearbeiten");
+    d->set_data(person, idbuffer);
+    connect(d, SIGNAL(signal_send_data(text_zeilenweise, QString)),  \
+            this, SLOT(slot_edit(text_zeilenweise, QString))          );
+    connect(d, SIGNAL(signal_cancel()), this, SLOT(slot_edit_dialog_cancel()));
+
+    dbeigen->data_edit(TABNAME_PERSONAL, PARAM_PERSONAL_BLOCK, user, idbuffer);
+    d->exec();
+    delete d;
+}
+
+void Form_personal::slot_edit_dialog_cancel()
+{
+    dbeigen->data_edit(TABNAME_PERSONAL, PARAM_PERSONAL_BLOCK, USER_NOBODY, idbuffer);
+}
+
 void Form_personal::slot_edit(text_zeilenweise data, QString id)
 {
-    text_zeilenweise param, values;
+    QString blockfromuser = dbeigen->get_data_qstring(TABNAME_PERSONAL, PARAM_PERSONAL_BLOCK, idbuffer);
+    QString lasteditinguser = dbeigen->get_data_qstring(TABNAME_PERSONAL, PARAM_PERSONAL_BEARBEITER, idbuffer);
+    if(blockfromuser != user)
+    {
+        if(blockfromuser == USER_NOBODY)
+        {
+            QString msg;
+            msg += "Die Aenderungen konnten nicht gespeichert werden, da der Nutzer \"";
+            msg += lasteditinguser;
+            msg += "\" zwischenzeitlich den Datensatz bearbeitet hat!";
+            QMessageBox mb;
+            mb.setText(msg);
+            mb.exec();
+        }else
+        {
+            QString msg;
+            msg += "Die Aenderungen konnten nicht gespeichert werden, da der Nutzer \"";
+            msg += blockfromuser;
+            msg += "\" den Datensatz derzeit bearbeitet!";
+            QMessageBox mb;
+            mb.setText(msg);
+            mb.exec();
+        }
 
-    param.zeile_anhaengen(PARAM_PERSONAL_VORNAME);
-    param.zeile_anhaengen(PARAM_PERSONAL_NACHNAME);
+    }else
+    {
+        text_zeilenweise param, values;
+        datum today;
 
-    values.zeile_anhaengen(data.zeile(1));
-    values.zeile_anhaengen(data.zeile(2));
+        param.zeile_anhaengen(PARAM_PERSONAL_VORNAME);
+        param.zeile_anhaengen(PARAM_PERSONAL_NACHNAME);
+        param.zeile_anhaengen(PARAM_PERSONAL_BEARBEITER);
+        param.zeile_anhaengen(PARAM_PERSONAL_DATBEARB);
+        param.zeile_anhaengen(PARAM_PERSONAL_BLOCK);
 
-    dbeigen->data_edit(TABNAME_PERSONAL, param, values, id);
+        values.zeile_anhaengen(data.zeile(1));
+        values.zeile_anhaengen(data.zeile(2));
+        values.zeile_anhaengen(user);
+        values.zeile_anhaengen(today.get_today_y_m_d());
+        values.zeile_anhaengen(USER_NOBODY);
+
+        dbeigen->data_edit(TABNAME_PERSONAL, param, values, id);
+    }
     update_table();
 }
 

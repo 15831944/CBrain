@@ -31,6 +31,8 @@ public slots:
     void slot_new(text_zeilenweise data);
     void slot_delete(text_zeilenweise ids);
     void slot_edit_dialog(text_zeilenweise ids);
+    void slot_edit_dialog();
+    void slot_edit_dialog_cancel();
     void slot_edit(text_zeilenweise data, QString id);
 
 protected:
