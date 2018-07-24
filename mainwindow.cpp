@@ -246,11 +246,10 @@ void MainWindow::slot_login(QString user, QString pwd)
             ui_rechte_nobody();
         }
         change_windowtitle();
-        widget_artikel.set_user(u.get_current_user());
         widget_artikel.set_user(u.get_current_user_id());
-        widget_lieferanten.set_user(u.get_current_user());
-        widget_lager.set_user(u.get_current_user());
-        widget_projekte.set_user(u.get_current_user());
+        widget_lieferanten.set_user(u.get_current_user_id());
+        widget_lager.set_user(u.get_current_user_id());
+        widget_projekte.set_user(u.get_current_user_id());
         widget_personal.set_user(u.get_current_user());
         //Rechte für Module setzen:
         ui_rechte_modul_artikel(  u.modul_artikel()  );

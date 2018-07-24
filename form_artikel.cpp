@@ -410,12 +410,14 @@ void Form_artikel::slot_edit_dialog(text_zeilenweise ids)
     {
         idbuffer = ids.zeile(1);
 
-        //QString blockfromuser = dbeigen->get_data_qstring(TABNAME_ARTIKEL, PARAM_ARTIKEL_BLOCK, idbuffer);
+        QString blockfromuser_id = dbeigen->get_data_qstring(TABNAME_ARTIKEL, PARAM_ARTIKEL_BLOCK, idbuffer);
         QString blockfromuser = dbeigen->get_data_qstring(TABNAME_ARTIKEL, PARAM_ARTIKEL_BLOCK, idbuffer,\
                                                           TABNAME_PERSONAL, PARAM_PERSONAL_VORNAME);
+        blockfromuser += " ";
+        blockfromuser += dbeigen->get_data_qstring(TABNAME_ARTIKEL, PARAM_ARTIKEL_BLOCK, idbuffer,\
+                                                   TABNAME_PERSONAL, PARAM_PERSONAL_NACHNAME);
 
-        //if(blockfromuser == USER_NOBODY || blockfromuser.isEmpty())
-        if(blockfromuser == "0" || blockfromuser.isEmpty() || blockfromuser == USER_NOBODY)//NOBODY kann später noch rausgenommen werden
+        if(blockfromuser_id == USER_NOBODY_ID || blockfromuser.isEmpty() )
         {
             text_zeilenweise artikel;
             QString querryfilter;
@@ -496,7 +498,7 @@ void Form_artikel::slot_edit_dialog()
 
 void Form_artikel::slot_edit_dialog_cancel()
 {
-    dbeigen->data_edit(TABNAME_ARTIKEL, PARAM_ARTIKEL_BLOCK, USER_NOBODY, idbuffer);
+    dbeigen->data_edit(TABNAME_ARTIKEL, PARAM_ARTIKEL_BLOCK, USER_NOBODY_ID, idbuffer);
 }
 
 void Form_artikel::slot_edit(text_zeilenweise data, QString id)
@@ -509,9 +511,15 @@ void Form_artikel::slot_edit(text_zeilenweise data, QString id)
     QString blockfromuser_id = dbeigen->get_data_qstring(TABNAME_ARTIKEL, PARAM_ARTIKEL_BLOCK, idbuffer);
     QString blockfromuser = dbeigen->get_data_qstring(TABNAME_ARTIKEL, PARAM_ARTIKEL_BLOCK, idbuffer,\
                                                       TABNAME_PERSONAL, PARAM_PERSONAL_VORNAME);
-    //QString lasteditinguser = dbeigen->get_data_qstring(TABNAME_ARTIKEL, PARAM_ARTIKEL_BEARBEITER, idbuffer);
+    blockfromuser += " ";
+    blockfromuser += dbeigen->get_data_qstring(TABNAME_ARTIKEL, PARAM_ARTIKEL_BLOCK, idbuffer,\
+                                               TABNAME_PERSONAL, PARAM_PERSONAL_NACHNAME);
+
     QString lasteditinguser = dbeigen->get_data_qstring(TABNAME_ARTIKEL, PARAM_ARTIKEL_BEARBEITER, idbuffer,\
                                                       TABNAME_PERSONAL, PARAM_PERSONAL_VORNAME);
+    lasteditinguser += " ";
+    lasteditinguser += dbeigen->get_data_qstring(TABNAME_ARTIKEL, PARAM_ARTIKEL_BEARBEITER, idbuffer,\
+                                                 TABNAME_PERSONAL, PARAM_PERSONAL_NACHNAME);
 
     if(blockfromuser_id != user)
     {
