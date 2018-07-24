@@ -409,8 +409,13 @@ void Form_artikel::slot_edit_dialog(text_zeilenweise ids)
     if(ids.zeilenanzahl() == 1)
     {
         idbuffer = ids.zeile(1);
-        QString blockfromuser = dbeigen->get_data_qstring(TABNAME_ARTIKEL, PARAM_ARTIKEL_BLOCK, idbuffer);
-        if(blockfromuser == USER_NOBODY || blockfromuser.isEmpty())
+
+        //QString blockfromuser = dbeigen->get_data_qstring(TABNAME_ARTIKEL, PARAM_ARTIKEL_BLOCK, idbuffer);
+        QString blockfromuser = dbeigen->get_data_qstring(TABNAME_ARTIKEL, PARAM_ARTIKEL_BLOCK, idbuffer,\
+                                                          TABNAME_PERSONAL, PARAM_PERSONAL_VORNAME);
+
+        //if(blockfromuser == USER_NOBODY || blockfromuser.isEmpty())
+        if(blockfromuser == "0" || blockfromuser.isEmpty() || blockfromuser == USER_NOBODY)//NOBODY kann später noch rausgenommen werden
         {
             text_zeilenweise artikel;
             QString querryfilter;
@@ -501,11 +506,16 @@ void Form_artikel::slot_edit(text_zeilenweise data, QString id)
     //  Wert 2 = Bezeichnung
     //  Wert 3 = Lieferant
 
-    QString blockfromuser = dbeigen->get_data_qstring(TABNAME_ARTIKEL, PARAM_ARTIKEL_BLOCK, idbuffer);
-    QString lasteditinguser = dbeigen->get_data_qstring(TABNAME_ARTIKEL, PARAM_ARTIKEL_BEARBEITER, idbuffer);
-    if(blockfromuser != user)
+    QString blockfromuser_id = dbeigen->get_data_qstring(TABNAME_ARTIKEL, PARAM_ARTIKEL_BLOCK, idbuffer);
+    QString blockfromuser = dbeigen->get_data_qstring(TABNAME_ARTIKEL, PARAM_ARTIKEL_BLOCK, idbuffer,\
+                                                      TABNAME_PERSONAL, PARAM_PERSONAL_VORNAME);
+    //QString lasteditinguser = dbeigen->get_data_qstring(TABNAME_ARTIKEL, PARAM_ARTIKEL_BEARBEITER, idbuffer);
+    QString lasteditinguser = dbeigen->get_data_qstring(TABNAME_ARTIKEL, PARAM_ARTIKEL_BEARBEITER, idbuffer,\
+                                                      TABNAME_PERSONAL, PARAM_PERSONAL_VORNAME);
+
+    if(blockfromuser_id != user)
     {
-        if(blockfromuser == USER_NOBODY)
+        if(blockfromuser_id == USER_NOBODY_ID)
         {
             QString msg;
             msg += "Die Aenderungen konnten nicht gespeichert werden, da der Nutzer \"";
@@ -545,7 +555,7 @@ void Form_artikel::slot_edit(text_zeilenweise data, QString id)
         values.zeile_anhaengen(data.zeile(3));
         values.zeile_anhaengen(user);
         values.zeile_anhaengen(today.get_today_y_m_d());
-        values.zeile_anhaengen(USER_NOBODY);
+        values.zeile_anhaengen(USER_NOBODY_ID);
         values.zeile_anhaengen(data.zeile(4));
         values.zeile_anhaengen(data.zeile(5));
         values.zeile_anhaengen(data.zeile(6));

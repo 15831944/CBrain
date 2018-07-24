@@ -247,6 +247,7 @@ void MainWindow::slot_login(QString user, QString pwd)
         }
         change_windowtitle();
         widget_artikel.set_user(u.get_current_user());
+        widget_artikel.set_user(u.get_current_user_id());
         widget_lieferanten.set_user(u.get_current_user());
         widget_lager.set_user(u.get_current_user());
         widget_projekte.set_user(u.get_current_user());
@@ -272,6 +273,7 @@ void MainWindow::change_windowtitle()
     title += dbeigen.get_dbname();
     title += " / User: ";
     title += u.get_current_user();
+    //title += dbeigen.get_data_qstring(TABNAME_PERSONAL, PARAM_PERSONAL_VORNAME, u.get_current_user_id());
     title += " / ";
     title += currend_modul;
 
