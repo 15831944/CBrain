@@ -123,9 +123,12 @@ void Form_artikel::update_table()
             cmd += PARAM_ARTIKEL_KOMENT;
             cmd += ", ";
             //------------------------
-            cmd += TABNAME_ARTIKEL;
+            //cmd += TABNAME_PERSONAL;
+            cmd += "E";
             cmd += ".";
-            cmd += PARAM_ARTIKEL_ERSTELLER;
+            cmd += PARAM_PERSONAL_NACHNAME;
+            cmd += " AS ";
+            cmd += "Ersteller";
             cmd += ", ";
             //------------------------
             cmd += TABNAME_ARTIKEL;
@@ -133,9 +136,12 @@ void Form_artikel::update_table()
             cmd += PARAM_ARTIKEL_DATERST;
             cmd += ", ";
             //------------------------
-            cmd += TABNAME_ARTIKEL;
+            //cmd += TABNAME_PERSONAL;
+            cmd += "B";
             cmd += ".";
-            cmd += PARAM_ARTIKEL_BEARBEITER;
+            cmd += PARAM_PERSONAL_NACHNAME;
+            cmd += " AS ";
+            cmd += "Bearbeiter";
             cmd += ", ";
             //------------------------
             cmd += TABNAME_ARTIKEL;
@@ -148,7 +154,7 @@ void Form_artikel::update_table()
             //------------------------
             cmd += " LEFT JOIN ";
             cmd += TABNAME_LIEFERANT;
-            cmd += " ON ";
+            cmd += " ON (";
             cmd += TABNAME_ARTIKEL;
             cmd += ".";
             cmd += PARAM_ARTIKEL_LIEFERANT;
@@ -156,6 +162,37 @@ void Form_artikel::update_table()
             cmd += TABNAME_LIEFERANT;
             cmd += ".";
             cmd += PARAM_LIEFERANT_ID;
+            cmd += ")";
+            //------------------------
+            cmd += " LEFT JOIN ";
+            cmd += TABNAME_PERSONAL;
+            cmd += " AS ";
+            cmd += "E";
+            cmd += " ON (";
+            cmd += TABNAME_ARTIKEL;
+            cmd += ".";
+            cmd += PARAM_ARTIKEL_ERSTELLER;
+            cmd += " = ";
+            //cmd += TABNAME_PERSONAL;
+            cmd += "E";
+            cmd += ".";
+            cmd += PARAM_PERSONAL_ID;
+            cmd += ")";
+            //------------------------
+            cmd += " LEFT JOIN ";
+            cmd += TABNAME_PERSONAL;
+            cmd += " AS ";
+            cmd += "B";
+            cmd += " ON (";
+            cmd += TABNAME_ARTIKEL;
+            cmd += ".";
+            cmd += PARAM_ARTIKEL_BEARBEITER;
+            cmd += " = ";
+            //cmd += TABNAME_PERSONAL;
+            cmd += "B";
+            cmd += ".";
+            cmd += PARAM_PERSONAL_ID;
+            cmd += ")";
             //------------------------
             if(!ui->lineEdit_suche->text().isEmpty())
             {
@@ -171,10 +208,16 @@ void Form_artikel::update_table()
                 cmd += "%\'";
             }
             //------------------------
+            cmd += " GROUP BY ";
+            cmd += TABNAME_ARTIKEL;
+            cmd += ".";
+            cmd += PARAM_ARTIKEL_ID;
+            //------------------------
             cmd += " ORDER BY ";            //Sortiert nach:
             cmd += TABNAME_ARTIKEL;
             cmd += ".";
             cmd += PARAM_ARTIKEL_NR;
+            //------------------------
 
             if(q.exec(cmd))
             {
@@ -325,6 +368,16 @@ void Form_artikel::on_pushButton_edit_clicked()
                 cmd += ui->lineEdit_suche->text();
                 cmd += "%\'";
             }
+            //------------------------
+            cmd += " GROUP BY ";
+            cmd += TABNAME_ARTIKEL;
+            cmd += ".";
+            cmd += PARAM_ARTIKEL_ID;
+            //------------------------
+            cmd += " ORDER BY ";            //Sortiert nach:
+            cmd += TABNAME_ARTIKEL;
+            cmd += ".";
+            cmd += PARAM_ARTIKEL_NR;
 
             if(q.exec(cmd))
             {

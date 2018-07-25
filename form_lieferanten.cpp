@@ -85,19 +85,76 @@ void Form_lieferanten::update_table()
             QSqlQuery q(db);
             QString cmd;
             cmd += "SELECT ";
+            //------------------------
+            cmd += TABNAME_LIEFERANT;
+            cmd += ".";
             cmd += PARAM_LIEFERANT_NAME;
             cmd += ", ";
+            //------------------------
+            cmd += TABNAME_LIEFERANT;
+            cmd += ".";
             cmd += PARAM_LIEFERANT_KOMMENT;
             cmd += ", ";
-            cmd += PARAM_LIEFERANT_ERSTELLER;
+            //------------------------
+            //cmd += TABNAME_PERSONAL;
+            cmd += "E";
+            cmd += ".";
+            cmd += PARAM_PERSONAL_NACHNAME;
+            cmd += " AS ";
+            cmd += "Ersteller";
             cmd += ", ";
+            //------------------------
+            cmd += TABNAME_LIEFERANT;
+            cmd += ".";
             cmd += PARAM_LIEFERANT_DATERST;
             cmd += ", ";
-            cmd += PARAM_LIEFERANT_BEARBEITER;
+            //------------------------
+            //cmd += TABNAME_PERSONAL;
+            cmd += "B";
+            cmd += ".";
+            cmd += PARAM_PERSONAL_NACHNAME;
+            cmd += " AS ";
+            cmd += "Bearbeiter";
             cmd += ", ";
+            //------------------------
+            cmd += TABNAME_LIEFERANT;
+            cmd += ".";
             cmd += PARAM_LIEFERANT_DATBEARB;
+            //cmd += ", ";
+            //------------------------
             cmd += " FROM ";
             cmd += TABNAME_LIEFERANT;
+            //------------------------
+            cmd += " LEFT JOIN ";
+            cmd += TABNAME_PERSONAL;
+            cmd += " AS ";
+            cmd += "E";
+            cmd += " ON (";
+            cmd += TABNAME_LIEFERANT;
+            cmd += ".";
+            cmd += PARAM_LIEFERANT_ERSTELLER;
+            cmd += " = ";
+            //cmd += TABNAME_PERSONAL;
+            cmd += "E";
+            cmd += ".";
+            cmd += PARAM_PERSONAL_ID;
+            cmd += ")";
+            //------------------------
+            cmd += " LEFT JOIN ";
+            cmd += TABNAME_PERSONAL;
+            cmd += " AS ";
+            cmd += "B";
+            cmd += " ON (";
+            cmd += TABNAME_LIEFERANT;
+            cmd += ".";
+            cmd += PARAM_LIEFERANT_BEARBEITER;
+            cmd += " = ";
+            //cmd += TABNAME_PERSONAL;
+            cmd += "B";
+            cmd += ".";
+            cmd += PARAM_PERSONAL_ID;
+            cmd += ")";
+            //------------------------
             if(!ui->lineEdit_suche->text().isEmpty())
             {
                 cmd += " WHERE ";
@@ -111,8 +168,18 @@ void Form_lieferanten::update_table()
                 cmd += ui->lineEdit_suche->text();
                 cmd += "%\'";
             }
+            //------------------------
+            cmd += " GROUP BY ";
+            cmd += TABNAME_LIEFERANT;
+            cmd += ".";
+            cmd += PARAM_LIEFERANT_ID;
+            //------------------------
             cmd += " ORDER BY ";            //Sortiert nach:
+            cmd += TABNAME_LIEFERANT;
+            cmd += ".";
             cmd += PARAM_LIEFERANT_NAME;
+            //------------------------
+
 
             if(q.exec(cmd))
             {
@@ -250,6 +317,16 @@ void Form_lieferanten::on_pushButton_edit_clicked()
                 cmd += ui->lineEdit_suche->text();
                 cmd += "%\'";
             }
+            //------------------------
+            cmd += " GROUP BY ";
+            cmd += TABNAME_LIEFERANT;
+            cmd += ".";
+            cmd += PARAM_LIEFERANT_ID;
+            //------------------------
+            cmd += " ORDER BY ";            //Sortiert nach:
+            cmd += TABNAME_LIEFERANT;
+            cmd += ".";
+            cmd += PARAM_LIEFERANT_NAME;
 
             if(q.exec(cmd))
             {

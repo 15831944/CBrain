@@ -85,19 +85,74 @@ void Form_projekte::update_table()
             QSqlQuery q(db);
             QString cmd;
             cmd += "SELECT ";
+            //------------------------
+            cmd += TABNAME_PROJEKT;
+            cmd += ".";
             cmd += PARAM_PROJEKT_NAME;
             cmd += ", ";
+            //------------------------
             cmd += PARAM_PROJEKT_KOMMENT;
             cmd += ", ";
-            cmd += PARAM_PROJEKT_ERSTELLER;
+            //------------------------
+            //cmd += TABNAME_PERSONAL;
+            cmd += "E";
+            cmd += ".";
+            cmd += PARAM_PERSONAL_NACHNAME;
+            cmd += " AS ";
+            cmd += "Ersteller";
             cmd += ", ";
+            //------------------------
+            cmd += TABNAME_PROJEKT;
+            cmd += ".";
             cmd += PARAM_PROJEKT_DATERST;
             cmd += ", ";
-            cmd += PARAM_PROJEKT_BEARBEITER;
+            //------------------------
+            //cmd += TABNAME_PERSONAL;
+            cmd += "B";
+            cmd += ".";
+            cmd += PARAM_PERSONAL_NACHNAME;
+            cmd += " AS ";
+            cmd += "Bearbeiter";
             cmd += ", ";
+            //------------------------
+            cmd += TABNAME_PROJEKT;
+            cmd += ".";
             cmd += PARAM_PROJEKT_DATBEARB;
+            //cmd += ", ";
+            //------------------------
             cmd += " FROM ";
             cmd += TABNAME_PROJEKT;
+            //------------------------
+            cmd += " LEFT JOIN ";
+            cmd += TABNAME_PERSONAL;
+            cmd += " AS ";
+            cmd += "E";
+            cmd += " ON (";
+            cmd += TABNAME_PROJEKT;
+            cmd += ".";
+            cmd += PARAM_PROJEKT_ERSTELLER;
+            cmd += " = ";
+            //cmd += TABNAME_PERSONAL;
+            cmd += "E";
+            cmd += ".";
+            cmd += PARAM_PERSONAL_ID;
+            cmd += ")";
+            //------------------------
+            cmd += " LEFT JOIN ";
+            cmd += TABNAME_PERSONAL;
+            cmd += " AS ";
+            cmd += "B";
+            cmd += " ON (";
+            cmd += TABNAME_PROJEKT;
+            cmd += ".";
+            cmd += PARAM_PROJEKT_BEARBEITER;
+            cmd += " = ";
+            //cmd += TABNAME_PERSONAL;
+            cmd += "B";
+            cmd += ".";
+            cmd += PARAM_PERSONAL_ID;
+            cmd += ")";
+            //------------------------
             if(!ui->lineEdit_suche->text().isEmpty())
             {
                 cmd += " WHERE ";
@@ -111,8 +166,17 @@ void Form_projekte::update_table()
                 cmd += ui->lineEdit_suche->text();
                 cmd += "%\'";
             }
+            //------------------------
+            cmd += " GROUP BY ";
+            cmd += TABNAME_PROJEKT;
+            cmd += ".";
+            cmd += PARAM_PROJEKT_ID;
+            //------------------------
             cmd += " ORDER BY ";            //Sortiert nach:
+            cmd += TABNAME_PROJEKT;
+            cmd += ".";
             cmd += PARAM_PROJEKT_NAME;
+            //------------------------
 
             if(q.exec(cmd))
             {
@@ -250,6 +314,17 @@ void Form_projekte::on_pushButton_edit_clicked()
                 cmd += ui->lineEdit_suche->text();
                 cmd += "%\'";
             }
+            //------------------------
+            cmd += " GROUP BY ";
+            cmd += TABNAME_PROJEKT;
+            cmd += ".";
+            cmd += PARAM_PROJEKT_ID;
+            //------------------------
+            cmd += " ORDER BY ";            //Sortiert nach:
+            cmd += TABNAME_PROJEKT;
+            cmd += ".";
+            cmd += PARAM_PROJEKT_NAME;
+            //------------------------
 
             if(q.exec(cmd))
             {
