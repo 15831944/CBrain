@@ -19,12 +19,12 @@ Kommentar	varchar(400)	YES	---	---	---
 table_lager
 Field	Type	Null	Key	Default	Extra
 id	int(11) unsigned	NO	PRI	---	auto_increment	
-Vorgang	varchar(40)	YES	---	---	---	
+Vorgang	int(11)	YES	---	---	---	
 Artikel_id	int(11)	NO	---	---	---	
 Menge	int(11)	NO	---	---	---	
 Ersteller	int(11)	YES	---	---	---	
 Erfassung	datetime	YES	---	---	---	
-Kommission	varchar(40)	YES	---	---	---	
+Kommission	int(11)	YES	---	---	---	
 Kommentar	varchar(400)	YES	---	---	---	
 <ENDE_Tabelle>
 <BEGIN_Tabelle>
@@ -70,6 +70,12 @@ id	int(11) unsigned	NO	PRI	---	auto_increment
 Artikel	int(11)	YES	---	---	---	
 Menge	int(11)	YES	---	---	---	
 Kommission	int(11)	YES	---	---	---	
+<ENDE_Tabelle>
+<BEGIN_Tabelle>
+table_vorgang
+Field	Type	Null	Key	Default	Extra
+id	int(11) unsigned	NO	PRI	---	auto_increment	
+Vorgang	varchar(40)	YES	---	---	---	
 <ENDE_Tabelle>
 <BEGIN_Tabelle>
 template_materialliste
