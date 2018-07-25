@@ -137,6 +137,17 @@ QString users::get_current_user()
     }
 }
 
+QString users::get_current_user_id()
+{
+    if(current_user != 0)
+    {
+        return id_tz.zeile(current_user);
+    }else
+    {
+        return "0";
+    }
+}
+
 bool users::is_admin()
 {
     if(current_user != 0)

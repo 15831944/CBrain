@@ -91,9 +91,10 @@ void Form_lager::update_table()
             //-------------------------------------------
             cmd += "SELECT ";
             //------------------------
-            cmd += TABNAME_LAGER;
+            //cmd += TABNAME_VORGANG;
+            cmd += "V";
             cmd += ".";
-            cmd += PARAM_LAGER_VORGANG;
+            cmd += PARAM_VORGANG_KLARTEXT;
             cmd += " AS ";
             cmd += "Vorgang";
             cmd += ", ";
@@ -133,9 +134,10 @@ void Form_lager::update_table()
             cmd += "Kommentar";
             cmd += ", ";
             //------------------------
-            cmd += TABNAME_LAGER;
+            //cmd += TABNAME_PERSONAL;
+            cmd += "E";
             cmd += ".";
-            cmd += PARAM_LAGER_ERSTELLER;
+            cmd += PARAM_PERSONAL_NACHNAME;
             cmd += " AS ";
             cmd += "Ersteller";
             cmd += ", ";
@@ -175,6 +177,36 @@ void Form_lager::update_table()
             cmd += ".";
             cmd += PARAM_PROJEKT_ID;
             //------------------------
+            cmd += " LEFT JOIN ";
+            cmd += TABNAME_PERSONAL;
+            cmd += " AS ";
+            cmd += "E";
+            cmd += " ON (";
+            cmd += TABNAME_LAGER;
+            cmd += ".";
+            cmd += PARAM_LAGER_ERSTELLER;
+            cmd += " = ";
+            //cmd += TABNAME_PERSONAL;
+            cmd += "E";
+            cmd += ".";
+            cmd += PARAM_PERSONAL_ID;
+            cmd += ")";
+            //------------------------
+            cmd += " LEFT JOIN ";
+            cmd += TABNAME_VORGANG;
+            cmd += " AS ";
+            cmd += "V";
+            cmd += " ON (";
+            cmd += TABNAME_LAGER;
+            cmd += ".";
+            cmd += PARAM_LAGER_VORGANG;
+            cmd += " = ";
+            //cmd += TABNAME_PERSONAL;
+            cmd += "V";
+            cmd += ".";
+            cmd += PARAM_VORGANG_ID;
+            cmd += ")";
+            //------------------------
             if(!ui->lineEdit_suche->text().isEmpty())
             {
                 cmd += " WHERE ";
@@ -199,6 +231,11 @@ void Form_lager::update_table()
                 cmd += ui->lineEdit_suche->text();
                 cmd += "%\'";
             }
+            //------------------------
+            cmd += " GROUP BY ";
+            cmd += TABNAME_LAGER;
+            cmd += ".";
+            cmd += PARAM_LAGER_ID;
             //------------------------
             cmd += " ORDER BY ";            //Sortiert nach:
             cmd += TABNAME_LAGER;
@@ -386,7 +423,7 @@ void Form_lager::slot_out(text_zeilenweise data)
     param.zeile_anhaengen(PARAM_LAGER_KOMMISSION);
     param.zeile_anhaengen(PARAM_LAGER_KOMMENT);
 
-    values.zeile_anhaengen(VORGANG_WARENEINGANG);
+    values.zeile_anhaengen(VORGANG_WARENAUSGANG);
     values.zeile_anhaengen(artikelid);
     values.zeile_anhaengen(menge);
     values.zeile_anhaengen(user);

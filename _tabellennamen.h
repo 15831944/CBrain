@@ -2,6 +2,7 @@
 #define _TABELLENNAMEN_H
 
 #define USER_NOBODY                 "nobody"
+#define USER_NOBODY_ID              "0"
 
 //--------------------------------------------------------------------------------------------------------
 #define TABNAME_ARTIKEL             "table_artikel"
@@ -47,14 +48,20 @@
 #define TABNAME_LAGER               "table_lager"
 #define PARAM_LAGER_ID              "id"                //Wert 0
 #define PARAM_LAGER_VORGANG         "Vorgang"           //Wert 1    //Wareneingang | Warenausgang
-    #define VORGANG_WARENEINGANG        "Waren-Eingang"
-    #define VORGANG_WARENAUSGANG        "Waren-Ausgang"
 #define PARAM_LAGER_ARTIKELID       "Artikel_id"        //Wert 2
 #define PARAM_LAGER_MENGE           "Menge"             //Wert 3    //Eingelagerte bzw. ausgelagerte Menge
 #define PARAM_LAGER_ERSTELLER       "Ersteller"         //Wert 4
 #define PARAM_LAGER_DATERST         "Erfassung"         //Wert 5    //Datum der Erfassung/Erstellung
 #define PARAM_LAGER_KOMMISSION      "Kommission"        //Wert 6    //Projektnummer
 #define PARAM_LAGER_KOMMENT         "Kommentar"         //Wert 7
+
+//--------------------------------------------------------------------------------------------------------
+#define TABNAME_VORGANG             "table_vorgang"
+#define PARAM_VORGANG_ID            "id"                //Wert 0
+#define PARAM_VORGANG_KLARTEXT      "Vorgang"           //Wert 1
+//----------------------------------
+#define VORGANG_WARENEINGANG        "1"
+#define VORGANG_WARENAUSGANG        "2"
 
 //--------------------------------------------------------------------------------------------------------
 #define TABNAME_PERSONAL            "table_personal"

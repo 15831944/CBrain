@@ -85,19 +85,76 @@ void Form_lieferanten::update_table()
             QSqlQuery q(db);
             QString cmd;
             cmd += "SELECT ";
+            //------------------------
+            cmd += TABNAME_LIEFERANT;
+            cmd += ".";
             cmd += PARAM_LIEFERANT_NAME;
             cmd += ", ";
+            //------------------------
+            cmd += TABNAME_LIEFERANT;
+            cmd += ".";
             cmd += PARAM_LIEFERANT_KOMMENT;
             cmd += ", ";
-            cmd += PARAM_LIEFERANT_ERSTELLER;
+            //------------------------
+            //cmd += TABNAME_PERSONAL;
+            cmd += "E";
+            cmd += ".";
+            cmd += PARAM_PERSONAL_NACHNAME;
+            cmd += " AS ";
+            cmd += "Ersteller";
             cmd += ", ";
+            //------------------------
+            cmd += TABNAME_LIEFERANT;
+            cmd += ".";
             cmd += PARAM_LIEFERANT_DATERST;
             cmd += ", ";
-            cmd += PARAM_LIEFERANT_BEARBEITER;
+            //------------------------
+            //cmd += TABNAME_PERSONAL;
+            cmd += "B";
+            cmd += ".";
+            cmd += PARAM_PERSONAL_NACHNAME;
+            cmd += " AS ";
+            cmd += "Bearbeiter";
             cmd += ", ";
+            //------------------------
+            cmd += TABNAME_LIEFERANT;
+            cmd += ".";
             cmd += PARAM_LIEFERANT_DATBEARB;
+            //cmd += ", ";
+            //------------------------
             cmd += " FROM ";
             cmd += TABNAME_LIEFERANT;
+            //------------------------
+            cmd += " LEFT JOIN ";
+            cmd += TABNAME_PERSONAL;
+            cmd += " AS ";
+            cmd += "E";
+            cmd += " ON (";
+            cmd += TABNAME_LIEFERANT;
+            cmd += ".";
+            cmd += PARAM_LIEFERANT_ERSTELLER;
+            cmd += " = ";
+            //cmd += TABNAME_PERSONAL;
+            cmd += "E";
+            cmd += ".";
+            cmd += PARAM_PERSONAL_ID;
+            cmd += ")";
+            //------------------------
+            cmd += " LEFT JOIN ";
+            cmd += TABNAME_PERSONAL;
+            cmd += " AS ";
+            cmd += "B";
+            cmd += " ON (";
+            cmd += TABNAME_LIEFERANT;
+            cmd += ".";
+            cmd += PARAM_LIEFERANT_BEARBEITER;
+            cmd += " = ";
+            //cmd += TABNAME_PERSONAL;
+            cmd += "B";
+            cmd += ".";
+            cmd += PARAM_PERSONAL_ID;
+            cmd += ")";
+            //------------------------
             if(!ui->lineEdit_suche->text().isEmpty())
             {
                 cmd += " WHERE ";
@@ -111,8 +168,18 @@ void Form_lieferanten::update_table()
                 cmd += ui->lineEdit_suche->text();
                 cmd += "%\'";
             }
+            //------------------------
+            cmd += " GROUP BY ";
+            cmd += TABNAME_LIEFERANT;
+            cmd += ".";
+            cmd += PARAM_LIEFERANT_ID;
+            //------------------------
             cmd += " ORDER BY ";            //Sortiert nach:
+            cmd += TABNAME_LIEFERANT;
+            cmd += ".";
             cmd += PARAM_LIEFERANT_NAME;
+            //------------------------
+
 
             if(q.exec(cmd))
             {
@@ -250,6 +317,16 @@ void Form_lieferanten::on_pushButton_edit_clicked()
                 cmd += ui->lineEdit_suche->text();
                 cmd += "%\'";
             }
+            //------------------------
+            cmd += " GROUP BY ";
+            cmd += TABNAME_LIEFERANT;
+            cmd += ".";
+            cmd += PARAM_LIEFERANT_ID;
+            //------------------------
+            cmd += " ORDER BY ";            //Sortiert nach:
+            cmd += TABNAME_LIEFERANT;
+            cmd += ".";
+            cmd += PARAM_LIEFERANT_NAME;
 
             if(q.exec(cmd))
             {
@@ -323,8 +400,14 @@ void Form_lieferanten::slot_edit_dialog(text_zeilenweise ids)
     if(ids.zeilenanzahl() == 1)
     {
         idbuffer = ids.zeile(1);
-        QString blockfromuser = dbeigen->get_data_qstring(TABNAME_LIEFERANT, PARAM_LIEFERANT_BLOCK, idbuffer);
-        if(blockfromuser == USER_NOBODY || blockfromuser.isEmpty())
+        QString blockfromuser_id = dbeigen->get_data_qstring(TABNAME_LIEFERANT, PARAM_LIEFERANT_BLOCK, idbuffer);
+        QString blockfromuser = dbeigen->get_data_qstring(TABNAME_LIEFERANT, PARAM_LIEFERANT_BLOCK, idbuffer,\
+                                                          TABNAME_PERSONAL, PARAM_PERSONAL_VORNAME);
+        blockfromuser += " ";
+        blockfromuser += dbeigen->get_data_qstring(TABNAME_LIEFERANT, PARAM_LIEFERANT_BLOCK, idbuffer,\
+                                                   TABNAME_PERSONAL, PARAM_PERSONAL_NACHNAME);
+
+       if(blockfromuser_id == USER_NOBODY_ID || blockfromuser.isEmpty() )
         {
             text_zeilenweise lieferant;
             QString querryfilter;
@@ -394,7 +477,7 @@ void Form_lieferanten::slot_edit_dialog()
 
 void Form_lieferanten::slot_edit_dialog_cancel()
 {
-    dbeigen->data_edit(TABNAME_LIEFERANT, PARAM_LIEFERANT_BLOCK, USER_NOBODY, idbuffer);
+    dbeigen->data_edit(TABNAME_LIEFERANT, PARAM_LIEFERANT_BLOCK, USER_NOBODY_ID, idbuffer);
 }
 
 void Form_lieferanten::slot_edit(text_zeilenweise data, QString id)
@@ -402,11 +485,22 @@ void Form_lieferanten::slot_edit(text_zeilenweise data, QString id)
     //data:
     //  Wert 1 = Name
 
-    QString blockfromuser = dbeigen->get_data_qstring(TABNAME_LIEFERANT, PARAM_LIEFERANT_BLOCK, idbuffer);
-    QString lasteditinguser = dbeigen->get_data_qstring(TABNAME_LIEFERANT, PARAM_LIEFERANT_BEARBEITER, idbuffer);
-    if(blockfromuser != user)
+    QString blockfromuser_id = dbeigen->get_data_qstring(TABNAME_LIEFERANT, PARAM_LIEFERANT_BLOCK, idbuffer);
+    QString blockfromuser = dbeigen->get_data_qstring(TABNAME_LIEFERANT, PARAM_LIEFERANT_BLOCK, idbuffer,\
+                                                      TABNAME_PERSONAL, PARAM_PERSONAL_VORNAME);
+    blockfromuser += " ";
+    blockfromuser += dbeigen->get_data_qstring(TABNAME_LIEFERANT, PARAM_LIEFERANT_BLOCK, idbuffer,\
+                                               TABNAME_PERSONAL, PARAM_PERSONAL_NACHNAME);
+
+    QString lasteditinguser = dbeigen->get_data_qstring(TABNAME_LIEFERANT, PARAM_LIEFERANT_BEARBEITER, idbuffer,\
+                                                      TABNAME_PERSONAL, PARAM_PERSONAL_VORNAME);
+    lasteditinguser += " ";
+    lasteditinguser += dbeigen->get_data_qstring(TABNAME_LIEFERANT, PARAM_LIEFERANT_BEARBEITER, idbuffer,\
+                                                 TABNAME_PERSONAL, PARAM_PERSONAL_NACHNAME);
+
+    if(blockfromuser_id != user)
     {
-        if(blockfromuser == USER_NOBODY)
+        if(blockfromuser_id == USER_NOBODY_ID)
         {
             QString msg;
             msg += "Die Aenderungen konnten nicht gespeichert werden, da der Nutzer \"";
@@ -440,7 +534,7 @@ void Form_lieferanten::slot_edit(text_zeilenweise data, QString id)
         values.zeile_anhaengen(data.zeile(1));//Name
         values.zeile_anhaengen(user);
         values.zeile_anhaengen(today.get_today_y_m_d());
-        values.zeile_anhaengen(USER_NOBODY);
+        values.zeile_anhaengen(USER_NOBODY_ID);
         values.zeile_anhaengen(data.zeile(2));//Kommenter
 
         dbeigen->data_edit(TABNAME_LIEFERANT, param, values, id);

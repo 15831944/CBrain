@@ -18,6 +18,7 @@ public:
     void newuser();
     QString get_users();
     QString get_current_user();
+    QString get_current_user_id();
     void removeuser(uint index);
     uint get_anz_admins();
 

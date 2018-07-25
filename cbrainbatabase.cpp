@@ -957,6 +957,15 @@ QString cbrainbatabase::get_data_qstring(QString tablename, QString param, QStri
     return msg;
 }
 
+QString cbrainbatabase::get_data_qstring(QString tablennameA, QString tabA_param_with_id_of_B, QString tabA_id, \
+                                         QString tablenameB, QString tabB_param_for_return)
+{
+    //Beispiel:
+    //tablenameA = Artikel, tabA_param_with_id_of_B = Block durch user(id),
+    QString tabB_id = get_data_qstring(tablennameA, tabA_param_with_id_of_B, tabA_id);
+    return get_data_qstring(tablenameB, tabB_param_for_return, tabB_id);
+}
+
 //------------------------------------------
 //-------------------------------values:
 text_zeilenweise cbrainbatabase::get_values_from_column(QString tablename,  int column, QString querryfilter)
