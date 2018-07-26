@@ -349,6 +349,7 @@ void Form_lager::on_pushButton_in_clicked()
     d->set_db(dbeigen);
     d->setup();
     d->setWindowTitle("Waren-Eingang buchen");
+    d->set_vorgang("Waren-Eingang");
     connect(d, SIGNAL(signal_send_data(text_zeilenweise)),  \
             this, SLOT(slot_in(text_zeilenweise))          );
     d->exec();
@@ -363,6 +364,7 @@ void Form_lager::on_pushButton_out_clicked()
     d->set_db(dbeigen);
     d->setup();
     d->setWindowTitle("Waren-Ausgang buchen");
+    d->set_vorgang("Waren-Ausgang");
     connect(d, SIGNAL(signal_send_data(text_zeilenweise)),  \
             this, SLOT(slot_out(text_zeilenweise))          );
     d->exec();

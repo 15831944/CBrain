@@ -6,10 +6,10 @@ template_Materialliste:
 soll als Template zum Anlegen von neuen projektbezogenen Materiallisten dienen
 
 
-->Lager->Druckerdialog erweitern um Angabe zum Lieferanten
-
-
 -->Im-Export-Dialog
+
+
+
 
 
 

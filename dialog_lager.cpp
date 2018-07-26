@@ -147,12 +147,14 @@ void Dialog_lager::on_pushButton_ok_clicked()
         tz.zeile_anhaengen(text_links(ui->comboBox_kom->currentText(), " / "));        //Wert 3
         tz.zeile_anhaengen(ui->lineEdit_komment->text());                              //Wert 4
 
+        dlg_to_printmsg();
         emit signal_send_data(tz);
     }
 }
 
 void Dialog_lager::on_pushButton_cancel_clicked()
 {
+    printmsg.clear();
     this->close();
 }
 
@@ -182,27 +184,48 @@ void Dialog_lager::on_lineEdit_komfilter_textChanged(const QString &arg1)
 
 void Dialog_lager::on_pushButton_print_clicked()
 {
-    QString msg;
-    msg += "-------------------------------------------------";
-    msg += "\n";
-    msg += "Artikel: \"";
-    msg += text_rechts(ui->comboBox_artikel->currentText(), " / ");
-    msg += "\"\n";
-    msg += "Menge: ";
-    msg += int_to_qstring(ui->spinBox_menge->value());
-    msg += "\n";
-    msg += "Projekt: \"";
-    msg += text_rechts(ui->comboBox_kom->currentText(), " / ");
-    msg += "\"\n";
-    msg += ui->lineEdit_komment->text();
-    msg += "\n";
-    msg += "-------------------------------------------------";
-    msg += "\n";
-
     Dialog_printbox *d = new Dialog_printbox;
-    d->setText(msg);
+    d->setText(printmsg);
     d->exec();
     delete d;
 }
 
+void Dialog_lager::dlg_to_printmsg()
+{
+    if(!printmsg.isEmpty())
+    {
+        printmsg += "\n";
+        printmsg += "-----------------------------------------";
+        printmsg += "\n";
+    }
+    printmsg += "Artikel: ";
+    printmsg += text_rechts(ui->comboBox_artikel->currentText(), " / ");
+    printmsg += "\n";
+    printmsg += "Lieferant: ";
+    printmsg += dbeigen->get_data_qstring(TABNAME_ARTIKEL, PARAM_ARTIKEL_LIEFERANT, text_links(ui->comboBox_artikel->currentText(), " / "),\
+                                     TABNAME_LIEFERANT, PARAM_LIEFERANT_NAME);
+    printmsg += "\n";
+    if(vorgang.isEmpty())
+    {
+        printmsg += "Menge: ";
+    }else
+    {
+        printmsg += vorgang;
+        printmsg += ": ";
+    }
+    printmsg += int_to_qstring(ui->spinBox_menge->value());
+    printmsg += " (VE=";
+    printmsg += dbeigen->get_data_qstring(TABNAME_ARTIKEL, PARAM_ARTIKEL_VE, text_links(ui->comboBox_artikel->currentText(), " / "));
+    printmsg += ")";
+    printmsg += "\n";
+    printmsg += "Lagerort: ";
+    printmsg += dbeigen->get_data_qstring(TABNAME_ARTIKEL, PARAM_ARTIKEL_LAGERORT, text_links(ui->comboBox_artikel->currentText(), " / "));
+    printmsg += "\n";
+    printmsg += "Projekt: ";
+    printmsg += text_rechts(ui->comboBox_kom->currentText(), " / ");
+    printmsg += "\n";
+    printmsg += "Kommentar: ";
+    printmsg += ui->lineEdit_komment->text();
+
+}
 

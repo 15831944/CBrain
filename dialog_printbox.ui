@@ -26,18 +26,31 @@
     <enum>QTextEdit::NoWrap</enum>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton_print">
+  <widget class="QWidget" name="">
    <property name="geometry">
     <rect>
      <x>560</x>
      <y>10</y>
-     <width>85</width>
-     <height>26</height>
+     <width>91</width>
+     <height>61</height>
     </rect>
    </property>
-   <property name="text">
-    <string>Drucken</string>
-   </property>
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QPushButton" name="pushButton_print_pdf">
+      <property name="text">
+       <string>PDF Drucken</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="pushButton_print">
+      <property name="text">
+       <string>Drucken</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
   </widget>
  </widget>
  <resources/>
