@@ -30,6 +30,7 @@ public:
     bool modul_lager();
     bool modul_projekte();
     bool modul_personal();
+    bool modul_matlist();
 
     inline text_zeilenweise get_names_tz()
     {
@@ -67,6 +68,10 @@ public:
     {
         return use_modul_personal;
     }
+    inline text_zeilenweise get_use_modul_matlist_tz()
+    {
+        return use_modul_matlist;
+    }
 
     bool change_name(uint index, QString newname);
     void change_pwd(uint index, QString newpwd);
@@ -77,6 +82,7 @@ public:
     void change_use_modul_lager(uint index, bool isalowed);
     void change_use_modul_projekte(uint index, bool isalowed);
     void change_use_modul_personal(uint index, bool isalowed);
+    void change_use_modul_matlist(uint index, bool isalowed);
 
 private:
     QString trzparam;               //Trennzeichen der einzelnen Parameter eines Nutzers
@@ -91,6 +97,7 @@ private:
     text_zeilenweise use_modul_lager;
     text_zeilenweise use_modul_projekte;
     text_zeilenweise use_modul_personal;
+    text_zeilenweise use_modul_matlist;
 
 
 

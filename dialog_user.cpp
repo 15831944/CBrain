@@ -83,6 +83,14 @@ void Dialog_user::on_listWidget_names_currentRowChanged(int currentRow)
         ui->checkBox_modul_personal->setChecked(false);
     }
 
+    if(user.get_use_modul_matlist_tz().zeile(currentRow+1)== "1")
+    {
+        ui->checkBox_modul_matlist->setChecked(true);
+    }else
+    {
+        ui->checkBox_modul_matlist->setChecked(false);
+    }
+
     //------------------------------------------------------------------------------------
     if(ui->listWidget_names->currentRow() == 0)//First Admin soll nicht editierbar sein!
     {
@@ -94,6 +102,7 @@ void Dialog_user::on_listWidget_names_currentRowChanged(int currentRow)
         ui->checkBox_modul_lager->setDisabled(true);
         ui->checkBox_modul_projekte->setDisabled(true);
         ui->checkBox_modul_personal->setDisabled(true);
+        ui->checkBox_modul_matlist->setDisabled(true);
     }else
     {
         ui->lineEdit_name->setEnabled(true);
@@ -104,6 +113,7 @@ void Dialog_user::on_listWidget_names_currentRowChanged(int currentRow)
         ui->checkBox_modul_lager->setEnabled(true);
         ui->checkBox_modul_projekte->setEnabled(true);
         ui->checkBox_modul_personal->setEnabled(true);
+        ui->checkBox_modul_matlist->setEnabled(true);
     }
 }
 
@@ -188,4 +198,9 @@ void Dialog_user::on_spinBox_id_valueChanged(const QString &arg1)
 void Dialog_user::on_checkBox_modul_personal_toggled(bool checked)
 {
     user.change_use_modul_personal(ui->listWidget_names->currentRow()+1, checked);
+}
+
+void Dialog_user::on_checkBox_modul_matlist_toggled(bool checked)
+{
+    user.change_use_modul_matlist(ui->listWidget_names->currentRow()+1, checked);
 }

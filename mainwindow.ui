@@ -20,7 +20,7 @@
      <x>0</x>
      <y>0</y>
      <width>400</width>
-     <height>27</height>
+     <height>18</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuEinstellungen">
@@ -50,11 +50,13 @@
      <string>Module</string>
     </property>
     <addaction name="actionKeinModul"/>
+    <addaction name="separator"/>
     <addaction name="actionModulArtikel"/>
-    <addaction name="actionModulLieferanten"/>
     <addaction name="actionModulLager"/>
-    <addaction name="actionModulProjekte"/>
+    <addaction name="actionModulLieferanten"/>
+    <addaction name="actionModulMaterialliste"/>
     <addaction name="actionModulPersonal"/>
+    <addaction name="actionModulProjekte"/>
    </widget>
    <widget class="QMenu" name="menuModule_Admin">
     <property name="title">
@@ -151,6 +153,11 @@
   <action name="actionModulPersonal">
    <property name="text">
     <string>Personal</string>
+   </property>
+  </action>
+  <action name="actionModulMaterialliste">
+   <property name="text">
+    <string>Materialliste</string>
    </property>
   </action>
  </widget>
