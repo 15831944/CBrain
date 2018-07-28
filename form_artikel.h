@@ -5,6 +5,7 @@
 
 #include "cbrainbatabase.h"
 #include "_tabellennamen.h"
+#include "_tabname_personal.h"
 #include "dialog_artikel.h"
 #include "dialog_dataselection.h"
 #include "text.h"

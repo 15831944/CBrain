@@ -5,6 +5,7 @@
 
 #include "cbrainbatabase.h"
 #include "_tabellennamen.h"
+#include "_tabname_personal.h"
 #include "datum.h"
 #include "dialog_lager.h"
 

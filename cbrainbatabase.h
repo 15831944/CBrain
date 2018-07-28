@@ -102,6 +102,7 @@ public:
     QString get_data_qstring(QString tablename, QString param, QString id);
     QString get_data_qstring(QString tablennameA, QString tabA_param_with_id_of_B, QString tabA_id, \
                              QString tablenameB, QString tabB_param_for_return);
+    text_zeilenweise get_data_tz(QString tablename, QString param);
     //------------------------------------------
     //-------------------------------values:
     text_zeilenweise get_values_from_column(QString tablename, int column, QString querryfilter);

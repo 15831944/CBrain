@@ -966,6 +966,49 @@ QString cbrainbatabase::get_data_qstring(QString tablennameA, QString tabA_param
     return get_data_qstring(tablenameB, tabB_param_for_return, tabB_id);
 }
 
+text_zeilenweise cbrainbatabase::get_data_tz(QString tablename, QString param)
+{
+    text_zeilenweise tz;
+    QSqlDatabase db;
+
+    db = QSqlDatabase::database("dbglobal");
+    db.setHostName(host);
+    db.setDatabaseName(dbname);
+    db.setUserName(user);
+    db.setPassword(pwd);
+
+    if(db.open())
+    {
+        QSqlQuery q(db);
+        QString cmd;
+        cmd += "SELECT ";
+        cmd += param;
+        cmd += " FROM ";
+        cmd += tablename;
+
+        if(q.exec(cmd))
+        {
+            while(q.next())
+            {
+                tz.zeile_anhaengen(q.value(0).toString());
+            }
+        }else
+        {
+            QMessageBox mb;
+            mb.setText("Fehler:\n" + q.lastError().text());
+            mb.exec();
+        }
+        db.close();
+
+    }else
+    {
+        QMessageBox mb;
+        mb.setText("Fehler bei Datenbankverbindung!");
+        mb.exec();
+    }
+    return tz;
+}
+
 //------------------------------------------
 //-------------------------------values:
 text_zeilenweise cbrainbatabase::get_values_from_column(QString tablename,  int column, QString querryfilter)

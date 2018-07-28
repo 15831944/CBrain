@@ -1,7 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#define VERSIONSNUMMER  "1.2018.07.18"
+#define VERSIONSNUMMER  "1.2018.07.27"
 
 #include <QMainWindow>
 #include <QFile>
@@ -20,6 +20,7 @@
 #include "form_projekte.h"
 #include "form_backup.h"
 #include "form_personal.h"
+#include "form_matlist.h"
 
 #include "defines_filenames.h"
 #include "users.h"
@@ -67,6 +68,7 @@ private slots:
     void on_actionModulBackup_triggered();
     void on_actionModulProjekte_triggered();
     void on_actionModulPersonal_triggered();
+    void on_actionModulMaterialliste_triggered();
 
 private:
     Ui::MainWindow *ui;
@@ -89,6 +91,7 @@ private:
     bool modul_lager;           //widget_lager ist offen
     bool modul_projekte;        //widget_lager ist offen
     bool modul_personal;        //widget_personal ist offen
+    bool modul_matlist;        //widget_matlist ist offen
 
 
     //eigene Widgets:
@@ -99,6 +102,7 @@ private:
     Form_projekte       widget_projekte;
     Form_backup         widget_backup;
     Form_personal       widget_personal;
+    Form_matlist        widget_matlist;
 
 
     //Funktionen:
@@ -114,8 +118,10 @@ private:
     void ui_rechte_modul_lager(bool hat_rechte);
     void ui_rechte_modul_projekte(bool hat_rechte);
     void ui_rechte_modul_perrsonal(bool hat_rechte);
+    void ui_rechte_modul_matlist(bool hat_rechte);
 
     void change_modul(QString modul);
+    void hide_all_moduls();
     void change_windowtitle();
 
 };

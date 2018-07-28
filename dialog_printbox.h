@@ -6,6 +6,7 @@
 //#include <QPrintDialog>
 #include <QtPrintSupport/QPrinter>
 #include <QtPrintSupport/QPrintDialog>
+//#include <QPageLayout>
 #include <QDebug>
 #include <QtGui>
 #include <QtCore>
@@ -25,6 +26,8 @@ public:
     void setText(QString text);
 
 private slots:
+    void on_pushButton_print_pdf_clicked();
+
     void on_pushButton_print_clicked();
 
 private:

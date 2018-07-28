@@ -25,6 +25,11 @@ public:
     void set_db(cbrainbatabase *new_db);
     void setup();
 
+    inline void set_vorgang(QString v)
+    {
+        vorgang = v;
+    }
+
 signals:
     void signal_send_data(text_zeilenweise data);
 
@@ -47,6 +52,10 @@ private:
 
     void clear();
     void update_artikel();
+    QString printmsg;
+    QString vorgang;
+
+    void dlg_to_printmsg();
 };
 
 #endif // DIALOG_LAGER_H

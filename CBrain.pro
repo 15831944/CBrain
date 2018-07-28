@@ -42,7 +42,8 @@ SOURCES += main.cpp\
     dialog_lager.cpp \
     dialog_printbox.cpp \
     form_personal.cpp \
-    dialog_personal.cpp
+    dialog_personal.cpp \
+    form_matlist.cpp
 
 HEADERS  += mainwindow.h \
     defines_filenames.h \
@@ -74,7 +75,10 @@ HEADERS  += mainwindow.h \
     dialog_lager.h \
     dialog_printbox.h \
     form_personal.h \
-    dialog_personal.h
+    dialog_personal.h \
+    form_matlist.h \
+    _tabname_promatpos.h \
+    _tabname_personal.h
 
 FORMS    += mainwindow.ui \
     dialog_login.ui \
@@ -96,4 +100,5 @@ FORMS    += mainwindow.ui \
     dialog_lager.ui \
     dialog_printbox.ui \
     form_personal.ui \
-    dialog_personal.ui
+    dialog_personal.ui \
+    form_matlist.ui
