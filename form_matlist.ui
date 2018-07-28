@@ -19,7 +19,7 @@
    </property>
    <property name="geometry">
     <rect>
-     <x>10</x>
+     <x>70</x>
      <y>10</y>
      <width>113</width>
      <height>20</height>
@@ -35,7 +35,7 @@
   <widget class="QPushButton" name="pushButton_projektauswahl">
    <property name="geometry">
     <rect>
-     <x>130</x>
+     <x>190</x>
      <y>10</y>
      <width>41</width>
      <height>23</height>
@@ -101,7 +101,7 @@
     <string>alle</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton_check_no_pos">
+  <widget class="QPushButton" name="pushButton_check_activ_pos">
    <property name="geometry">
     <rect>
      <x>680</x>
@@ -111,7 +111,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>keine</string>
+    <string>nur aktive</string>
    </property>
   </widget>
   <widget class="QPushButton" name="pushButton_pos_new">
@@ -177,6 +177,25 @@
    </property>
    <property name="text">
     <string>importieren</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="lineEdit_projekt_id">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>51</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="readOnly">
+    <bool>false</bool>
+   </property>
+   <property name="placeholderText">
+    <string/>
    </property>
   </widget>
  </widget>

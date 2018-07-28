@@ -11,7 +11,8 @@ soll als Template zum Anlegen von neuen projektbezogenen Materiallisten dienen
         ->Diese Artiklen werden Vorgeschlagen zum Mit-Bestellen
         ->id | default-Verhalten (mit bestellen/nur vorschlagen == checked/unchecked)
 
-
+-->modul_backup anpassen
+    ->promatpos_*-Tabellen nicht mit exportieren
 
 
 

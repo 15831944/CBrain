@@ -76,7 +76,9 @@ HEADERS  += mainwindow.h \
     dialog_printbox.h \
     form_personal.h \
     dialog_personal.h \
-    form_matlist.h
+    form_matlist.h \
+    _tabname_promatpos.h \
+    _tabname_personal.h
 
 FORMS    += mainwindow.ui \
     dialog_login.ui \

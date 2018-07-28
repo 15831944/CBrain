@@ -6,6 +6,7 @@ Dialog_dataselection::Dialog_dataselection(QWidget *parent) :
     ui(new Ui::Dialog_dataselection)
 {
     ui->setupUi(this);
+    anzretwerte = 0;
 }
 
 Dialog_dataselection::~Dialog_dataselection()
@@ -20,39 +21,103 @@ void Dialog_dataselection::on_pushButton_cancel_clicked()
 
 void Dialog_dataselection::set_data(text_zeilenweise data)
 {
-    ui->listWidget->clear();
+    mydata = data;
+    update_listwidget();
+}
+void Dialog_dataselection::set_data(text_zeilenweise data, text_zeilenweise id)
+{
+    ids = id;
+    mydata = data;
+    update_listwidget();
+}
 
-    QListWidgetItem* item[data.zeilenanzahl()];
-    for(uint i=1; i<=data.zeilenanzahl() ;i++)
+void Dialog_dataselection::on_lineEdit_filter_textChanged()
+{
+    update_listwidget();
+}
+
+void Dialog_dataselection::update_listwidget()
+{
+    ui->listWidget->clear();
+    filtered_data.clear();
+    filtered_ids.clear();
+
+    if(ui->lineEdit_filter->text().isEmpty())
     {
-        item[i-1] = new QListWidgetItem(data.zeile(i) , ui->listWidget);
+        filtered_data = mydata;
+        filtered_ids = ids;
+    }else
+    {
+        for(uint i=1; i<=mydata.zeilenanzahl() ;i++)
+        {
+            if(mydata.zeile(i).toUpper().contains(ui->lineEdit_filter->text().toUpper()))
+            {
+                filtered_data.zeile_anhaengen(mydata.zeile(i));
+                if(ids.zeilenanzahl() != 0)
+                {
+                    filtered_ids.zeile_anhaengen(ids.zeile(i));
+                }
+            }
+        }
+    }
+    QListWidgetItem* item[filtered_data.zeilenanzahl()];
+    for(uint i=1; i<=filtered_data.zeilenanzahl() ;i++)
+    {
+        item[i-1] = new QListWidgetItem(filtered_data.zeile(i) , ui->listWidget);
         item[i-1]->setFlags(item[i-1]->flags() | Qt::ItemIsUserCheckable); // set checkable flag
         item[i-1]->setCheckState(Qt::Unchecked); // AND initialize check state
         ui->listWidget->addItem(item[i-1]);
     }
 }
 
-void Dialog_dataselection::set_data(text_zeilenweise data, text_zeilenweise id)
-{
-    set_data(data);
-    ids = id;
-}
-
 void Dialog_dataselection::on_pushButton_ok_clicked()
 {
     text_zeilenweise current_ids;
 
-    for(int i=1; i<=ui->listWidget->count() ;i++)
+    if(filtered_ids.zeilenanzahl() == 1)
     {
-        if(ui->listWidget->item(i-1)->checkState() == Qt::Checked)
+        current_ids = filtered_ids;
+    }else
+    {
+        for(int i=1; i<=ui->listWidget->count() ;i++)
         {
-            //tz.zeile_anhaengen(ui->listWidget->item(i-1)->text());
-            current_ids.zeile_anhaengen(ids.zeile(i));
+            if(ui->listWidget->item(i-1)->checkState() == Qt::Checked)
+            {
+                //tz.zeile_anhaengen(ui->listWidget->item(i-1)->text());
+                current_ids.zeile_anhaengen(filtered_ids.zeile(i));
+            }
         }
     }
-    this->close();
 
-    emit signal_send_selection(current_ids);
+    if(anzretwerte != 0)
+    {
+        if(anzretwerte == current_ids.zeilenanzahl())
+        {
+            this->close();
+            emit signal_send_selection(current_ids);
+        }else
+        {
+            QString msg;
+            if(anzretwerte == 1)
+            {
+                msg += "Bitte nur einen Eintrag!";
+            }else
+            {
+                msg += "Bitte ";
+                msg += int_to_qstring(anzretwerte);
+                msg += " Eintraege auswaelen!";
+            }
+
+
+            QMessageBox mb;
+            mb.setText(msg);
+            mb.exec();
+        }
+    }else
+    {
+        this->close();
+        emit signal_send_selection(current_ids);
+    }
 }
 
 void Dialog_dataselection::on_pushButton_all_clicked()
@@ -71,3 +136,7 @@ void Dialog_dataselection::on_pushButton_non_clicked()
     }
 }
 
+void Dialog_dataselection::set_anz_returnwerte(int anz)
+{
+    anzretwerte = anz;
+}
