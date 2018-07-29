@@ -7,6 +7,7 @@
 #include "text_zeilenweise.h"
 #include "cbrainbatabase.h"
 #include "_tabellennamen.h"
+#include "_tabname_lieferant.h"
 #include "text.h"
 
 namespace Ui {

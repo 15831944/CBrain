@@ -66,51 +66,53 @@ void Form_backup::on_pushButton_backup_clicked()
 
     for(uint i=1; i<= tables.zeilenanzahl() ;i++)
     {
-        text_zeilenweise param = dbeigen->get_param_tz(tables.zeile(i));
-        text_zeilenweise param_type = dbeigen->get_param_type_tz(tables.zeile(i));
-        text_zeilenweise param_primkey = dbeigen->get_param_primkey_tz(tables.zeile(i));
-        text_zeilenweise param_extra = dbeigen->get_param_extra_tz(tables.zeile(i));
-        text_zeilenweise param_notnull = dbeigen->get_param_notnull_tz(tables.zeile(i));
-        text_zeilenweise param_default = dbeigen->get_param_default_tz(tables.zeile(i));
-
-        msg += "<BEGIN_Tabelle>";
-        msg += "\n";
-        msg += tables.zeile(i);
-        msg += "\n";
-
-        msg += "Field"; //Spaltenname
-        msg += ezpar;
-        msg += "Type";
-        msg += ezpar;
-        msg += "Null";  //Not Null
-        msg += ezpar;
-        msg += "Key";   //Is Primary Key
-        msg += ezpar;
-        msg += "Default"; //Default value
-        msg += ezpar;
-        msg += "Extra";
-        msg += "\n";
-
-        for(uint ii=1; ii<=param.zeilenanzahl() ;ii++)
+        if(!tables.zeile(i).contains(TABNAME_PROMATPOS))
         {
-            msg += param.zeile(ii);
+            text_zeilenweise param = dbeigen->get_param_tz(tables.zeile(i));
+            text_zeilenweise param_type = dbeigen->get_param_type_tz(tables.zeile(i));
+            text_zeilenweise param_primkey = dbeigen->get_param_primkey_tz(tables.zeile(i));
+            text_zeilenweise param_extra = dbeigen->get_param_extra_tz(tables.zeile(i));
+            text_zeilenweise param_notnull = dbeigen->get_param_notnull_tz(tables.zeile(i));
+            text_zeilenweise param_default = dbeigen->get_param_default_tz(tables.zeile(i));
+
+            msg += "<BEGIN_Tabelle>";
+            msg += "\n";
+            msg += tables.zeile(i);
+            msg += "\n";
+
+            msg += "Field"; //Spaltenname
             msg += ezpar;
-            msg += param_type.zeile(ii);
+            msg += "Type";
             msg += ezpar;
-            msg += param_notnull.zeile(ii);
+            msg += "Null";  //Not Null
             msg += ezpar;
-            msg += param_primkey.zeile(ii);
+            msg += "Key";   //Is Primary Key
             msg += ezpar;
-            msg += param_default.zeile(ii);
-            msg += ezpar;;
-            msg += param_extra.zeile(ii);
+            msg += "Default"; //Default value
             msg += ezpar;
+            msg += "Extra";
+            msg += "\n";
+
+            for(uint ii=1; ii<=param.zeilenanzahl() ;ii++)
+            {
+                msg += param.zeile(ii);
+                msg += ezpar;
+                msg += param_type.zeile(ii);
+                msg += ezpar;
+                msg += param_notnull.zeile(ii);
+                msg += ezpar;
+                msg += param_primkey.zeile(ii);
+                msg += ezpar;
+                msg += param_default.zeile(ii);
+                msg += ezpar;;
+                msg += param_extra.zeile(ii);
+                msg += ezpar;
+                msg += "\n";
+            }
+
+            msg += "<ENDE_Tabelle>";
             msg += "\n";
         }
-
-        msg += "<ENDE_Tabelle>";
-        msg += "\n";
-
     }
 
     //msg in Datei speichern:

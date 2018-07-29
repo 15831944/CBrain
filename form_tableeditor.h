@@ -7,6 +7,7 @@
 #include "dialog_yes_no.h"
 #include "dialog_text_input.h"
 #include "dialog_tableparam.h"
+#include "dialog_tableeditor.h"
 
 namespace Ui {
 class Form_tableeditor;
@@ -50,6 +51,7 @@ private slots:
     void on_pushButton_param_edit_clicked();
     void on_pushButton_table_edit_clicked();
     void on_lineEdit_table_seach_textChanged();
+    void on_pushButton_value_edit_clicked();
 
 private:
     Ui::Form_tableeditor *ui;

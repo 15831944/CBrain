@@ -95,7 +95,9 @@ public:
     //------------------------------------------
     //-------------------------------data:
     bool data_new(QString tablename, text_zeilenweise param, text_zeilenweise values);
+    bool data_new(QString tablename);
     bool data_del(QString tablename, text_zeilenweise ids);
+    bool data_del(QString tablename, QString id);
     bool data_edit(QString tablename, QString param, QString value, QString id);
     bool data_edit(QString tablename, text_zeilenweise param, text_zeilenweise value, QString id);
     //----------------

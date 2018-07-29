@@ -5,6 +5,7 @@
 #include <QFile>
 
 #include "cbrainbatabase.h"
+#include "_tabname_promatpos.h"
 #include "inifile.h"
 #include "text.h"
 

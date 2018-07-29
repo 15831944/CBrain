@@ -7,7 +7,7 @@ Form_tableeditor::Form_tableeditor(QWidget *parent) :
     ui(new Ui::Form_tableeditor)
 {
     ui->setupUi(this);
-    this->model = new QSqlQueryModel();
+    model = new QSqlQueryModel();
 }
 
 Form_tableeditor::~Form_tableeditor()
@@ -137,11 +137,14 @@ void Form_tableeditor::resizeEvent(QResizeEvent *event)
 
     ui->tableView->move(xposlabel, (1 + ui->label_tables->height())*4 + 1);
     ui->tableView->setFixedWidth(labelbreite + labelbreite2 -1);
-    int tablehight = hoehe - ui->tableView->pos().ry()+ui->label_tables->height() -3;
+    int tablehight = hoehe - ui->tableView->pos().ry()+ui->label_tables->height() -3 \
+                     - 1 - ui->pushButton_value_edit->height();
     if(tablehight > 0)
     {
         ui->tableView->setFixedHeight(tablehight);
     }
+    ui->pushButton_value_edit->move(xposlabel, ui->pushButton_param_edit->pos().y());
+    ui->pushButton_value_edit->setFixedWidth(ui->tableView->width());
 
     QWidget::resizeEvent(event);
 }
@@ -427,12 +430,34 @@ void Form_tableeditor::on_pushButton_param_edit_clicked()
     }
 }
 
+void Form_tableeditor::on_pushButton_value_edit_clicked()
+{
+    if(ui->listWidget_tables->count() > 0 && ui->listWidget_tables->currentRow() >= 0)
+    {
+        Dialog_tableeditor *d = new Dialog_tableeditor;
+        d->set_db(dbeigen);
+        d->set_table(ui->listWidget_tables->currentItem()->text());
+        d->exec();
+        delete d;
+    }else
+    {
+        QMessageBox mb;
+        mb.setText("Bitte zuerst eine Tabelle waelen!");
+        mb.exec();
+    }
+}
 //----------------------------------slots:
 void Form_tableeditor::slot_delete_table()
 {
     if(dbeigen->table_del(ui->listWidget_tables->currentItem()->text()) == true)
     {
-        delete ui->listWidget_tables->currentItem();
+        if(ui->listWidget_tables->count() > 1)
+        {
+            delete ui->listWidget_tables->currentItem();
+        }else
+        {
+            ui->listWidget_tables->clear();
+        }
     }
 }
 
@@ -441,7 +466,13 @@ void Form_tableeditor::slot_delete_param()
     if(dbeigen->param_del(ui->listWidget_tables->currentItem()->text(),\
                           ui->listWidget_tablehead->currentItem()->text())  == true)
     {
-        delete ui->listWidget_tablehead->currentItem();
+        if(ui->listWidget_tablehead->count() > 1)
+        {
+            delete ui->listWidget_tablehead->currentItem();
+        }else
+        {
+            ui->listWidget_tablehead->clear();
+        }
     }
     on_listWidget_tables_currentRowChanged();
 }
@@ -506,6 +537,8 @@ void Form_tableeditor::slot_edit_param(QString name, QString typ, QString additi
 }
 
 //----------------------------------
+
+
 
 
 

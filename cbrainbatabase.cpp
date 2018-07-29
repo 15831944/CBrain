@@ -761,6 +761,46 @@ bool cbrainbatabase::data_new(QString tablename, text_zeilenweise param, text_ze
     }
     return ok;
 }
+bool cbrainbatabase::data_new(QString tablename)
+{
+    bool ok = false;
+
+    QSqlDatabase db;
+
+    db = QSqlDatabase::database("dbglobal");
+    db.setHostName(host);
+    db.setDatabaseName(dbname);
+    db.setUserName(user);
+    db.setPassword(pwd);
+
+    if(db.open())
+    {
+        QSqlQuery q(db);
+        QString cmd;
+        cmd += "INSERT INTO ";
+        cmd += tablename;
+        cmd += " VALUES ()";
+
+        if(q.exec(cmd))
+        {
+            ok = true;
+        }else
+        {
+            QMessageBox mb;
+            mb.setText("Fehler:\n" + q.lastError().text());
+            mb.exec();
+            ok = false;
+        }
+        db.close();
+
+    }else
+    {
+        QMessageBox mb;
+        mb.setText("Fehler bei Datenbankverbindung!");
+        mb.exec();
+    }
+    return ok;
+}
 
 bool cbrainbatabase::data_del(QString tablename, text_zeilenweise ids)
 {
@@ -807,6 +847,12 @@ bool cbrainbatabase::data_del(QString tablename, text_zeilenweise ids)
         mb.exec();
     }
     return ok;
+}
+bool cbrainbatabase::data_del(QString tablename, QString id)
+{
+    text_zeilenweise tz;
+    tz.set_text(id);
+    data_del(tablename, tz);
 }
 
 bool cbrainbatabase::data_edit(QString tablename, QString param, \

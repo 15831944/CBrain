@@ -166,6 +166,15 @@ void Form_matlist::create_table_promatpos()
             cmd += ", ";
             cmd += PARAM_PROMATPOS_MENGE;
             cmd += " int(11) unsigned";
+            cmd += ", ";
+            cmd += PARAM_PROMATPOS_ERSTELLER;
+            cmd += " int(11) unsigned";
+            cmd += ", ";
+            cmd += PARAM_PROMATPOS_BEARBEITER;
+            cmd += " int(11) unsigned";
+            cmd += ", ";
+            cmd += PARAM_PROMATPOS_BLOCK;
+            cmd += " int(11) unsigned";
             cmd += ")";
             cmd += " ENGINE=InnoDB";
 
@@ -182,7 +191,7 @@ void Form_matlist::create_table_promatpos()
             QMessageBox mb;
             mb.setText("Fehler bei Datenbankverbindung!");
             mb.exec();
-        }
+        }        
     }
 }
 
