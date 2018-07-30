@@ -240,9 +240,6 @@ void Form_projekte::create_table_promat(QString project_id)
             cmd += PARAM_PROMAT_ME_BESTELLT;
             cmd += " int(11)";
             cmd += ", ";
-            cmd += PARAM_PROMAT_ME_GELIEFERT;
-            cmd += " int(11)";
-            cmd += ", ";
             cmd += PARAM_PROMAT_ME_VERARBEITET;
             cmd += " int(11)";
             cmd += ")";

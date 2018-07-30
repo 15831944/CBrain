@@ -10,7 +10,7 @@
 #define PARAM_LAGER_DATERST         "Erfassung"         //Wert 5    //Datum der Erfassung/Erstellung
 #define PARAM_LAGER_KOMMISSION      "Kommission"        //Wert 6    //Projektnummer
 #define PARAM_LAGER_KOMMENT         "Kommentar"         //Wert 7
-
+#define PARAM_LAGER_LIEFERSCHEIN    "Lieferschein"      //Wert 8
 
 
 

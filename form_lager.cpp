@@ -129,6 +129,13 @@ void Form_lager::update_table()
             //------------------------
             cmd += TABNAME_LAGER;
             cmd += ".";
+            cmd += PARAM_LAGER_LIEFERSCHEIN;
+            cmd += " AS ";
+            cmd += "Lieferschein";
+            cmd += ", ";
+            //------------------------
+            cmd += TABNAME_LAGER;
+            cmd += ".";
             cmd += PARAM_LAGER_KOMMENT;
             cmd += " AS ";
             cmd += "Kommentar";
@@ -230,6 +237,13 @@ void Form_lager::update_table()
                 cmd += " LIKE \'%";
                 cmd += ui->lineEdit_suche->text();
                 cmd += "%\'";
+                cmd += " OR ";
+                cmd += TABNAME_LAGER;
+                cmd += ".";
+                cmd += PARAM_LAGER_LIEFERSCHEIN;
+                cmd += " LIKE \'%";
+                cmd += ui->lineEdit_suche->text();
+                cmd += "%\'";
             }
             //------------------------
             cmd += " GROUP BY ";
@@ -240,7 +254,7 @@ void Form_lager::update_table()
             cmd += " ORDER BY ";            //Sortiert nach:
             cmd += TABNAME_LAGER;
             cmd += ".";
-            cmd += PARAM_LAGER_DATERST;
+            cmd += PARAM_LAGER_ID;
             cmd += " DESC";
             //------------------------
 
@@ -350,6 +364,8 @@ void Form_lager::on_pushButton_in_clicked()
     d->setup();
     d->setWindowTitle("Waren-Eingang buchen");
     d->set_vorgang("Waren-Eingang");
+    d->set_kommission_enabled(false);
+    d->set_lieferschein_enabled(true);
     connect(d, SIGNAL(signal_send_data(text_zeilenweise)),  \
             this, SLOT(slot_in(text_zeilenweise))          );
     d->exec();
@@ -365,6 +381,8 @@ void Form_lager::on_pushButton_out_clicked()
     d->setup();
     d->setWindowTitle("Waren-Ausgang buchen");
     d->set_vorgang("Waren-Ausgang");
+    d->set_kommission_enabled(true);
+    d->set_lieferschein_enabled(false);
     connect(d, SIGNAL(signal_send_data(text_zeilenweise)),  \
             this, SLOT(slot_out(text_zeilenweise))          );
     d->exec();
@@ -380,14 +398,19 @@ void Form_lager::slot_in(text_zeilenweise data)
     QString menge       = data.zeile(2);
     QString projektid   = data.zeile(3);
     QString kommentar   = data.zeile(4);
+    QString lieschein   = data.zeile(5);    //Lieferschein
 
     param.zeile_anhaengen(PARAM_LAGER_VORGANG);
     param.zeile_anhaengen(PARAM_LAGER_ARTIKELID);
     param.zeile_anhaengen(PARAM_LAGER_MENGE);
     param.zeile_anhaengen(PARAM_LAGER_ERSTELLER);
     param.zeile_anhaengen(PARAM_LAGER_DATERST);
-    param.zeile_anhaengen(PARAM_LAGER_KOMMISSION);
+    if(projektid != "no")
+    {
+        param.zeile_anhaengen(PARAM_LAGER_KOMMISSION);
+    }
     param.zeile_anhaengen(PARAM_LAGER_KOMMENT);
+    param.zeile_anhaengen(PARAM_LAGER_LIEFERSCHEIN);
 
     values.zeile_anhaengen(VORGANG_WARENEINGANG);
     values.zeile_anhaengen(artikelid);
@@ -395,8 +418,12 @@ void Form_lager::slot_in(text_zeilenweise data)
     values.zeile_anhaengen(user);
     datum heute;
     values.zeile_anhaengen(heute.get_today_y_m_d_h_m_s());
-    values.zeile_anhaengen(projektid);
+    if(projektid != "no")
+    {
+        values.zeile_anhaengen(projektid);
+    }
     values.zeile_anhaengen(kommentar);
+    values.zeile_anhaengen(lieschein);
 
     //Aktuelle Lagermenge des Artikeln abfragen:
     QString menge_vorher = dbeigen->get_data_qstring(TABNAME_ARTIKEL, PARAM_ARTIKEL_LAGERSTAND, artikelid);
@@ -407,6 +434,7 @@ void Form_lager::slot_in(text_zeilenweise data)
     dbeigen->data_new(TABNAME_LAGER, param, values);
     update_table();
 
+    /*
     //heraus bekommen, ob zu diesem Artikel bereits ein Eintrag in der promat_* existiert:
     QString promat_name;
     promat_name  = TABNAME_PROMAT;
@@ -443,6 +471,7 @@ void Form_lager::slot_in(text_zeilenweise data)
         val.zeile_anhaengen(menge);
         dbeigen->data_new(promat_name, pa, val);
     }
+    */
 }
 
 void Form_lager::slot_out(text_zeilenweise data)

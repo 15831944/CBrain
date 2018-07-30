@@ -12,7 +12,7 @@ soll als Template zum Anlegen von neuen projektbezogenen Materiallisten dienen
         ->id | default-Verhalten (mit bestellen/nur vorschlagen == checked/unchecked)
 
 -->table_status anlegen
-
+-->Interaktionen zwischen modul lager und modul bestellungen (noch nicht vorhanden)
 
 
 

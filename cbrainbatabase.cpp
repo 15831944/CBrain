@@ -852,7 +852,7 @@ bool cbrainbatabase::data_del(QString tablename, QString id)
 {
     text_zeilenweise tz;
     tz.set_text(id);
-    data_del(tablename, tz);
+    return data_del(tablename, tz);
 }
 
 bool cbrainbatabase::data_edit(QString tablename, QString param, \
