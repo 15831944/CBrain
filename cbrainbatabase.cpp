@@ -1055,6 +1055,12 @@ text_zeilenweise cbrainbatabase::get_data_tz(QString tablename, QString param)
     return tz;
 }
 
+QString cbrainbatabase::get_highest_id(QString tablename)
+{
+    text_zeilenweise tz = get_data_tz(tablename, "id");//Achtung id muss auch immer "id" heißen damit es keine Probleme gibt!
+    return tz.zeile(tz.zeilenanzahl());
+}
+
 //------------------------------------------
 //-------------------------------values:
 text_zeilenweise cbrainbatabase::get_values_from_column(QString tablename,  int column, QString querryfilter)

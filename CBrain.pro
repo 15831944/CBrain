@@ -86,7 +86,8 @@ HEADERS  += mainwindow.h \
     _tabname_lager.h \
     _tabname_vorgang.h \
     _tabname_reservierung.h \
-    dialog_tableeditor.h
+    dialog_tableeditor.h \
+    _tabname_promat.h
 
 FORMS    += mainwindow.ui \
     dialog_login.ui \

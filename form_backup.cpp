@@ -66,7 +66,7 @@ void Form_backup::on_pushButton_backup_clicked()
 
     for(uint i=1; i<= tables.zeilenanzahl() ;i++)
     {
-        if(!tables.zeile(i).contains(TABNAME_PROMATPOS))
+        if(  !tables.zeile(i).contains(TABNAME_PROMATPOS) && !tables.zeile(i).contains(TABNAME_PROMAT)  )
         {
             text_zeilenweise param = dbeigen->get_param_tz(tables.zeile(i));
             text_zeilenweise param_type = dbeigen->get_param_type_tz(tables.zeile(i));

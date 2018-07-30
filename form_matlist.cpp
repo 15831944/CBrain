@@ -156,7 +156,7 @@ void Form_matlist::create_table_promatpos()
             QString cmd;
             cmd += "CREATE TABLE ";
             cmd += "IF NOT EXISTS ";
-            cmd += "promatpos_";
+            cmd += TABNAME_PROMATPOS;
             cmd += ui->lineEdit_projekt_id->text();
             cmd += "(";
             cmd += "id int(11) unsigned auto_increment primary key not null";

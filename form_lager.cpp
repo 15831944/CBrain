@@ -406,6 +406,43 @@ void Form_lager::slot_in(text_zeilenweise data)
 
     dbeigen->data_new(TABNAME_LAGER, param, values);
     update_table();
+
+    //heraus bekommen, ob zu diesem Artikel bereits ein Eintrag in der promat_* existiert:
+    QString promat_name;
+    promat_name  = TABNAME_PROMAT;
+    promat_name += projektid;
+    text_zeilenweise artikelids = dbeigen->get_data_tz(promat_name, PARAM_PROMAT_ARTIKEL_ID);
+    int index = -1;
+    for(uint i=1; i<=artikelids.zeilenanzahl() ;i++)
+    {
+        if(artikelids.zeile(i) == artikelid)
+        {
+            index = i;
+            break;
+        }
+    }
+
+    //Wert anpassen:
+    if(index > 0)//Artikel bereits vorhanden in promat_*
+    {
+        text_zeilenweise promat_value_ids = dbeigen->get_data_tz(promat_name, PARAM_PROMAT_ID);
+        QString promat_value_id = promat_value_ids.zeile(index);
+
+        int menge_vorher = dbeigen->get_data_qstring(promat_name, PARAM_PROMAT_ME_GELIEFERT, promat_value_id).toInt();
+        int menge_jetzt = menge.toInt();
+        int menge_nachher = menge_vorher + menge_jetzt;
+        dbeigen->data_edit(promat_name, PARAM_PROMAT_ME_GELIEFERT, int_to_qstring(menge_nachher), promat_value_id);
+    }else
+    {
+        text_zeilenweise pa, val;
+
+        pa.zeile_anhaengen(PARAM_PROMAT_ARTIKEL_ID);
+        pa.zeile_anhaengen(PARAM_PROMAT_ME_GELIEFERT);
+
+        val.zeile_anhaengen(artikelid);
+        val.zeile_anhaengen(menge);
+        dbeigen->data_new(promat_name, pa, val);
+    }
 }
 
 void Form_lager::slot_out(text_zeilenweise data)
@@ -444,6 +481,45 @@ void Form_lager::slot_out(text_zeilenweise data)
 
         dbeigen->data_new(TABNAME_LAGER, param, values);
         update_table();
+
+        //heraus bekommen, ob zu diesem Artikel bereits ein Eintrag in der promat_* existiert:
+        QString promat_name;
+        promat_name  = TABNAME_PROMAT;
+        promat_name += projektid;
+        text_zeilenweise artikelids = dbeigen->get_data_tz(promat_name, PARAM_PROMAT_ARTIKEL_ID);
+        int index = -1;
+        for(uint i=1; i<=artikelids.zeilenanzahl() ;i++)
+        {
+            if(artikelids.zeile(i) == artikelid)
+            {
+                index = i;
+                break;
+            }
+        }
+
+        //Wert anpassen:
+        if(index > 0)//Artikel bereits vorhanden in promat_*
+        {
+            text_zeilenweise promat_value_ids = dbeigen->get_data_tz(promat_name, PARAM_PROMAT_ID);
+            QString promat_value_id = promat_value_ids.zeile(index);
+
+            int menge_vorher = dbeigen->get_data_qstring(promat_name, PARAM_PROMAT_ME_VERARBEITET, promat_value_id).toInt();
+            int menge_jetzt = menge.toInt();
+            int menge_nachher = menge_vorher + menge_jetzt;
+            dbeigen->data_edit(promat_name, PARAM_PROMAT_ME_VERARBEITET, int_to_qstring(menge_nachher), promat_value_id);
+        }else
+        {
+            text_zeilenweise pa, val;
+
+            pa.zeile_anhaengen(PARAM_PROMAT_ARTIKEL_ID);
+            pa.zeile_anhaengen(PARAM_PROMAT_ME_VERARBEITET);
+
+            val.zeile_anhaengen(artikelid);
+            val.zeile_anhaengen(menge);
+            dbeigen->data_new(promat_name, pa, val);
+        }
+
+
     }else
     {
         QString msg;
