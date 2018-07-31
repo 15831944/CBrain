@@ -5,9 +5,15 @@
 
 #include "cbrainbatabase.h"
 #include "_tabellennamen.h"
+#include "_tabname_artikel.h"
 #include "_tabname_personal.h"
+#include "_tabname_projekt.h"
+#include "_tabname_lager.h"
+#include "_tabname_vorgang.h"
+#include "_tabname_promat.h"
 #include "datum.h"
 #include "dialog_lager.h"
+#include "umwandeln.h"
 
 namespace Ui {
 class Form_lager;

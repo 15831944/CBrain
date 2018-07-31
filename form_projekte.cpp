@@ -211,6 +211,53 @@ void Form_projekte::on_lineEdit_suche_textChanged()
     update_table();
 }
 
+void Form_projekte::create_table_promat(QString project_id)
+{
+    if(!project_id.isEmpty())
+    {
+        QSqlDatabase db;
+
+        db = QSqlDatabase::database("dbglobal");
+        db.setHostName(dbeigen->get_host());
+        db.setDatabaseName(dbeigen->get_dbname());
+        db.setUserName(dbeigen->get_user());
+        db.setPassword(dbeigen->get_pwd());
+
+        if(db.open())
+        {
+            QSqlQuery q(db);
+            QString cmd;
+            cmd += "CREATE TABLE ";
+            cmd += "IF NOT EXISTS ";
+            cmd += TABNAME_PROMAT;
+            cmd += project_id;
+            cmd += "(";
+            cmd += "id int(11) unsigned auto_increment primary key not null";
+            cmd += ", ";
+            cmd += PARAM_PROMAT_ARTIKEL_ID;
+            cmd += " int(11) unsigned";
+            cmd += ", ";
+            cmd += PARAM_PROMAT_ME_VERARBEITET;
+            cmd += " int(11)";
+            cmd += ")";
+            cmd += " ENGINE=InnoDB";
+
+            if(!q.exec(cmd))
+            {
+                QMessageBox mb;
+                mb.setText("Fehler:\n" + q.lastError().text());
+                mb.exec();
+            }
+            db.close();
+
+        }else
+        {
+            QMessageBox mb;
+            mb.setText("Fehler bei Datenbankverbindung!");
+            mb.exec();
+        }
+    }
+}
 //------------------------------------Buttons:
 void Form_projekte::on_pushButton_new_clicked()
 {
@@ -385,6 +432,7 @@ void Form_projekte::slot_new(text_zeilenweise data)
 
     dbeigen->data_new(TABNAME_PROJEKT, param, values);
     update_table();
+    create_table_promat(dbeigen->get_highest_id(TABNAME_PROJEKT));
 }
 
 void Form_projekte::slot_delete(text_zeilenweise ids)
@@ -519,7 +567,6 @@ void Form_projekte::slot_edit(text_zeilenweise data, QString id)
             mb.setText(msg);
             mb.exec();
         }
-
     }else
     {
         text_zeilenweise param, values;

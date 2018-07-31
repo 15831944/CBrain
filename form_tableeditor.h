@@ -7,6 +7,7 @@
 #include "dialog_yes_no.h"
 #include "dialog_text_input.h"
 #include "dialog_tableparam.h"
+#include "dialog_tableeditor.h"
 
 namespace Ui {
 class Form_tableeditor;
@@ -38,6 +39,7 @@ public slots:
     void slot_edit_param(QString name, QString typ, QString additional, \
                          bool ispri, bool autoincrement, bool isunsigned,\
                          bool notnull, QString defaultvalue);
+    void slot_refresh_tableview();
 
 
 private slots:
@@ -50,6 +52,7 @@ private slots:
     void on_pushButton_param_edit_clicked();
     void on_pushButton_table_edit_clicked();
     void on_lineEdit_table_seach_textChanged();
+    void on_pushButton_value_edit_clicked();
 
 private:
     Ui::Form_tableeditor *ui;

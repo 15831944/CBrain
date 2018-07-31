@@ -7,6 +7,9 @@
 #include "text_zeilenweise.h"
 #include "cbrainbatabase.h"
 #include "_tabellennamen.h"
+#include "_tabname_artikel.h"
+#include "_tabname_lieferant.h"
+#include "_tabname_projekt.h"
 #include "text.h"
 #include "dialog_printbox.h"
 
@@ -29,6 +32,8 @@ public:
     {
         vorgang = v;
     }
+    void set_kommission_enabled(bool isit);
+    void set_lieferschein_enabled(bool isit);
 
 signals:
     void signal_send_data(text_zeilenweise data);

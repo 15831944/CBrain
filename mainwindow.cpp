@@ -257,7 +257,7 @@ void MainWindow::slot_login(QString user, QString pwd)
         widget_lager.set_user(u.get_current_user_id());
         widget_projekte.set_user(u.get_current_user_id());
         widget_personal.set_user(u.get_current_user());
-        widget_matlist.set_user(u.get_current_user());
+        widget_matlist.set_user(u.get_current_user_id());
         //Rechte für Module setzen:
         ui_rechte_modul_artikel(  u.modul_artikel()  );
         ui_rechte_modul_lieferanten(  u.modul_lieferanten()  );

@@ -6,6 +6,8 @@
 #include "cbrainbatabase.h"
 #include "_tabellennamen.h"
 #include "_tabname_personal.h"
+#include "_tabname_projekt.h"
+#include "_tabname_promat.h"
 #include "dialog_dataselection.h"
 #include "text.h"
 #include "datum.h"
@@ -56,6 +58,7 @@ private:
                             //für void slot_edit_dialog();
 
     void update_table();
+    void create_table_promat(QString project_id);
 };
 
 #endif // FORM_PROJEKTE_H

@@ -134,7 +134,8 @@ void Dialog_lager::on_pushButton_ok_clicked()
         QMessageBox mb;
         mb.setText("Das Datenfeld \"Artikel\" darf nicht leer sein!");
         mb.exec();
-    }else if(ui->comboBox_kom->currentText() == "---")//nichts gewählt
+    }else if(ui->comboBox_kom->currentText() == "---" &&    \
+             !ui->comboBox_kom->isHidden()                  )//nichts gewählt
     {
         QMessageBox mb;
         mb.setText("Das Datenfeld \"Kommission\" darf nicht leer sein!");
@@ -144,8 +145,21 @@ void Dialog_lager::on_pushButton_ok_clicked()
         text_zeilenweise tz;
         tz.zeile_anhaengen(text_links(ui->comboBox_artikel->currentText(), " / "));    //Wert 1
         tz.zeile_anhaengen(int_to_qstring(ui->spinBox_menge->value()));                //Wert 2
-        tz.zeile_anhaengen(text_links(ui->comboBox_kom->currentText(), " / "));        //Wert 3
+        if(ui->comboBox_kom->currentText().contains(" / "))
+        {
+            tz.zeile_anhaengen(text_links(ui->comboBox_kom->currentText(), " / "));        //Wert 3
+        }else
+        {
+            tz.zeile_anhaengen("no");        //Wert 3
+        }
         tz.zeile_anhaengen(ui->lineEdit_komment->text());                              //Wert 4
+        if(!ui->lineEdit_lieferschein->isHidden())
+        {
+            tz.zeile_anhaengen(ui->lineEdit_lieferschein->text());                      //Wert 5
+        }else
+        {
+            tz.zeile_anhaengen("no");        //Wert 5
+        }
 
         dlg_to_printmsg();
         emit signal_send_data(tz);
@@ -229,3 +243,32 @@ void Dialog_lager::dlg_to_printmsg()
 
 }
 
+void Dialog_lager::set_kommission_enabled(bool isit)
+{
+    if(isit == true)
+    {
+        ui->comboBox_kom->show();
+        ui->label_kom->show();
+        ui->lineEdit_komfilter->show();
+        ui->label_komfilter->show();
+    }else
+    {
+        ui->comboBox_kom->hide();
+        ui->label_kom->hide();
+        ui->lineEdit_komfilter->hide();
+        ui->label_komfilter->hide();
+    }
+}
+
+void Dialog_lager::set_lieferschein_enabled(bool isit)
+{
+    if(isit == true)
+    {
+        ui->lineEdit_lieferschein->show();
+        ui->label_lieferschein->show();
+    }else
+    {
+        ui->lineEdit_lieferschein->hide();
+        ui->label_lieferschein->hide();
+    }
+}
