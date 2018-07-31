@@ -567,7 +567,6 @@ void Form_projekte::slot_edit(text_zeilenweise data, QString id)
             mb.setText(msg);
             mb.exec();
         }
-
     }else
     {
         text_zeilenweise param, values;

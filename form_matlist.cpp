@@ -312,6 +312,73 @@ void Form_matlist::on_pushButton_pos_new_clicked()
     }
 }
 
+void Form_matlist::on_pushButton_pos_edit_clicked()
+{
+    if(!ui->lineEdit_projekt_id->text().isEmpty())
+    {
+        if(ui->listWidget_matpos->currentRow() != -1)
+        {
+            QString tabname;
+            tabname  = TABNAME_PROMATPOSLIST;
+            tabname += ui->lineEdit_projekt_id->text();
+
+            QString idbuffer = text_links(ui->listWidget_matpos->currentItem()->text(), " ||| ");
+            QString blockfromuser_id = dbeigen->get_data_qstring(tabname, \
+                                                                 PARAM_PROMATPOSLIST_BLOCK, \
+                                                                 idbuffer);
+            QString blockfromuser = dbeigen->get_data_qstring(tabname, \
+                                                              PARAM_PROMATPOSLIST_BLOCK, idbuffer,\
+                                                              TABNAME_PERSONAL, PARAM_PERSONAL_VORNAME);
+            blockfromuser += " ";
+            blockfromuser += dbeigen->get_data_qstring(tabname, PARAM_PROMATPOSLIST_BLOCK, idbuffer,\
+                                                       TABNAME_PERSONAL, PARAM_PERSONAL_NACHNAME);
+            if(blockfromuser_id == USER_NOBODY_ID || blockfromuser.isEmpty() )
+            {
+                Dialog_promatpos *d = new Dialog_promatpos;
+                d->setWindowTitle("Materialposition bearbeiten");
+                QString id = text_links(ui->listWidget_matpos->currentItem()->text(), " ||| ");
+
+                text_zeilenweise data;
+                data.zeile_anhaengen(dbeigen->get_data_qstring(tabname, PARAM_PROMATPOSLIST_BEZ, id));
+                data.zeile_anhaengen(dbeigen->get_data_qstring(tabname, PARAM_PROMATPOSLIST_MENGE, id));
+
+                d->set_data(data, id);
+
+                connect(d, SIGNAL(signal_send_data(text_zeilenweise, QString)),  \
+                        this, SLOT(slot_edit_matposlist(text_zeilenweise, QString))   );
+                connect(d, SIGNAL(signal_cancel()), this, SLOT(slot_edit_matposlist_unblock()));
+                dbeigen->data_edit(tabname, PARAM_PROMATPOSLIST_BLOCK, user, idbuffer);
+                d->exec();
+                delete d;
+            }else
+            {
+                Dialog_yes_no *d = new Dialog_yes_no;
+                d->setWindowTitle("Datensatz bereits gesperrt");
+                QString msg;
+                msg += "Dieser Datensatz wurde bereits vom Nutzer \"";
+                msg += blockfromuser;
+                msg += "\" gesperrt.\nBitte stimmen Sie sich mit dem Benutzer ab!\n";
+                msg += "Soll dieser trotzdem zum Bearbeiten geoeffnet werden?";
+                d->setup(msg);
+                connect(d, SIGNAL(signal_yes()), this, SLOT(slot_edit_matposlist_with_block()));
+
+                d->exec();
+                delete d;
+            }
+        }else
+        {
+            QMessageBox mb;
+            mb.setText("Bitte zuerst eine Position waelen!");
+            mb.exec();
+        }
+    }else
+    {
+        QMessageBox mb;
+        mb.setText("Bitte zuerst ein Projekt festlegen!");
+        mb.exec();
+    }
+}
+
 //-------------------------------------private Slots:
 void Form_matlist::on_lineEdit_projekt_id_textChanged(const QString &arg1)
 {
@@ -340,6 +407,107 @@ void Form_matlist::slot_new_matpos(text_zeilenweise data)
     update_listwidget_matpos();
 }
 
+void Form_matlist::slot_edit_matposlist(text_zeilenweise data, QString id)
+{
+    promatposlist_current_data = data;
+    promatposlist_current_id = id;
+    slot_edit_matposlist();
+}
+void Form_matlist::slot_edit_matposlist()
+{
+    QString tabname;
+    tabname  = TABNAME_PROMATPOSLIST;
+    tabname += ui->lineEdit_projekt_id->text();
+    QString idbuffer = text_links(ui->listWidget_matpos->currentItem()->text(), " ||| ");
+
+    QString blockfromuser_id = dbeigen->get_data_qstring(tabname, PARAM_PROMATPOSLIST_BLOCK, idbuffer);
+    QString blockfromuser = dbeigen->get_data_qstring(TABNAME_PROJEKT, PARAM_PROMATPOSLIST_BLOCK, idbuffer,\
+                                                      TABNAME_PERSONAL, PARAM_PERSONAL_VORNAME);
+    blockfromuser += " ";
+    blockfromuser += dbeigen->get_data_qstring(tabname, PARAM_PROMATPOSLIST_BLOCK, idbuffer,\
+                                               TABNAME_PERSONAL, PARAM_PERSONAL_NACHNAME);
+
+    QString lasteditinguser = dbeigen->get_data_qstring(tabname, PARAM_PROMATPOSLIST_BEARBEITER, idbuffer,\
+                                                      TABNAME_PERSONAL, PARAM_PERSONAL_VORNAME);
+    lasteditinguser += " ";
+    lasteditinguser += dbeigen->get_data_qstring(tabname, PARAM_PROMATPOSLIST_BEARBEITER, idbuffer,\
+                                                 TABNAME_PERSONAL, PARAM_PERSONAL_NACHNAME);
+
+    if(blockfromuser_id != user)
+    {
+        if(blockfromuser_id == USER_NOBODY_ID)
+        {
+            QString msg;
+            msg += "Die Aenderungen konnten nicht gespeichert werden, da der Nutzer \"";
+            msg += lasteditinguser;
+            msg += "\" zwischenzeitlich den Datensatz bearbeitet hat!";
+            QMessageBox mb;
+            mb.setText(msg);
+            mb.exec();
+        }else
+        {
+            QString msg;
+            msg += "Die Aenderungen konnten nicht gespeichert werden, da der Nutzer \"";
+            msg += blockfromuser;
+            msg += "\" den Datensatz derzeit bearbeitet!";
+            QMessageBox mb;
+            mb.setText(msg);
+            mb.exec();
+        }
+    }else
+    {
+        QString bez         = promatposlist_current_data.zeile(1);
+        QString menge       = promatposlist_current_data.zeile(2);
+
+        text_zeilenweise pa, val;
+
+        pa.zeile_anhaengen(PARAM_PROMATPOSLIST_BEZ);
+        pa.zeile_anhaengen(PARAM_PROMATPOSLIST_MENGE);
+        pa.zeile_anhaengen(PARAM_PROMATPOSLIST_BEARBEITER);
+        pa.zeile_anhaengen(PARAM_PROMATPOSLIST_BLOCK);
+
+        val.zeile_anhaengen(bez);
+        val.zeile_anhaengen(menge);
+        val.zeile_anhaengen(user);
+        val.zeile_anhaengen(USER_NOBODY_ID);
+
+        dbeigen->data_edit(tabname, pa, val, promatposlist_current_id);
+    }
+    update_listwidget_matpos();
+}
+void Form_matlist::slot_edit_matposlist_with_block()
+{
+    QString tabname;
+    tabname  = TABNAME_PROMATPOSLIST;
+    tabname += ui->lineEdit_projekt_id->text();
+    QString idbuffer = text_links(ui->listWidget_matpos->currentItem()->text(), " ||| ");
+
+    Dialog_promatpos *d = new Dialog_promatpos;
+    d->setWindowTitle("Materialposition bearbeiten");
+    QString id = text_links(ui->listWidget_matpos->currentItem()->text(), " ||| ");
+
+    text_zeilenweise data;
+    data.zeile_anhaengen(dbeigen->get_data_qstring(tabname, PARAM_PROMATPOSLIST_BEZ, id));
+    data.zeile_anhaengen(dbeigen->get_data_qstring(tabname, PARAM_PROMATPOSLIST_MENGE, id));
+
+    d->set_data(data, id);
+
+    connect(d, SIGNAL(signal_send_data(text_zeilenweise, QString)),  \
+            this, SLOT(slot_edit_matposlist(text_zeilenweise, QString))   );
+    connect(d, SIGNAL(signal_cancel()), this, SLOT(slot_edit_matposlist_unblock()));
+
+    dbeigen->data_edit(tabname, PARAM_PROMATPOSLIST_BLOCK, user, idbuffer);
+    d->exec();
+    delete d;
+}
+void Form_matlist::slot_edit_matposlist_unblock()
+{
+    QString tabname;
+    tabname  = TABNAME_PROMATPOSLIST;
+    tabname += ui->lineEdit_projekt_id->text();
+    dbeigen->data_edit(tabname, PARAM_PROMATPOSLIST_BLOCK, \
+                       USER_NOBODY_ID, promatposlist_current_id);
+}
 
 
 
