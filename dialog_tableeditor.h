@@ -21,6 +21,9 @@ public:
     void set_db(cbrainbatabase *new_db);
     void set_table(QString t);
 
+signals:
+    void signal_ok();
+
 private slots:
     void on_pushButton_ok_clicked();
     void on_listWidget_zeilen_currentRowChanged();

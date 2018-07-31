@@ -39,6 +39,7 @@ public slots:
     void slot_edit_param(QString name, QString typ, QString additional, \
                          bool ispri, bool autoincrement, bool isunsigned,\
                          bool notnull, QString defaultvalue);
+    void slot_refresh_tableview();
 
 
 private slots:

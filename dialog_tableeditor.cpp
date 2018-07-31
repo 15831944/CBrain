@@ -56,40 +56,89 @@ void Dialog_tableeditor::combobox_default_setup()
     if(zeilanz >= 2)
     {
         ui->comboBox_param2->setCurrentIndex(2-1);
+        ui->comboBox_param2->show();
+        ui->lineEdit_value2->show();
+    }else
+    {
+        ui->comboBox_param2->hide();
+        ui->lineEdit_value2->hide();
     }
     if(zeilanz >= 3)
     {
         ui->comboBox_param3->setCurrentIndex(3-1);
+        ui->comboBox_param3->show();
+        ui->lineEdit_value3->show();
+    }else
+    {
+        ui->comboBox_param3->hide();
+        ui->lineEdit_value3->hide();
     }
     if(zeilanz >= 4)
     {
         ui->comboBox_param4->setCurrentIndex(4-1);
+        ui->comboBox_param4->show();
+        ui->lineEdit_value4->show();
+    }else
+    {
+        ui->comboBox_param4->hide();
+        ui->lineEdit_value4->hide();
     }
     if(zeilanz >= 5)
     {
         ui->comboBox_param5->setCurrentIndex(5-1);
+        ui->comboBox_param5->show();
+        ui->lineEdit_value5->show();
+    }else
+    {
+        ui->comboBox_param5->hide();
+        ui->lineEdit_value5->hide();
     }
     if(zeilanz >= 6)
     {
         ui->comboBox_param6->setCurrentIndex(6-1);
+        ui->comboBox_param6->show();
+        ui->lineEdit_value6->show();
+    }else
+    {
+        ui->comboBox_param6->hide();
+        ui->lineEdit_value6->hide();
     }
     if(zeilanz >= 7)
     {
         ui->comboBox_param7->setCurrentIndex(7-1);
+        ui->comboBox_param7->show();
+        ui->lineEdit_value7->show();
+    }else
+    {
+        ui->comboBox_param7->hide();
+        ui->lineEdit_value7->hide();
     }
     if(zeilanz >= 8)
     {
         ui->comboBox_param8->setCurrentIndex(8-1);
+        ui->comboBox_param8->show();
+        ui->lineEdit_value8->show();
+    }else
+    {
+        ui->comboBox_param8->hide();
+        ui->lineEdit_value8->hide();
     }
     if(zeilanz >= 9)
     {
         ui->comboBox_param9->setCurrentIndex(9-1);
+        ui->comboBox_param9->show();
+        ui->lineEdit_value9->show();
+    }else
+    {
+        ui->comboBox_param9->hide();
+        ui->lineEdit_value9->hide();
     }
 }
 
 void Dialog_tableeditor::on_pushButton_ok_clicked()
 {
     this->close();
+    emit signal_ok();
 }
 
 void Dialog_tableeditor::on_listWidget_zeilen_currentRowChanged()
@@ -107,18 +156,12 @@ void Dialog_tableeditor::on_listWidget_zeilen_currentRowChanged()
 
 void Dialog_tableeditor::on_pushButton_new_clicked()
 {
-    if(ui->listWidget_zeilen->count() > 0  &&  ui->listWidget_zeilen->currentRow() >= 0)
+    dbeigen->data_new(table);
+    zeilen_id = dbeigen->get_data_tz(table, "id");
+    update_gui();
+    if(zeilen_id.zeilenanzahl() >= 1)
     {
-        if(ui->comboBox_param->count() > 0)
-        {
-            dbeigen->data_new(table);
-            zeilen_id = dbeigen->get_data_tz(table, "id");
-            update_gui();
-            if(zeilen_id.zeilenanzahl() >= 1)
-            {
-                ui->listWidget_zeilen->setCurrentRow(zeilen_id.zeilenanzahl()-1);
-            }
-        }
+        ui->listWidget_zeilen->setCurrentRow(zeilen_id.zeilenanzahl()-1);
     }
 }
 

@@ -437,6 +437,8 @@ void Form_tableeditor::on_pushButton_value_edit_clicked()
         Dialog_tableeditor *d = new Dialog_tableeditor;
         d->set_db(dbeigen);
         d->set_table(ui->listWidget_tables->currentItem()->text());
+        connect(d, SIGNAL(signal_ok()),\
+                this, SLOT(slot_refresh_tableview()));
         d->exec();
         delete d;
     }else
@@ -534,6 +536,10 @@ void Form_tableeditor::slot_edit_param(QString name, QString typ, QString additi
         ui->listWidget_tablehead->currentItem()->setText(name);
         on_listWidget_tables_currentRowChanged();
     }
+}
+void Form_tableeditor::slot_refresh_tableview()
+{
+    on_listWidget_tables_currentRowChanged();
 }
 
 //----------------------------------

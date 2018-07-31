@@ -44,7 +44,8 @@ SOURCES += main.cpp\
     form_personal.cpp \
     dialog_personal.cpp \
     form_matlist.cpp \
-    dialog_tableeditor.cpp
+    dialog_tableeditor.cpp \
+    dialog_promatpos.cpp
 
 HEADERS  += mainwindow.h \
     defines_filenames.h \
@@ -87,7 +88,10 @@ HEADERS  += mainwindow.h \
     _tabname_vorgang.h \
     _tabname_reservierung.h \
     dialog_tableeditor.h \
-    _tabname_promat.h
+    _tabname_promat.h \
+    _tabname_status.h \
+    dialog_promatpos.h \
+    _tabname_promatposlist.h
 
 FORMS    += mainwindow.ui \
     dialog_login.ui \
@@ -111,4 +115,5 @@ FORMS    += mainwindow.ui \
     form_personal.ui \
     dialog_personal.ui \
     form_matlist.ui \
-    dialog_tableeditor.ui
+    dialog_tableeditor.ui \
+    dialog_promatpos.ui

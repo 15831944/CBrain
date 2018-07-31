@@ -72,6 +72,12 @@ Menge	int(11)	YES	---	---	---
 Kommission	int(11)	YES	---	---	---	
 <ENDE_Tabelle>
 <BEGIN_Tabelle>
+table_status
+Field	Type	Null	Key	Default	Extra
+id	int(11) unsigned	NO	PRI	---	auto_increment	
+Status	varchar(40)	YES	---	---	---	
+<ENDE_Tabelle>
+<BEGIN_Tabelle>
 table_vorgang
 Field	Type	Null	Key	Default	Extra
 id	int(11) unsigned	NO	PRI	---	auto_increment	

@@ -7,6 +7,7 @@
 #include "cbrainbatabase.h"
 #include "_tabname_promatpos.h"
 #include "_tabname_promat.h"
+#include "_tabname_promatposlist.h"
 #include "inifile.h"
 #include "text.h"
 
