@@ -37,6 +37,7 @@ private:
     QString current_id;
 
     void clear();
+    void closeEvent(QCloseEvent *ce);
 };
 
 #endif // DIALOG_PERSONAL_H

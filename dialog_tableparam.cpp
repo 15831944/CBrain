@@ -13,6 +13,12 @@ Dialog_tableparam::~Dialog_tableparam()
     delete ui;
 }
 
+void Dialog_tableparam::closeEvent(QCloseEvent *ce)
+{
+    QDialog::closeEvent(ce);
+    emit signal_cancel();
+}
+
 void Dialog_tableparam::on_pushButton_cancel_clicked()
 {
     this->close();

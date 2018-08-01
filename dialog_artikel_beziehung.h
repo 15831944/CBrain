@@ -36,6 +36,7 @@ public slots:
 
 signals:
     void signal_send_data(text_zeilenweise data);
+    void signal_cancel();
 
 private slots:
     void on_pushButton_artikel_id_clicked();
@@ -48,6 +49,8 @@ private:
     cbrainbatabase *dbeigen;
     QString artikelid_eigen;
     bool id_ist_const;
+
+    void closeEvent(QCloseEvent *ce);
 };
 
 #endif // DIALOG_ARTIKEL_BEZIEHUNG_H

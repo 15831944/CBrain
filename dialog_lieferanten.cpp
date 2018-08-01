@@ -38,10 +38,15 @@ void Dialog_lieferanten::on_pushButton_ok_clicked()
     }
 }
 
+void Dialog_lieferanten::closeEvent(QCloseEvent *ce)
+{
+    QDialog::closeEvent(ce);
+    emit signal_cancel();
+}
+
 void Dialog_lieferanten::on_pushButton_cancel_clicked()
 {
     this->close();
-    emit signal_cancel();
 }
 
 void Dialog_lieferanten::set_data(text_zeilenweise daten, QString id)

@@ -117,11 +117,16 @@ void Dialog_artikel::set_db(cbrainbatabase *new_db)
     dbeigen = new_db;
 }
 
+void Dialog_artikel::closeEvent(QCloseEvent *ce)
+{
+    QDialog::closeEvent(ce);
+    emit signal_cancel();
+}
+
 //----------------------------------Buttons:
 void Dialog_artikel::on_pushButton_cancel_clicked()
 {
-    this->close();
-    emit signal_cancel();
+    this->close();    
 }
 
 void Dialog_artikel::on_pushButton_ok_clicked()

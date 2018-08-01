@@ -53,6 +53,7 @@ private:
     text_zeilenweise lieferanten;
 
     void clear();
+    void closeEvent(QCloseEvent *ce);
 };
 
 #endif // DIALOG_ARTIKEL_H

@@ -166,9 +166,15 @@ void Dialog_lager::on_pushButton_ok_clicked()
     }
 }
 
-void Dialog_lager::on_pushButton_cancel_clicked()
+void Dialog_lager::closeEvent(QCloseEvent *ce)
 {
+    QDialog::closeEvent(ce);
     printmsg.clear();
+    emit signal_cancel();
+}
+
+void Dialog_lager::on_pushButton_cancel_clicked()
+{    
     this->close();
 }
 

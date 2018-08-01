@@ -127,6 +127,12 @@ void Dialog_artikel_beziehung::slot_set_artikel(text_zeilenweise artikel_ids)
 
 }
 
+void Dialog_artikel_beziehung::closeEvent(QCloseEvent *ce)
+{
+    QDialog::closeEvent(ce);
+    emit signal_cancel();
+}
+
 void Dialog_artikel_beziehung::on_pushButton_cancel_clicked()
 {
     this->close();

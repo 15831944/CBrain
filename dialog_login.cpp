@@ -22,7 +22,12 @@ void Dialog_login::on_pushButton_ok_clicked()
 
 void Dialog_login::on_pushButton_cancel_clicked()
 {
-    this->close();
+    this->close();    
+}
+
+void Dialog_login::closeEvent(QCloseEvent *ce)
+{
+    QDialog::closeEvent(ce);
     emit signal_ok("",  \
                    ""   );
 }

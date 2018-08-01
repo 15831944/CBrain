@@ -69,6 +69,12 @@ void Dialog_settings_db::on_pushButton_ok_clicked()
     emit signal_send_data(tz);
 }
 
+void Dialog_settings_db::closeEvent(QCloseEvent *ce)
+{
+    QDialog::closeEvent(ce);
+    emit signal_cancel();
+}
+
 void Dialog_settings_db::on_pushButton_cancel_clicked()
 {
     this->close();

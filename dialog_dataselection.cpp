@@ -14,6 +14,12 @@ Dialog_dataselection::~Dialog_dataselection()
     delete ui;
 }
 
+void Dialog_dataselection::closeEvent(QCloseEvent *ce)
+{
+    QDialog::closeEvent(ce);
+    emit signal_cancel();
+}
+
 void Dialog_dataselection::on_pushButton_cancel_clicked()
 {
     this->close();

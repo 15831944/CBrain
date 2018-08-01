@@ -37,6 +37,7 @@ public:
 
 signals:
     void signal_send_data(text_zeilenweise data);
+    void signal_cancel();
 
 private slots:
     void on_pushButton_ok_clicked();
@@ -61,6 +62,7 @@ private:
     QString vorgang;
 
     void dlg_to_printmsg();
+    void closeEvent(QCloseEvent *ce);
 };
 
 #endif // DIALOG_LAGER_H
