@@ -255,7 +255,7 @@ void Form_artikel::on_lineEdit_suche_textChanged()
 //------------------------------------Buttons:
 void Form_artikel::on_pushButton_new_clicked()
 {
-    Dialog_artikel *d = new Dialog_artikel;
+    Dialog_artikel *d = new Dialog_artikel(this);
     d->set_db(dbeigen);
     d->setup();
     connect(d, SIGNAL(signal_send_data(text_zeilenweise)),  \
@@ -326,7 +326,7 @@ void Form_artikel::on_pushButton_del_clicked()
         }
     }
     //-------------------------------------------
-    Dialog_dataselection *d = new Dialog_dataselection;
+    Dialog_dataselection *d = new Dialog_dataselection(this);
     d->set_data(tz, ids);
     d->setWindowTitle("Artikel loeschen");
     connect(d, SIGNAL(signal_send_selection(text_zeilenweise)), \
@@ -412,7 +412,7 @@ void Form_artikel::on_pushButton_edit_clicked()
         slot_edit_dialog(ids);
     }else
     {
-        Dialog_dataselection *d = new Dialog_dataselection;
+        Dialog_dataselection *d = new Dialog_dataselection(this);
         d->set_data(tz, ids);
         d->setWindowTitle("Artikel bearbeiten (nur einen)");
         connect(d, SIGNAL(signal_send_selection(text_zeilenweise)), \
@@ -435,6 +435,7 @@ void Form_artikel::slot_new(text_zeilenweise data)
     param.zeile_anhaengen(PARAM_ARTIKEL_LAGERORT);
     param.zeile_anhaengen(PARAM_ARTIKEL_VE);
     param.zeile_anhaengen(PARAM_ARTIKEL_KOMENT);
+    param.zeile_anhaengen(PARAM_ARTIKEL_BEZIEHUNG);
 
     values.zeile_anhaengen(data.zeile(1));
     values.zeile_anhaengen(data.zeile(2));
@@ -446,6 +447,7 @@ void Form_artikel::slot_new(text_zeilenweise data)
     values.zeile_anhaengen(data.zeile(4));
     values.zeile_anhaengen(data.zeile(5));
     values.zeile_anhaengen(data.zeile(6));
+    values.zeile_anhaengen(data.zeile(7));
 
     dbeigen->data_new(TABNAME_ARTIKEL, param, values);
     update_table();
@@ -484,8 +486,9 @@ void Form_artikel::slot_edit_dialog(text_zeilenweise ids)
             artikel.zeile_anhaengen(dbeigen->get_values_from_column(TABNAME_ARTIKEL, 10, querryfilter).get_text());//Lagerort
             artikel.zeile_anhaengen(dbeigen->get_values_from_column(TABNAME_ARTIKEL, 11, querryfilter).get_text());//VE
             artikel.zeile_anhaengen(dbeigen->get_values_from_column(TABNAME_ARTIKEL, 12, querryfilter).get_text());//Kommentar
+            artikel.zeile_anhaengen(dbeigen->get_values_from_column(TABNAME_ARTIKEL, 13, querryfilter).get_text());//Beziehungen
 
-            Dialog_artikel *d = new Dialog_artikel;
+            Dialog_artikel *d = new Dialog_artikel(this);
             d->set_db(dbeigen);
             d->setup();
             d->set_data(artikel, idbuffer);
@@ -498,7 +501,7 @@ void Form_artikel::slot_edit_dialog(text_zeilenweise ids)
             delete d;
         }else
         {
-            Dialog_yes_no *d = new Dialog_yes_no;
+            Dialog_yes_no *d = new Dialog_yes_no(this);
             d->setWindowTitle("Datensatz bereits gesperrt");
             QString msg;
             msg += "Dieser Datensatz wurde bereits vom Nutzer \"";
@@ -535,8 +538,9 @@ void Form_artikel::slot_edit_dialog()
     artikel.zeile_anhaengen(dbeigen->get_values_from_column(TABNAME_ARTIKEL, 10, querryfilter).get_text());//Lagerort
     artikel.zeile_anhaengen(dbeigen->get_values_from_column(TABNAME_ARTIKEL, 11, querryfilter).get_text());//VE
     artikel.zeile_anhaengen(dbeigen->get_values_from_column(TABNAME_ARTIKEL, 12, querryfilter).get_text());//Kommentar
+    artikel.zeile_anhaengen(dbeigen->get_values_from_column(TABNAME_ARTIKEL, 13, querryfilter).get_text());//Beziehungen
 
-    Dialog_artikel *d = new Dialog_artikel;
+    Dialog_artikel *d = new Dialog_artikel(this);
     d->set_db(dbeigen);
     d->setup();
     d->set_data(artikel, idbuffer);
@@ -610,6 +614,7 @@ void Form_artikel::slot_edit(text_zeilenweise data, QString id)
         param.zeile_anhaengen(PARAM_ARTIKEL_LAGERORT);
         param.zeile_anhaengen(PARAM_ARTIKEL_VE);
         param.zeile_anhaengen(PARAM_ARTIKEL_KOMENT);
+        param.zeile_anhaengen(PARAM_ARTIKEL_BEZIEHUNG);
 
         values.zeile_anhaengen(data.zeile(1));
         values.zeile_anhaengen(data.zeile(2));
@@ -620,6 +625,7 @@ void Form_artikel::slot_edit(text_zeilenweise data, QString id)
         values.zeile_anhaengen(data.zeile(4));
         values.zeile_anhaengen(data.zeile(5));
         values.zeile_anhaengen(data.zeile(6));
+        values.zeile_anhaengen(data.zeile(7));
 
         dbeigen->data_edit(TABNAME_ARTIKEL, param, values, id);
     }

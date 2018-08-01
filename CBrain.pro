@@ -45,7 +45,9 @@ SOURCES += main.cpp\
     dialog_personal.cpp \
     form_matlist.cpp \
     dialog_tableeditor.cpp \
-    dialog_promatpos.cpp
+    dialog_promatpos.cpp \
+    dialog_promatposrumpf.cpp \
+    dialog_artikel_beziehung.cpp
 
 HEADERS  += mainwindow.h \
     defines_filenames.h \
@@ -91,7 +93,9 @@ HEADERS  += mainwindow.h \
     _tabname_promat.h \
     _tabname_status.h \
     dialog_promatpos.h \
-    _tabname_promatposlist.h
+    _tabname_promatposlist.h \
+    dialog_promatposrumpf.h \
+    dialog_artikel_beziehung.h
 
 FORMS    += mainwindow.ui \
     dialog_login.ui \
@@ -116,4 +120,6 @@ FORMS    += mainwindow.ui \
     dialog_personal.ui \
     form_matlist.ui \
     dialog_tableeditor.ui \
-    dialog_promatpos.ui
+    dialog_promatpos.ui \
+    dialog_promatposrumpf.ui \
+    dialog_artikel_beziehung.ui

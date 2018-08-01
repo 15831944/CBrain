@@ -359,7 +359,7 @@ void Form_lager::on_lineEdit_suche_textChanged()
 //------------------------------------Buttons:
 void Form_lager::on_pushButton_in_clicked()
 {
-    Dialog_lager *d = new Dialog_lager;
+    Dialog_lager *d = new Dialog_lager(this);
     d->set_db(dbeigen);
     d->setup();
     d->setWindowTitle("Waren-Eingang buchen");
@@ -376,7 +376,7 @@ void Form_lager::on_pushButton_in_clicked()
 
 void Form_lager::on_pushButton_out_clicked()
 {
-    Dialog_lager *d = new Dialog_lager;
+    Dialog_lager *d = new Dialog_lager(this);
     d->set_db(dbeigen);
     d->setup();
     d->setWindowTitle("Waren-Ausgang buchen");

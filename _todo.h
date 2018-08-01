@@ -5,8 +5,6 @@
 template_Materialliste:
 soll als Template zum Anlegen von neuen projektbezogenen Materiallisten dienen
 
--->Tabelle_lager um Spalte Lieferschein in der db ergänzen
-
 -->Artikeltabelle erweitern
     ->Preis -->wird dann jedoch nicht als ID in Materialliste eingefügt, sondern als Kopie (Variierender Preis in den Aufträgen)
     ->Beziehung zu anderen Artiklen (Liste von Artiklen)
@@ -27,7 +25,18 @@ soll als Template zum Anlegen von neuen projektbezogenen Materiallisten dienen
    (block wird aufgehoben wenn user_B cancelt)
    dialog von user_A erwartet jedoch das die daten noch von ihm selbst blockiert sind
 
+--> void Form_matlist::on_pushButton_pos_edit_rumpf_clicked()
+    connect...
 
+-->void Dialog_artikel::on_pushButton_beziehung_new_clicked()
+-->void Dialog_artikel::on_pushButton_beziehung_delete_clicked()
+-->void Dialog_artikel::on_pushButton_beziehung_edit_clicked()
+
+-->Dialog-Schließen X oben rechts
+    -->Funktion überladen auf btn_abbrechen
+        ->weil block durch user wieder freigegeben werden muss!!
+
+-->tr(...) für Ausgabe von Umlauten verwenden
 
 -->Im-Export-Dialog
 

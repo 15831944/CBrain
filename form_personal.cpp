@@ -144,7 +144,7 @@ void Form_personal::on_lineEdit_suche_textChanged()
 //------------------------------------Buttons:
 void Form_personal::on_pushButton_new_clicked()
 {
-    Dialog_personal *d = new Dialog_personal;
+    Dialog_personal *d = new Dialog_personal(this);
     d->setWindowTitle("Personaleintrag anlegen");
     connect(d, SIGNAL(signal_send_data(text_zeilenweise)),  \
             this, SLOT(slot_new(text_zeilenweise))          );
@@ -214,7 +214,7 @@ void Form_personal::on_pushButton_del_clicked()
         }
     }
     //-------------------------------------------
-    Dialog_dataselection *d = new Dialog_dataselection;
+    Dialog_dataselection *d = new Dialog_dataselection(this);
     d->set_data(tz, ids);
     d->setWindowTitle("Personaleintrag loeschen");
     connect(d, SIGNAL(signal_send_selection(text_zeilenweise)), \
@@ -290,7 +290,7 @@ void Form_personal::on_pushButton_edit_clicked()
         slot_edit_dialog(ids);
     }else
     {
-        Dialog_dataselection *d = new Dialog_dataselection;
+        Dialog_dataselection *d = new Dialog_dataselection(this);
         d->set_data(tz, ids);
         d->setWindowTitle("Personaleintrag bearbeiten (nur einen)");
         connect(d, SIGNAL(signal_send_selection(text_zeilenweise)), \
@@ -344,7 +344,7 @@ void Form_personal::slot_edit_dialog(text_zeilenweise ids)
             person.zeile_anhaengen(dbeigen->get_values_from_column(TABNAME_PERSONAL, 1, querryfilter).get_text());//Vorame
             person.zeile_anhaengen(dbeigen->get_values_from_column(TABNAME_PERSONAL, 2, querryfilter).get_text());//Nachname
 
-            Dialog_personal *d = new Dialog_personal;
+            Dialog_personal *d = new Dialog_personal(this);
             d->setWindowTitle("Personaleintrag bearbeiten");
             d->set_data(person, idbuffer);
             connect(d, SIGNAL(signal_send_data(text_zeilenweise, QString)),  \
@@ -356,7 +356,7 @@ void Form_personal::slot_edit_dialog(text_zeilenweise ids)
             delete d;
         }else
         {
-            Dialog_yes_no *d = new Dialog_yes_no;
+            Dialog_yes_no *d = new Dialog_yes_no(this);
             d->setWindowTitle("Datensatz bereits gesperrt");
             QString msg;
             msg += "Dieser Datensatz wurde bereits vom Nutzer \"";
@@ -390,7 +390,7 @@ void Form_personal::slot_edit_dialog()
     person.zeile_anhaengen(dbeigen->get_values_from_column(TABNAME_PERSONAL, 1, querryfilter).get_text());//Vorname
     person.zeile_anhaengen(dbeigen->get_values_from_column(TABNAME_PERSONAL, 2, querryfilter).get_text());//Nachname
 
-    Dialog_personal *d = new Dialog_personal;
+    Dialog_personal *d = new Dialog_personal(this);
     d->setWindowTitle("Personaleintrag bearbeiten");
     d->set_data(person, idbuffer);
     connect(d, SIGNAL(signal_send_data(text_zeilenweise, QString)),  \

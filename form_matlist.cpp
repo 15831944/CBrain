@@ -85,21 +85,25 @@ void Form_matlist::resizeEvent(QResizeEvent *event)
                                 1 + h_btn + 1);
 
     ui->pushButton_pos_new->setFixedWidth(b_re/3 - 2*2);
-    ui->pushButton_pos_edit->setFixedWidth(ui->pushButton_pos_new->width());
     ui->pushButton_pos_delete->setFixedWidth(ui->pushButton_pos_new->width());
+    ui->pushButton_pos_edit->setFixedWidth(ui->pushButton_pos_new->width());
     ui->pushButton_pos_copy->setFixedWidth(ui->pushButton_pos_new->width());
     ui->pushButton_pos_import->setFixedWidth(ui->pushButton_pos_new->width());
+    ui->pushButton_pos_edit_rumpf->setFixedWidth(ui->pushButton_pos_new->width());
 
     ui->pushButton_pos_new->move(1 + b_li + 2,\
                                  1 + h_btn + 1 + ui->listWidget_matpos->height() + 1);
-    ui->pushButton_pos_edit->move(1 + b_li + 2 + (ui->pushButton_pos_new->width()+1),\
-                                  1 + h_btn + 1 + ui->listWidget_matpos->height() + 1);
-    ui->pushButton_pos_delete->move(1 + b_li + 2 + (ui->pushButton_pos_new->width()+1)*2,\
+    ui->pushButton_pos_delete->move(1 + b_li + 2 + (ui->pushButton_pos_new->width()+1),\
                                     1 + h_btn + 1 + ui->listWidget_matpos->height() + 1);
-    ui->pushButton_pos_copy->move(1 + b_li + 2 + (ui->pushButton_pos_new->width()+1),\
+    ui->pushButton_pos_edit->move(1 + b_li + 2 + (ui->pushButton_pos_new->width()+1)*2,\
+                                  1 + h_btn + 1 + ui->listWidget_matpos->height() + 1);
+
+    ui->pushButton_pos_copy->move(1 + b_li + 2,\
                                   1 + h_btn + 1 + ui->listWidget_matpos->height() + 1 + h_btn + 1);
-    ui->pushButton_pos_import->move(1 + b_li + 2 + (ui->pushButton_pos_new->width()+1)*2,\
+    ui->pushButton_pos_import->move(1 + b_li + 2 + (ui->pushButton_pos_new->width()+1),\
                                     1 + h_btn + 1 + ui->listWidget_matpos->height() + 1 + h_btn + 1);
+    ui->pushButton_pos_edit_rumpf->move(1 + b_li + 2 + (ui->pushButton_pos_new->width()+1)*2,\
+                                        1 + h_btn + 1 + ui->listWidget_matpos->height() + 1 + h_btn + 1);
 
     QWidget::resizeEvent(event);
 }
@@ -249,6 +253,8 @@ void Form_matlist::create_table_promatpos(QString bez, QString menge)
 
 void Form_matlist::update_listwidget_matpos()
 {
+    int current_row = ui->listWidget_matpos->currentRow();
+
     QString posliste;
     posliste  = TABNAME_PROMATPOSLIST;
     posliste += ui->lineEdit_projekt_id->text();
@@ -274,6 +280,12 @@ void Form_matlist::update_listwidget_matpos()
         ui->listWidget_matpos->addItem(item[i-1]);
     }
 
+    if(current_row != -1 && \
+       ui->listWidget_matpos->count()-1 >= current_row)
+    {
+        ui->listWidget_matpos->setCurrentRow(current_row);
+    }
+
 }
 
 //-------------------------------------Buttons:
@@ -283,7 +295,7 @@ void Form_matlist::on_pushButton_projektauswahl_clicked()
     projekte = dbeigen->get_data_tz(TABNAME_PROJEKT, PARAM_PROJEKT_NAME);
     ids = dbeigen->get_data_tz(TABNAME_PROJEKT, PARAM_PROJEKT_ID);
 
-    Dialog_dataselection *d = new Dialog_dataselection;
+    Dialog_dataselection *d = new Dialog_dataselection(this);
     d->set_data(projekte, ids);
     d->setWindowTitle("Projektauswahl");
     d->set_anz_returnwerte(1);
@@ -298,7 +310,7 @@ void Form_matlist::on_pushButton_pos_new_clicked()
 {
     if(!ui->lineEdit_projekt_id->text().isEmpty())
     {
-        Dialog_promatpos *d = new Dialog_promatpos;
+        Dialog_promatpos *d = new Dialog_promatpos(this);
         d->setWindowTitle("Materialposition anlegen");
         connect(d, SIGNAL(signal_send_data(text_zeilenweise)),  \
                 this, SLOT(slot_new_matpos(text_zeilenweise))   );
@@ -321,8 +333,8 @@ void Form_matlist::on_pushButton_pos_edit_clicked()
             QString tabname;
             tabname  = TABNAME_PROMATPOSLIST;
             tabname += ui->lineEdit_projekt_id->text();
-
             QString idbuffer = text_links(ui->listWidget_matpos->currentItem()->text(), " ||| ");
+            promatposlist_current_id = idbuffer;
             QString blockfromuser_id = dbeigen->get_data_qstring(tabname, \
                                                                  PARAM_PROMATPOSLIST_BLOCK, \
                                                                  idbuffer);
@@ -334,7 +346,7 @@ void Form_matlist::on_pushButton_pos_edit_clicked()
                                                        TABNAME_PERSONAL, PARAM_PERSONAL_NACHNAME);
             if(blockfromuser_id == USER_NOBODY_ID || blockfromuser.isEmpty() )
             {
-                Dialog_promatpos *d = new Dialog_promatpos;
+                Dialog_promatpos *d = new Dialog_promatpos(this);
                 d->setWindowTitle("Materialposition bearbeiten");
                 QString id = text_links(ui->listWidget_matpos->currentItem()->text(), " ||| ");
 
@@ -346,13 +358,13 @@ void Form_matlist::on_pushButton_pos_edit_clicked()
 
                 connect(d, SIGNAL(signal_send_data(text_zeilenweise, QString)),  \
                         this, SLOT(slot_edit_matposlist(text_zeilenweise, QString))   );
-                connect(d, SIGNAL(signal_cancel()), this, SLOT(slot_edit_matposlist_unblock()));
+                connect(d, SIGNAL(signal_cancel()), this, SLOT(slot_edit_matposlist_unblock()));                
                 dbeigen->data_edit(tabname, PARAM_PROMATPOSLIST_BLOCK, user, idbuffer);
                 d->exec();
                 delete d;
             }else
             {
-                Dialog_yes_no *d = new Dialog_yes_no;
+                Dialog_yes_no *d = new Dialog_yes_no(this);
                 d->setWindowTitle("Datensatz bereits gesperrt");
                 QString msg;
                 msg += "Dieser Datensatz wurde bereits vom Nutzer \"";
@@ -376,6 +388,93 @@ void Form_matlist::on_pushButton_pos_edit_clicked()
         QMessageBox mb;
         mb.setText("Bitte zuerst ein Projekt festlegen!");
         mb.exec();
+    }
+}
+
+void Form_matlist::on_pushButton_pos_edit_rumpf_clicked()
+{
+    if(!ui->lineEdit_projekt_id->text().isEmpty())
+    {
+        if(ui->listWidget_matpos->currentRow() != -1)
+        {
+            QString tabname;
+            tabname  = TABNAME_PROMATPOSLIST;
+            tabname += ui->lineEdit_projekt_id->text();
+            QString idbuffer = text_links(ui->listWidget_matpos->currentItem()->text(), " ||| ");
+            tabname += "_";
+            tabname += idbuffer;
+            Dialog_promatposrumpf *d = new Dialog_promatposrumpf(this);
+            d->set_userid(user);
+            d->set_db(dbeigen);
+            d->set_tabname(tabname);
+
+            //connect....
+
+            d->exec();
+            delete d;
+        }else
+        {
+            QMessageBox mb;
+            mb.setText("Bitte zuerst eine Position waelen!");
+            mb.exec();
+        }
+    }else
+    {
+        QMessageBox mb;
+        mb.setText("Bitte zuerst ein Projekt festlegen!");
+        mb.exec();
+    }
+}
+
+void Form_matlist::on_pushButton_pos_delete_clicked()
+{
+    if(!ui->lineEdit_projekt_id->text().isEmpty())
+    {
+        if(ui->listWidget_matpos->currentRow() != -1)
+        {
+            QString posbez = ui->listWidget_matpos->currentItem()->text();
+            posbez = text_rechts(posbez, " ||| ");
+            Dialog_yes_no *d = new Dialog_yes_no(this);
+            d->setWindowTitle("Materialposition loeschen");
+            QString msg;
+            msg += "Wollen Sie die Position \"";
+            msg += posbez;
+            msg += "\" wirklich dauerhaft loeschen?";
+            d->setup(msg);
+            connect(d, SIGNAL(signal_yes()), this, SLOT(slot_delete_matpos()));
+            d->exec();
+            delete d;
+        }else
+        {
+            QMessageBox mb;
+            mb.setText("Bitte zuerst eine Position waelen!");
+            mb.exec();
+        }
+    }else
+    {
+        QMessageBox mb;
+        mb.setText("Bitte zuerst ein Projekt festlegen!");
+        mb.exec();
+    }
+}
+
+void Form_matlist::on_pushButton_check_all_pos_clicked()
+{
+    for(int i=1; i<=ui->listWidget_matpos->count() ;i++)
+    {
+        ui->listWidget_matpos->item(i-1)->setCheckState(Qt::Checked);
+    }
+}
+
+void Form_matlist::on_pushButton_check_activ_pos_clicked()
+{
+    if(ui->listWidget_matpos->currentRow() != -1)
+    {
+        for(int i=1; i<=ui->listWidget_matpos->count() ;i++)
+        {
+            ui->listWidget_matpos->item(i-1)->setCheckState(Qt::Unchecked);
+        }
+        ui->listWidget_matpos->currentItem()->setCheckState(Qt::Checked);
     }
 }
 
@@ -482,7 +581,7 @@ void Form_matlist::slot_edit_matposlist_with_block()
     tabname += ui->lineEdit_projekt_id->text();
     QString idbuffer = text_links(ui->listWidget_matpos->currentItem()->text(), " ||| ");
 
-    Dialog_promatpos *d = new Dialog_promatpos;
+    Dialog_promatpos *d = new Dialog_promatpos(this);
     d->setWindowTitle("Materialposition bearbeiten");
     QString id = text_links(ui->listWidget_matpos->currentItem()->text(), " ||| ");
 
@@ -508,6 +607,73 @@ void Form_matlist::slot_edit_matposlist_unblock()
     dbeigen->data_edit(tabname, PARAM_PROMATPOSLIST_BLOCK, \
                        USER_NOBODY_ID, promatposlist_current_id);
 }
+
+void Form_matlist::slot_delete_matpos()
+{
+    QString tabname;
+    tabname  = TABNAME_PROMATPOSLIST;
+    tabname += ui->lineEdit_projekt_id->text();
+    QString idbuffer = text_links(ui->listWidget_matpos->currentItem()->text(), " ||| ");
+    QString blockfromuser_id = dbeigen->get_data_qstring(tabname, \
+                                                         PARAM_PROMATPOSLIST_BLOCK, \
+                                                         idbuffer);
+    QString blockfromuser = dbeigen->get_data_qstring(tabname, \
+                                                      PARAM_PROMATPOSLIST_BLOCK, idbuffer,\
+                                                      TABNAME_PERSONAL, PARAM_PERSONAL_VORNAME);
+    blockfromuser += " ";
+    blockfromuser += dbeigen->get_data_qstring(tabname, PARAM_PROMATPOSLIST_BLOCK, idbuffer,\
+                                               TABNAME_PERSONAL, PARAM_PERSONAL_NACHNAME);
+    if(blockfromuser_id == USER_NOBODY_ID || blockfromuser.isEmpty() )
+    {
+        QString tabname_matpos = tabname;
+        tabname_matpos += "_";
+        tabname_matpos += idbuffer;
+
+        //Prüfen, ob ein Datensatz innerhalb der matpos-Tabelle blockiert ist:
+        bool ok = true;
+        text_zeilenweise block = dbeigen->get_data_tz(tabname_matpos, PARAM_PROMATPOS_BLOCK);
+        for(uint i=1; i<=block.zeilenanzahl() ;i++)
+        {
+            QString zeile = block.zeile(i);
+            if(  zeile != USER_NOBODY_ID    &&\
+                 !zeile.isEmpty()           &&\
+                 zeile != "---"                 )
+            {
+                ok = false;
+                break;
+            }
+        }
+        if(ok == true)
+        {
+            //Eintrag in matposlist löschen:
+            dbeigen->data_del(tabname, idbuffer);
+            //matpos-Tabelle löschen:
+
+            dbeigen->table_del(tabname_matpos);
+            //GUI aktualisieren:
+            update_listwidget_matpos();
+        }else
+        {
+            QMessageBox mb;
+            mb.setText("Mindestens ein Datensatz in der Materialposition ist durch einen Benutzer blockiert! Position kann nicht geloescht werden");
+            mb.exec();
+        }
+    }else
+    {
+        QString msg;
+        msg += "Der Datensetz ist derzeit durch den Nutzer \"";
+        msg += blockfromuser;
+        msg += "\" gesperrt und kann nicht geloescht werden!";
+        QMessageBox mb;
+        mb.setText(msg);
+        mb.exec();
+    }
+
+}
+
+
+
+
 
 
 

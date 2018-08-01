@@ -261,7 +261,7 @@ void Form_projekte::create_table_promat(QString project_id)
 //------------------------------------Buttons:
 void Form_projekte::on_pushButton_new_clicked()
 {
-    Dialog_projekte *d = new Dialog_projekte;
+    Dialog_projekte *d = new Dialog_projekte(this);
     d->setWindowTitle("Projekt anlegen");
     connect(d, SIGNAL(signal_send_data(text_zeilenweise)),  \
             this, SLOT(slot_new(text_zeilenweise))          );
@@ -324,7 +324,7 @@ void Form_projekte::on_pushButton_del_clicked()
         }
     }
     //-------------------------------------------
-    Dialog_dataselection *d = new Dialog_dataselection;
+    Dialog_dataselection *d = new Dialog_dataselection(this);
     d->set_data(tz, ids);
     d->setWindowTitle("Projekt loeschen");
     connect(d, SIGNAL(signal_send_selection(text_zeilenweise)), \
@@ -404,7 +404,7 @@ void Form_projekte::on_pushButton_edit_clicked()
         slot_edit_dialog(ids);
     }else
     {
-        Dialog_dataselection *d = new Dialog_dataselection;
+        Dialog_dataselection *d = new Dialog_dataselection(this);
         d->set_data(tz, ids);
         d->setWindowTitle("Projekt bearbeiten (nur einen)");
         connect(d, SIGNAL(signal_send_selection(text_zeilenweise)), \
@@ -465,7 +465,7 @@ void Form_projekte::slot_edit_dialog(text_zeilenweise ids)
             projekt.zeile_anhaengen(dbeigen->get_values_from_column(TABNAME_PROJEKT, 1, querryfilter).get_text());//Name
             projekt.zeile_anhaengen(dbeigen->get_values_from_column(TABNAME_PROJEKT, 7, querryfilter).get_text());//Kommentar
 
-            Dialog_projekte *d = new Dialog_projekte;
+            Dialog_projekte *d = new Dialog_projekte(this);
             d->setWindowTitle("Projekt bearbeiten");
             d->set_data(projekt, idbuffer);
             connect(d, SIGNAL(signal_send_data(text_zeilenweise, QString)),  \
@@ -477,7 +477,7 @@ void Form_projekte::slot_edit_dialog(text_zeilenweise ids)
             delete d;
         }else
         {
-            Dialog_yes_no *d = new Dialog_yes_no;
+            Dialog_yes_no *d = new Dialog_yes_no(this);
             d->setWindowTitle("Datensatz bereits gesperrt");
             QString msg;
             msg += "Dieser Datensatz wurde bereits vom Nutzer \"";
@@ -511,7 +511,7 @@ void Form_projekte::slot_edit_dialog()
     projekt.zeile_anhaengen(dbeigen->get_values_from_column(TABNAME_PROJEKT, 1, querryfilter).get_text());//Name
     projekt.zeile_anhaengen(dbeigen->get_values_from_column(TABNAME_PROJEKT, 7, querryfilter).get_text());//Kommentar
 
-    Dialog_projekte *d = new Dialog_projekte;
+    Dialog_projekte *d = new Dialog_projekte(this);
     d->setWindowTitle("Projekt bearbeiten");
     d->set_data(projekt, idbuffer);
     connect(d, SIGNAL(signal_send_data(text_zeilenweise, QString)),  \

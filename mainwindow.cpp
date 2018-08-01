@@ -326,7 +326,7 @@ void MainWindow::on_actionBenutzer_wechsen_triggered()
 
 void MainWindow::on_actionBenutzer_verwalten_triggered()
 {
-    Dialog_user *d = new Dialog_user;
+    Dialog_user *d = new Dialog_user(this);
     connect(d, SIGNAL(signal_send_users(users)),        \
             this, SLOT(slot_get_users(users))           );
     d->set_users(u);
@@ -336,7 +336,7 @@ void MainWindow::on_actionBenutzer_verwalten_triggered()
 
 void MainWindow::on_actionProgrammeigene_Datenbank_triggered()
 {
-    Dialog_settings_db *d = new Dialog_settings_db;
+    Dialog_settings_db *d = new Dialog_settings_db(this);
     connect(d, SIGNAL(signal_send_data(text_zeilenweise)),           \
             this, SLOT(slot_get_settings_db_eigen(text_zeilenweise)) );
     d->set_data(ini.get_settings_db_eigen());

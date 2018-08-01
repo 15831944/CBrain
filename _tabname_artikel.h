@@ -17,11 +17,21 @@
 #define PARAM_ARTIKEL_LAGERORT      "Lagerort"          //Wert 10
 #define PARAM_ARTIKEL_VE            "VE"                //Wert 11   //Verpackungseinheit = Menge pro Packung
 #define PARAM_ARTIKEL_KOMENT        "Kommentar"         //Wert 12
+#define PARAM_ARTIKEL_BEZIEHUNG     "Beziehung"         //Wert 13
 
 
 
+/*
+Aufbau Spalte Beziehung:
+id          == Artikelid des Artikels der in beziehung gesetzt wird
+default     -> 0 == wird vorgeschlagen als uncheched
+            -> 1 == wird vorgeschlagen als cheched
+menge       == Wie oft wird der Artikel gebraucht pro Parent-Artikel
 
-
+id ||| default ||| menge \n
+id ||| default ||| menge \n
+id ||| default ||| menge
+*/
 
 
 

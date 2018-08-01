@@ -217,7 +217,7 @@ void Form_lieferanten::on_lineEdit_suche_textChanged()
 //------------------------------------Buttons:
 void Form_lieferanten::on_pushButton_new_clicked()
 {
-    Dialog_lieferanten *d = new Dialog_lieferanten;
+    Dialog_lieferanten *d = new Dialog_lieferanten(this);
     d->setWindowTitle("Lieferant anlegen");
     connect(d, SIGNAL(signal_send_data(text_zeilenweise)),  \
             this, SLOT(slot_new(text_zeilenweise))          );
@@ -280,7 +280,7 @@ void Form_lieferanten::on_pushButton_del_clicked()
         }
     }
     //-------------------------------------------
-    Dialog_dataselection *d = new Dialog_dataselection;
+    Dialog_dataselection *d = new Dialog_dataselection(this);
     d->set_data(tz, ids);
     d->setWindowTitle("Lieferant loeschen");
     connect(d, SIGNAL(signal_send_selection(text_zeilenweise)), \
@@ -359,7 +359,7 @@ void Form_lieferanten::on_pushButton_edit_clicked()
         slot_edit_dialog(ids);
     }else
     {
-        Dialog_dataselection *d = new Dialog_dataselection;
+        Dialog_dataselection *d = new Dialog_dataselection(this);
         d->set_data(tz, ids);
         d->setWindowTitle("Lieferant bearbeiten (nur einen)");
         connect(d, SIGNAL(signal_send_selection(text_zeilenweise)), \
@@ -418,7 +418,7 @@ void Form_lieferanten::slot_edit_dialog(text_zeilenweise ids)
             lieferant.zeile_anhaengen(dbeigen->get_values_from_column(TABNAME_LIEFERANT, 1, querryfilter).get_text());//Name
             lieferant.zeile_anhaengen(dbeigen->get_values_from_column(TABNAME_LIEFERANT, 7, querryfilter).get_text());//Kommenter
 
-            Dialog_lieferanten *d = new Dialog_lieferanten;
+            Dialog_lieferanten *d = new Dialog_lieferanten(this);
             d->setWindowTitle("Lieferant bearbeiten");
             d->set_data(lieferant, idbuffer);
             connect(d, SIGNAL(signal_send_data(text_zeilenweise, QString)),  \
@@ -430,7 +430,7 @@ void Form_lieferanten::slot_edit_dialog(text_zeilenweise ids)
             delete d;
         }else
         {
-            Dialog_yes_no *d = new Dialog_yes_no;
+            Dialog_yes_no *d = new Dialog_yes_no(this);
             d->setWindowTitle("Datensatz bereits gesperrt");
             QString msg;
             msg += "Dieser Datensatz wurde bereits vom Nutzer \"";
@@ -463,7 +463,7 @@ void Form_lieferanten::slot_edit_dialog()
     lieferant.zeile_anhaengen(dbeigen->get_values_from_column(TABNAME_LIEFERANT, 1, querryfilter).get_text());//Name
     lieferant.zeile_anhaengen(dbeigen->get_values_from_column(TABNAME_LIEFERANT, 8, querryfilter).get_text());//Kommenter
 
-    Dialog_lieferanten *d = new Dialog_lieferanten;
+    Dialog_lieferanten *d = new Dialog_lieferanten(this);
     d->setWindowTitle("Lieferant bearbeiten");
     d->set_data(lieferant, idbuffer);
     connect(d, SIGNAL(signal_send_data(text_zeilenweise, QString)),  \

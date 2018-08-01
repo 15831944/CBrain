@@ -11,6 +11,7 @@
 #include "_tabname_personal.h"
 #include "dialog_dataselection.h"
 #include "dialog_promatpos.h"
+#include "dialog_promatposrumpf.h"
 #include "text.h"
 #include "dialog_yes_no.h"
 
@@ -36,6 +37,7 @@ public slots:
     void slot_edit_matposlist();
     void slot_edit_matposlist_with_block();
     void slot_edit_matposlist_unblock();
+    void slot_delete_matpos();
 
 protected:
     void resizeEvent(QResizeEvent *event);
@@ -45,6 +47,11 @@ private slots:
     void on_lineEdit_projekt_id_textChanged(const QString &arg1);
     void on_pushButton_pos_new_clicked();
     void on_pushButton_pos_edit_clicked();
+    void on_pushButton_pos_delete_clicked();
+    void on_pushButton_check_all_pos_clicked();
+    void on_pushButton_check_activ_pos_clicked();
+
+    void on_pushButton_pos_edit_rumpf_clicked();
 
 private:
     Ui::Form_matlist *ui;

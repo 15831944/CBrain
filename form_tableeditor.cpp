@@ -270,7 +270,7 @@ void Form_tableeditor::on_lineEdit_table_seach_textChanged()
 //----------------------------------Buttons:
 void Form_tableeditor::on_pushButton_table_new_clicked()
 {
-    Dialog_text_input *d = new Dialog_text_input;
+    Dialog_text_input *d = new Dialog_text_input(this);
     d->setup("neue Tabelle anlegen","Bitte geben Sie den Namen der neuen Tabelle ein:");
     connect(d, SIGNAL(signal_userinput(QString)),           \
                       this, SLOT(slot_new_table(QString))   );
@@ -282,7 +282,7 @@ void Form_tableeditor::on_pushButton_table_del_clicked()
 {
     if(ui->listWidget_tables->currentRow() >= 0)
     {
-        Dialog_yes_no *d = new Dialog_yes_no;
+        Dialog_yes_no *d = new Dialog_yes_no(this);
         QString msg;
         msg += "Wollen Sie die Tabelle \"";
         msg += ui->listWidget_tables->currentItem()->text();
@@ -303,7 +303,7 @@ void Form_tableeditor::on_pushButton_table_edit_clicked()
 {
     if(ui->listWidget_tables->currentRow() >= 0)
     {
-        Dialog_text_input *d = new Dialog_text_input;
+        Dialog_text_input *d = new Dialog_text_input(this);
         d->setup("Tabelle umbenennen","Bitte geben Sie den neuen Namen der Tabelle ein:");
         d->set_default_input(ui->listWidget_tables->currentItem()->text());
         connect(d, SIGNAL(signal_userinput(QString)),           \
@@ -322,7 +322,7 @@ void Form_tableeditor::on_pushButton_param_new_clicked()
 {
     if(ui->listWidget_tables->currentRow() >= 0)
     {
-        Dialog_tableparam *d = new Dialog_tableparam;
+        Dialog_tableparam *d = new Dialog_tableparam(this);
         d->setWindowTitle("neuen Parameter anlegen");
         d->setup_mysql();   //derzeit wird nur mysql gebraucht, später evtl. Differenzierung
         connect(d, SIGNAL(signal_send_dialog_data(QString,QString,QString,bool,bool,bool,bool,QString)),  \
@@ -343,7 +343,7 @@ void Form_tableeditor::on_pushButton_param_del_clicked()
     {
         if(ui->listWidget_tablehead->currentRow() >= 0)
         {
-            Dialog_yes_no *d = new Dialog_yes_no;
+            Dialog_yes_no *d = new Dialog_yes_no(this);
             QString msg;
             msg += "Wollen Sie diesen Parameter \"";
             msg += ui->listWidget_tablehead->currentItem()->text();
@@ -373,7 +373,7 @@ void Form_tableeditor::on_pushButton_param_edit_clicked()
         if(ui->listWidget_tablehead->currentRow() >= 0)
         {
             int currentRow = ui->listWidget_tablehead->currentRow();
-            Dialog_tableparam *d = new Dialog_tableparam;
+            Dialog_tableparam *d = new Dialog_tableparam(this);
 
             d->setWindowTitle("Parameter bearbeiten");
             d->setup_mysql();   //derzeit wird nur mysql gebraucht, später evtl. Differenzierung
@@ -434,7 +434,7 @@ void Form_tableeditor::on_pushButton_value_edit_clicked()
 {
     if(ui->listWidget_tables->count() > 0 && ui->listWidget_tables->currentRow() >= 0)
     {
-        Dialog_tableeditor *d = new Dialog_tableeditor;
+        Dialog_tableeditor *d = new Dialog_tableeditor(this);
         d->set_db(dbeigen);
         d->set_table(ui->listWidget_tables->currentItem()->text());
         connect(d, SIGNAL(signal_ok()),\
