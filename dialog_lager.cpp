@@ -110,7 +110,7 @@ void Dialog_lager::setup()
         }else
         {
             QMessageBox mb;
-            mb.setText("Fehler bei Datenbankverbindung!");
+            mb.setText(tr("Fehler bei Datenbankverbindung!"));
             mb.exec();
         }
     }
@@ -133,13 +133,13 @@ void Dialog_lager::on_pushButton_ok_clicked()
     if(ui->comboBox_artikel->currentText() == "---")//nichts gewählt
     {
         QMessageBox mb;
-        mb.setText("Das Datenfeld \"Artikel\" darf nicht leer sein!");
+        mb.setText(tr("Das Datenfeld \"Artikel\" darf nicht leer sein!"));
         mb.exec();
     }else if(ui->comboBox_kom->currentText() == "---" &&    \
              !ui->comboBox_kom->isHidden()                  )//nichts gewählt
     {
         QMessageBox mb;
-        mb.setText("Das Datenfeld \"Kommission\" darf nicht leer sein!");
+        mb.setText(tr("Das Datenfeld \"Kommission\" darf nicht leer sein!"));
         mb.exec();
     }else
     {

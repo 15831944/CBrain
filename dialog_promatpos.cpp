@@ -20,7 +20,7 @@ void Dialog_promatpos::on_pushButton_ok_clicked()
     if( ui->plainTextEdit_bez->toPlainText().isEmpty() )
     {
         QMessageBox mb;
-        mb.setText("Das Datenfeld \"Positionsbezeichnung\" darf nicht leer sein!");
+        mb.setText(tr("Das Datenfeld \"Positionsbezeichnung\" darf nicht leer sein!"));
         mb.exec();
     }else
     {

@@ -91,6 +91,14 @@ void Dialog_user::on_listWidget_names_currentRowChanged(int currentRow)
         ui->checkBox_modul_matlist->setChecked(false);
     }
 
+    if(user.get_use_function_artfavsort_tz().zeile(currentRow+1)== "1")
+    {
+        ui->checkBox_function_artfavsort->setChecked(true);
+    }else
+    {
+        ui->checkBox_function_artfavsort->setChecked(false);
+    }
+
     //------------------------------------------------------------------------------------
     if(ui->listWidget_names->currentRow() == 0)//First Admin soll nicht editierbar sein!
     {
@@ -103,6 +111,7 @@ void Dialog_user::on_listWidget_names_currentRowChanged(int currentRow)
         ui->checkBox_modul_projekte->setDisabled(true);
         ui->checkBox_modul_personal->setDisabled(true);
         ui->checkBox_modul_matlist->setDisabled(true);
+        ui->checkBox_function_artfavsort->setDisabled(true);
     }else
     {
         ui->lineEdit_name->setEnabled(true);
@@ -114,6 +123,7 @@ void Dialog_user::on_listWidget_names_currentRowChanged(int currentRow)
         ui->checkBox_modul_projekte->setEnabled(true);
         ui->checkBox_modul_personal->setEnabled(true);
         ui->checkBox_modul_matlist->setEnabled(true);
+        ui->checkBox_function_artfavsort->setEnabled(true);
     }
 }
 
@@ -124,8 +134,9 @@ void Dialog_user::on_lineEdit_name_editingFinished()
         ui->listWidget_names->currentItem()->setText(ui->lineEdit_name->text());
     }else
     {
+        QString msg = "Der Name \"" + ui->lineEdit_name->text() + "\" ist bereits vergeben!";
         QMessageBox mb;
-        mb.setText("Der Name \"" + ui->lineEdit_name->text() + "\" ist bereits vergeben!");
+        mb.setText(msg.toStdString().c_str());
         mb.exec();
         ui->lineEdit_name->setText(ui->listWidget_names->currentItem()->text());
     }
@@ -154,7 +165,7 @@ void Dialog_user::on_pushButton_deleteuser_clicked()
     if(user.is_admin(ui->listWidget_names->currentRow()+1))
     {
         QMessageBox mb;
-        mb.setText("Nutzer mit Admin-Rechten koennen nicht geloescht werden!");
+        mb.setText(tr("Nutzer mit Admin-Rechten können nicht gelöscht werden!"));
         mb.exec();
     }else
     {
@@ -174,33 +185,31 @@ void Dialog_user::on_checkBox_modul_artikel_toggled(bool checked)
 {
     user.change_use_modul_artikel(ui->listWidget_names->currentRow()+1, checked);
 }
-
 void Dialog_user::on_checkBox_modul_lieferanten_toggled(bool checked)
 {
     user.change_use_modul_lieferanten(ui->listWidget_names->currentRow()+1, checked);
 }
-
 void Dialog_user::on_checkBox_modul_lager_toggled(bool checked)
 {
     user.change_use_modul_lager(ui->listWidget_names->currentRow()+1, checked);
 }
-
 void Dialog_user::on_checkBox_modul_projekte_toggled(bool checked)
 {
     user.change_use_modul_projekte(ui->listWidget_names->currentRow()+1, checked);
 }
-
 void Dialog_user::on_spinBox_id_valueChanged(const QString &arg1)
 {
     user.change_id(ui->listWidget_names->currentRow()+1, arg1);
 }
-
 void Dialog_user::on_checkBox_modul_personal_toggled(bool checked)
 {
     user.change_use_modul_personal(ui->listWidget_names->currentRow()+1, checked);
 }
-
 void Dialog_user::on_checkBox_modul_matlist_toggled(bool checked)
 {
     user.change_use_modul_matlist(ui->listWidget_names->currentRow()+1, checked);
+}
+void Dialog_user::on_checkBox_function_artfavsort_toggled(bool checked)
+{
+    user.change_use_function_artfavsort(ui->listWidget_names->currentRow()+1, checked);
 }

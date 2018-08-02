@@ -73,7 +73,7 @@ void Dialog_artikel_fav_reihenfolge::update_favorit()
         }else
         {
             QMessageBox mb;
-            mb.setText("Fehler bei Datenbankverbindung!");
+            mb.setText(tr("Fehler bei Datenbankverbindung!"));
             mb.exec();
         }
 
@@ -90,7 +90,7 @@ void Dialog_artikel_fav_reihenfolge::update_favorit()
         //Artikel dem Rang nach sortieren:
         for(int i=1; i<=rang_max ;i++)
         {
-            for(int ii=1; ii<=rang.zeilenanzahl() ;ii++)
+            for(uint ii=1; ii<=rang.zeilenanzahl() ;ii++)
             {
                 int rang_akt = rang.zeile(ii).toInt();
                 if(rang_akt == i)

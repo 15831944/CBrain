@@ -112,12 +112,12 @@ void Dialog_dataselection::on_pushButton_ok_clicked()
             {
                 msg += "Bitte ";
                 msg += int_to_qstring(anzretwerte);
-                msg += " Eintraege auswaelen!";
+                msg += " Eintraege auswälen!";
             }
 
 
             QMessageBox mb;
-            mb.setText(msg);
+            mb.setText(tr(msg.toStdString().c_str()));
             mb.exec();
         }
     }else

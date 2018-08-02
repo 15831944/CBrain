@@ -93,7 +93,7 @@ void Dialog_settings_db::on_pushButton_test_clicked()
     if(ok == true)
     {
         QMessageBox mb;
-        mb.setText("Erfolgreich mit Datenbank verbunden!");
+        mb.setText(tr("Erfolgreich mit Datenbank verbunden!"));
         mb.exec();
         db.close();
     }else

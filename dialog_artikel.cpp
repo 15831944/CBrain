@@ -63,7 +63,7 @@ void Dialog_artikel::setup()
         }else
         {
             QMessageBox mb;
-            mb.setText("Fehler bei Datenbankverbindung!");
+            mb.setText(tr("Fehler bei Datenbankverbindung!"));
             mb.exec();
         }
     }
@@ -149,12 +149,12 @@ void Dialog_artikel::on_pushButton_ok_clicked()
         ui->lineEdit_bezeichnung->text().isEmpty()      )
     {
         QMessageBox mb;
-        mb.setText("Die Datenfelder \"Artikelnummer\" und \"Bezeichnung\" duerfen nicht leer sein!");
+        mb.setText(tr("Die Datenfelder \"Artikelnummer\" und \"Bezeichnung\" dürfen nicht leer sein!"));
         mb.exec();
     }else if( ui->comboBox_lieferant->currentText() == "---")
     {
         QMessageBox mb;
-        mb.setText("Bitte zuerst einen Lieferanten eintragen!");
+        mb.setText(tr("Bitte zuerst einen Lieferanten eintragen!"));
         mb.exec();
     }else
     {
@@ -297,7 +297,7 @@ void Dialog_artikel::slot_beziehung_new(text_zeilenweise data)
     }else
     {
         QMessageBox mb;
-        mb.setText("Dieser Artikel steht bereits in Beziehung!");
+        mb.setText(tr("Dieser Artikel steht bereits in Beziehung!"));
         mb.exec();
     }
 }

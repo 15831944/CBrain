@@ -77,9 +77,24 @@ void Form_artikel::set_user(QString u)
     user = u;
 }
 
+void Form_artikel::set_user(users *users)
+{
+    u = users;
+}
+
 void Form_artikel::show()
 {
     update_table();
+    if(u != NULL)
+    {
+        if(u->function_artfavsort())
+        {
+            ui->pushButton_fav_order->setEnabled(true);
+        }else
+        {
+            ui->pushButton_fav_order->setDisabled(true);
+        }
+    }
     setVisible(true);
 }
 
@@ -283,7 +298,7 @@ void Form_artikel::update_table()
         }else
         {
             QMessageBox mb;
-            mb.setText("Fehler bei Datenbankverbindung!");
+            mb.setText(tr("Fehler bei Datenbankverbindung!"));
             mb.exec();
         }
     }
@@ -381,7 +396,7 @@ void Form_artikel::on_pushButton_del_clicked()
         }else
         {
             QMessageBox mb;
-            mb.setText("Fehler bei Datenbankverbindung!");
+            mb.setText(tr("Fehler bei Datenbankverbindung!"));
             mb.exec();
         }
     }
@@ -462,7 +477,7 @@ void Form_artikel::on_pushButton_edit_clicked()
         }else
         {
             QMessageBox mb;
-            mb.setText("Fehler bei Datenbankverbindung!");
+            mb.setText(tr("Fehler bei Datenbankverbindung!"));
             mb.exec();
         }
     }
@@ -549,7 +564,7 @@ void Form_artikel::on_pushButton_dupli_clicked()
         }else
         {
             QMessageBox mb;
-            mb.setText("Fehler bei Datenbankverbindung!");
+            mb.setText(tr("Fehler bei Datenbankverbindung!"));
             mb.exec();
         }
     }
@@ -668,7 +683,7 @@ void Form_artikel::slot_edit_dialog(text_zeilenweise ids)
     }else
     {
         QMessageBox mb;
-        mb.setText("Bitte nur einen Artikel zum Bearbeiten auswaelen!");
+        mb.setText(tr("Bitte nur einen Artikel zum Bearbeiten auswälen!"));
         mb.exec();
     }
 }
@@ -720,20 +735,20 @@ void Form_artikel::slot_edit(text_zeilenweise data, QString id)
         if(blockfromuser_id == USER_NOBODY_ID)
         {
             QString msg;
-            msg += "Die Aenderungen konnten nicht gespeichert werden, da der Nutzer \"";
+            msg += "Die Änderungen konnten nicht gespeichert werden, da der Nutzer \"";
             msg += lasteditinguser;
             msg += "\" zwischenzeitlich den Datensatz bearbeitet hat!";
             QMessageBox mb;
-            mb.setText(msg);
+            mb.setText(tr(msg.toStdString().c_str()));
             mb.exec();
         }else
         {
             QString msg;
-            msg += "Die Aenderungen konnten nicht gespeichert werden, da der Nutzer \"";
+            msg += "Die Änderungen konnten nicht gespeichert werden, da der Nutzer \"";
             msg += blockfromuser;
             msg += "\" den Datensatz derzeit bearbeitet!";
             QMessageBox mb;
-            mb.setText(msg);
+            mb.setText(tr(msg.toStdString().c_str()));
             mb.exec();
         }
 

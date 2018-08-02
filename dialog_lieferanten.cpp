@@ -20,7 +20,7 @@ void Dialog_lieferanten::on_pushButton_ok_clicked()
     if( ui->lineEdit_name->text().isEmpty() )
     {
         QMessageBox mb;
-        mb.setText("Das Datenfeld \"Name\" darf nicht leer sein!");
+        mb.setText(tr("Das Datenfeld \"Name\" darf nicht leer sein!"));
         mb.exec();
     }else
     {

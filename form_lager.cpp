@@ -344,7 +344,7 @@ void Form_lager::update_table()
         }else
         {
             QMessageBox mb;
-            mb.setText("Fehler bei Datenbankverbindung!");
+            mb.setText(tr("Fehler bei Datenbankverbindung!"));
             mb.exec();
         }
     }
@@ -555,12 +555,12 @@ void Form_lager::slot_out(text_zeilenweise data)
         msg += "Der Artikel ist derzeit noch ";
         msg += menge_vorher;
         msg += " x im Lager.\n";
-        msg += "Sie koennen nicht ";
+        msg += "Sie können nicht ";
         msg += menge;
         msg += " x entnehmen!";
 
         QMessageBox mb;
-        mb.setText(msg);
+        mb.setText(tr(msg.toStdString().c_str()));
         mb.exec();
     }
 }

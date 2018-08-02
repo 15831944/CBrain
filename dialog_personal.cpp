@@ -20,7 +20,7 @@ void Dialog_personal::on_pushButton_ok_clicked()
     if( ui->lineEdit_vorname->text().isEmpty()  ||  ui->lineEdit_nachname->text().isEmpty()  )
     {
         QMessageBox mb;
-        mb.setText("Die Datenfelder \"Vorname\" und \"Nachname\" duerfen nicht leer sein!");
+        mb.setText(tr("Die Datenfelder \"Vorname\" und \"Nachname\" dürfen nicht leer sein!"));
         mb.exec();
     }else
     {

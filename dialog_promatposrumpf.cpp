@@ -200,7 +200,7 @@ void Dialog_promatposrumpf::update_table()
     }else
     {
         QMessageBox mb;
-        mb.setText("Fehler bei Datenbankverbindung!");
+        mb.setText(tr("Fehler bei Datenbankverbindung!"));
         mb.exec();
     }
 }
@@ -270,7 +270,7 @@ void Dialog_promatposrumpf::update_favorit()
         }else
         {
             QMessageBox mb;
-            mb.setText("Fehler bei Datenbankverbindung!");
+            mb.setText(tr("Fehler bei Datenbankverbindung!"));
             mb.exec();
         }
         for(uint i=1; i<=fav.zeilenanzahl() ;i++)
