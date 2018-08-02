@@ -129,7 +129,7 @@ void Form_personal::update_table()
         }else
         {
             QMessageBox mb;
-            mb.setText("Fehler bei Datenbankverbindung!");
+            mb.setText(tr("Fehler bei Datenbankverbindung!"));
             mb.exec();
         }
     }
@@ -209,7 +209,7 @@ void Form_personal::on_pushButton_del_clicked()
         }else
         {
             QMessageBox mb;
-            mb.setText("Fehler bei Datenbankverbindung!");
+            mb.setText(tr("Fehler bei Datenbankverbindung!"));
             mb.exec();
         }
     }
@@ -280,7 +280,7 @@ void Form_personal::on_pushButton_edit_clicked()
         }else
         {
             QMessageBox mb;
-            mb.setText("Fehler bei Datenbankverbindung!");
+            mb.setText(tr("Fehler bei Datenbankverbindung!"));
             mb.exec();
         }
     }
@@ -373,7 +373,7 @@ void Form_personal::slot_edit_dialog(text_zeilenweise ids)
     }else
     {
         QMessageBox mb;
-        mb.setText("Bitte nur einnen Eintrag zum Bearbeiten auswaelen!");
+        mb.setText(tr("Bitte nur einnen Eintrag zum Bearbeiten auswälen!"));
         mb.exec();
     }
 }
@@ -416,20 +416,20 @@ void Form_personal::slot_edit(text_zeilenweise data, QString id)
         if(blockfromuser == USER_NOBODY)
         {
             QString msg;
-            msg += "Die Aenderungen konnten nicht gespeichert werden, da der Nutzer \"";
+            msg += "Die Änderungen konnten nicht gespeichert werden, da der Nutzer \"";
             msg += lasteditinguser;
             msg += "\" zwischenzeitlich den Datensatz bearbeitet hat!";
             QMessageBox mb;
-            mb.setText(msg);
+            mb.setText(tr(msg.toStdString().c_str()));
             mb.exec();
         }else
         {
             QString msg;
-            msg += "Die Aenderungen konnten nicht gespeichert werden, da der Nutzer \"";
+            msg += "Die Änderungen konnten nicht gespeichert werden, da der Nutzer \"";
             msg += blockfromuser;
             msg += "\" den Datensatz derzeit bearbeitet!";
             QMessageBox mb;
-            mb.setText(msg);
+            mb.setText(tr(msg.toStdString().c_str()));
             mb.exec();
         }
 

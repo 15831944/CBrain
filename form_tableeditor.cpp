@@ -199,7 +199,7 @@ void Form_tableeditor::on_listWidget_tables_currentRowChanged()
         }else
         {
             QMessageBox mb;
-            mb.setText("Fehler bei Datenbankverbindung!");
+            mb.setText(tr("Fehler bei Datenbankverbindung!"));
             mb.exec();
         }
     }
@@ -294,7 +294,7 @@ void Form_tableeditor::on_pushButton_table_del_clicked()
     }else
     {
         QMessageBox mb;
-        mb.setText("Bitte waelen Sie zuerst eine Tabelle aus!");
+        mb.setText(tr("Bitte wälen Sie zuerst eine Tabelle aus!"));
         mb.exec();
     }
 }
@@ -313,7 +313,7 @@ void Form_tableeditor::on_pushButton_table_edit_clicked()
     }else
     {
         QMessageBox mb;
-        mb.setText("Bitte waelen Sie zuerst eine Tabelle aus!");
+        mb.setText(tr("Bitte wälen Sie zuerst eine Tabelle aus!"));
         mb.exec();
     }
 }
@@ -332,7 +332,7 @@ void Form_tableeditor::on_pushButton_param_new_clicked()
     }else
     {
         QMessageBox mb;
-        mb.setText("Bitte waelen Sie zuerst eine Tabelle aus!");
+        mb.setText(tr("Bitte wälen Sie zuerst eine Tabelle aus!"));
         mb.exec();
     }
 }
@@ -355,13 +355,13 @@ void Form_tableeditor::on_pushButton_param_del_clicked()
         }else
         {
             QMessageBox mb;
-            mb.setText("Bitte waelen Sie zuerst einen Parameter aus!");
+            mb.setText(tr("Bitte wälen Sie zuerst einen Parameter aus!"));
             mb.exec();
         }
     }else
     {
         QMessageBox mb;
-        mb.setText("Bitte waelen Sie zuerst eine Tabelle aus!");
+        mb.setText(tr("Bitte wälen Sie zuerst eine Tabelle aus!"));
         mb.exec();
     }
 }
@@ -419,13 +419,13 @@ void Form_tableeditor::on_pushButton_param_edit_clicked()
         }else
         {
             QMessageBox mb;
-            mb.setText("Bitte waelen Sie zuerst einen Parameter aus!");
+            mb.setText(tr("Bitte wälen Sie zuerst einen Parameter aus!"));
             mb.exec();
         }
     }else
     {
         QMessageBox mb;
-        mb.setText("Bitte waelen Sie zuerst eine Tabelle aus!");
+        mb.setText(tr("Bitte wälen Sie zuerst eine Tabelle aus!"));
         mb.exec();
     }
 }
@@ -444,7 +444,7 @@ void Form_tableeditor::on_pushButton_value_edit_clicked()
     }else
     {
         QMessageBox mb;
-        mb.setText("Bitte zuerst eine Tabelle waelen!");
+        mb.setText(tr("Bitte zuerst eine Tabelle wälen!"));
         mb.exec();
     }
 }

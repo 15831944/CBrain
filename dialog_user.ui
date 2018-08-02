@@ -81,6 +81,9 @@
       </property>
      </widget>
     </item>
+    <item row="0" column="1">
+     <widget class="QLineEdit" name="lineEdit_name"/>
+    </item>
     <item row="1" column="0">
      <widget class="QLabel" name="label">
       <property name="text">
@@ -94,9 +97,6 @@
        <string>Zugang zu Modul Artikel</string>
       </property>
      </widget>
-    </item>
-    <item row="0" column="1">
-     <widget class="QLineEdit" name="lineEdit_name"/>
     </item>
     <item row="2" column="0">
      <widget class="QLabel" name="label_2">
@@ -116,6 +116,13 @@
      <widget class="QCheckBox" name="checkBox_modul_matlist">
       <property name="text">
        <string>Zugang zu Modul Materialliste</string>
+      </property>
+     </widget>
+    </item>
+    <item row="10" column="0" colspan="2">
+     <widget class="QCheckBox" name="checkBox_function_artfavsort">
+      <property name="text">
+       <string>Darf Artikel die Favoriten sind sortieren</string>
       </property>
      </widget>
     </item>

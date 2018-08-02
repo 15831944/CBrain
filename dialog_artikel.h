@@ -26,6 +26,7 @@ public:
     void set_db(cbrainbatabase *new_db);
     void setup();
     void set_data(text_zeilenweise daten, QString id);
+    void set_data(text_zeilenweise daten);
 
 signals:
     void signal_send_data(text_zeilenweise data);
@@ -53,6 +54,7 @@ private:
     text_zeilenweise lieferanten;
 
     void clear();
+    void closeEvent(QCloseEvent *ce);
 };
 
 #endif // DIALOG_ARTIKEL_H

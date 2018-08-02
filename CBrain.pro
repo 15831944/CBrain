@@ -47,7 +47,8 @@ SOURCES += main.cpp\
     dialog_tableeditor.cpp \
     dialog_promatpos.cpp \
     dialog_promatposrumpf.cpp \
-    dialog_artikel_beziehung.cpp
+    dialog_artikel_beziehung.cpp \
+    dialog_artikel_fav_reihenfolge.cpp
 
 HEADERS  += mainwindow.h \
     defines_filenames.h \
@@ -95,7 +96,8 @@ HEADERS  += mainwindow.h \
     dialog_promatpos.h \
     _tabname_promatposlist.h \
     dialog_promatposrumpf.h \
-    dialog_artikel_beziehung.h
+    dialog_artikel_beziehung.h \
+    dialog_artikel_fav_reihenfolge.h
 
 FORMS    += mainwindow.ui \
     dialog_login.ui \
@@ -122,4 +124,5 @@ FORMS    += mainwindow.ui \
     dialog_tableeditor.ui \
     dialog_promatpos.ui \
     dialog_promatposrumpf.ui \
-    dialog_artikel_beziehung.ui
+    dialog_artikel_beziehung.ui \
+    dialog_artikel_fav_reihenfolge.ui

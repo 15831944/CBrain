@@ -20,11 +20,11 @@ signals:
 
 private slots:
     void on_pushButton_ok_clicked();
-
     void on_pushButton_cancel_clicked();
 
 private:
     Ui::Dialog_login *ui;
+    void closeEvent(QCloseEvent *ce);
 };
 
 #endif // DIALOG_LOGIN_H

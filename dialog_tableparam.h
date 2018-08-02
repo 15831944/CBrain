@@ -17,6 +17,7 @@ signals:
     void signal_send_dialog_data(QString name, QString typ, QString additional, \
                                  bool ispri, bool autoincrement, bool isunsigned,\
                                  bool notnull, QString defaultvalue);
+    void signal_cancel();
 
 public:
     explicit Dialog_tableparam(QWidget *parent = 0);
@@ -39,6 +40,7 @@ private:
     Ui::Dialog_tableparam *ui;
 
     QString driver;
+    void closeEvent(QCloseEvent *ce);
 };
 
 #endif // DIALOG_TABLEPARAM_H

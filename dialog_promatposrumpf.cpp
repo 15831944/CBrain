@@ -8,6 +8,8 @@ Dialog_promatposrumpf::Dialog_promatposrumpf(QWidget *parent) :
     ui->setupUi(this);
     current_userid = "0";
     this->model = new QSqlQueryModel();
+    //setWindowFlags(windowFlags() & ~Qt::WindowCloseButtonHint);
+    setWindowFlags(windowFlags() | Qt::WindowMaximizeButtonHint);
 }
 
 Dialog_promatposrumpf::~Dialog_promatposrumpf()
@@ -21,6 +23,7 @@ void Dialog_promatposrumpf::set_tabname(QString name)
     tabname = name;
     this->setWindowTitle(name);
     update_table();
+    update_favorit();
 }
 
 void Dialog_promatposrumpf::set_userid(QString id)
@@ -80,6 +83,13 @@ void Dialog_promatposrumpf::resizeEvent(QResizeEvent *event)
     ui->pushButton_usefavourite->move(1 + b_li + 1, 1 + h_btn + 1 + ui->listWidget_favourite->height() + 1);
 
     QWidget::resizeEvent(event);
+}
+
+void Dialog_promatposrumpf::show()
+{
+    update_table();
+    update_favorit();
+    setVisible(true);
 }
 
 void Dialog_promatposrumpf::update_table()
@@ -190,7 +200,82 @@ void Dialog_promatposrumpf::update_table()
     }else
     {
         QMessageBox mb;
-        mb.setText("Fehler bei Datenbankverbindung!");
+        mb.setText(tr("Fehler bei Datenbankverbindung!"));
         mb.exec();
+    }
+}
+
+void Dialog_promatposrumpf::update_favorit()
+{
+    text_zeilenweise fav;
+
+    if(dbeigen != NULL)
+    {
+        QSqlDatabase db;
+
+        db = QSqlDatabase::database("dbglobal");
+        db.setHostName(dbeigen->get_host());
+        db.setDatabaseName(dbeigen->get_dbname());
+        db.setUserName(dbeigen->get_user());
+        db.setPassword(dbeigen->get_pwd());
+
+        if(db.open())
+        {
+            QSqlQuery q(db);
+            QString cmd;
+            //------------------------
+            cmd += "SELECT ";
+            //------------------------
+            cmd += PARAM_ARTIKEL_ID;
+            cmd += ", ";
+            //------------------------
+            cmd += PARAM_ARTIKEL_NR;
+            cmd += ", ";
+            //------------------------
+            cmd += PARAM_ARTIKEL_BEZ;
+            //cmd += ", ";
+            //------------------------
+            cmd += " FROM ";
+            cmd += TABNAME_ARTIKEL;
+            //------------------------
+            cmd += " WHERE ";
+            cmd += PARAM_ARTIKEL_ISFAVORIT;
+            cmd += " LIKE 1";
+            //------------------------
+            cmd += " ORDER BY ";            //Sortiert nach:
+            cmd += TABNAME_ARTIKEL;
+            cmd += ".";
+            cmd += PARAM_ARTIKEL_FAVORDER;
+
+            if(q.exec(cmd))
+            {
+                while(q.next())
+                {
+                    QString tmp;
+                    tmp += q.value(0).toString();
+                    tmp += " ||| ";
+                    tmp += q.value(1).toString();
+                    tmp += " ||| ";
+                    tmp += q.value(2).toString();
+                    fav.zeile_anhaengen(tmp);
+                }
+            }else
+            {
+                QMessageBox mb;
+                mb.setText("Fehler:\n" + q.lastError().text());
+                mb.exec();
+            }
+            db.close();
+
+        }else
+        {
+            QMessageBox mb;
+            mb.setText(tr("Fehler bei Datenbankverbindung!"));
+            mb.exec();
+        }
+        for(uint i=1; i<=fav.zeilenanzahl() ;i++)
+        {
+            ui->listWidget_favourite->addItem(fav.zeile(i));
+        }
     }
 }

@@ -34,6 +34,7 @@ private:
     Ui::Dialog_promatpos *ui;
 
     QString current_id;
+    void closeEvent(QCloseEvent *ce);
 };
 
 #endif // DIALOG_PROMATPOS_H

@@ -7,6 +7,7 @@ Dialog_dataselection::Dialog_dataselection(QWidget *parent) :
 {
     ui->setupUi(this);
     anzretwerte = 0;
+    setWindowFlags(windowFlags() & ~Qt::WindowCloseButtonHint);
 }
 
 Dialog_dataselection::~Dialog_dataselection()
@@ -14,9 +15,15 @@ Dialog_dataselection::~Dialog_dataselection()
     delete ui;
 }
 
+void Dialog_dataselection::closeEvent(QCloseEvent *ce)
+{
+    QDialog::closeEvent(ce);    
+}
+
 void Dialog_dataselection::on_pushButton_cancel_clicked()
 {
     this->close();
+    emit signal_cancel();
 }
 
 void Dialog_dataselection::set_data(text_zeilenweise data)
@@ -105,12 +112,12 @@ void Dialog_dataselection::on_pushButton_ok_clicked()
             {
                 msg += "Bitte ";
                 msg += int_to_qstring(anzretwerte);
-                msg += " Eintraege auswaelen!";
+                msg += " Eintraege auswälen!";
             }
 
 
             QMessageBox mb;
-            mb.setText(msg);
+            mb.setText(tr(msg.toStdString().c_str()));
             mb.exec();
         }
     }else

@@ -6,6 +6,7 @@ Dialog_lager::Dialog_lager(QWidget *parent) :
     ui(new Ui::Dialog_lager)
 {
     ui->setupUi(this);
+    setWindowFlags(windowFlags() & ~Qt::WindowCloseButtonHint);
 }
 
 Dialog_lager::~Dialog_lager()
@@ -109,7 +110,7 @@ void Dialog_lager::setup()
         }else
         {
             QMessageBox mb;
-            mb.setText("Fehler bei Datenbankverbindung!");
+            mb.setText(tr("Fehler bei Datenbankverbindung!"));
             mb.exec();
         }
     }
@@ -132,13 +133,13 @@ void Dialog_lager::on_pushButton_ok_clicked()
     if(ui->comboBox_artikel->currentText() == "---")//nichts gewählt
     {
         QMessageBox mb;
-        mb.setText("Das Datenfeld \"Artikel\" darf nicht leer sein!");
+        mb.setText(tr("Das Datenfeld \"Artikel\" darf nicht leer sein!"));
         mb.exec();
     }else if(ui->comboBox_kom->currentText() == "---" &&    \
              !ui->comboBox_kom->isHidden()                  )//nichts gewählt
     {
         QMessageBox mb;
-        mb.setText("Das Datenfeld \"Kommission\" darf nicht leer sein!");
+        mb.setText(tr("Das Datenfeld \"Kommission\" darf nicht leer sein!"));
         mb.exec();
     }else
     {
@@ -166,10 +167,16 @@ void Dialog_lager::on_pushButton_ok_clicked()
     }
 }
 
-void Dialog_lager::on_pushButton_cancel_clicked()
+void Dialog_lager::closeEvent(QCloseEvent *ce)
 {
-    printmsg.clear();
+    QDialog::closeEvent(ce);    
+}
+
+void Dialog_lager::on_pushButton_cancel_clicked()
+{    
     this->close();
+    printmsg.clear();
+    emit signal_cancel();
 }
 
 void Dialog_lager::on_lineEdit_artikelfilter_textChanged()

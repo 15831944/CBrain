@@ -7,6 +7,7 @@ Dialog_promatpos::Dialog_promatpos(QWidget *parent) :
 {
     ui->setupUi(this);
     current_id = "0";
+    setWindowFlags(windowFlags() & ~Qt::WindowCloseButtonHint);
 }
 
 Dialog_promatpos::~Dialog_promatpos()
@@ -19,7 +20,7 @@ void Dialog_promatpos::on_pushButton_ok_clicked()
     if( ui->plainTextEdit_bez->toPlainText().isEmpty() )
     {
         QMessageBox mb;
-        mb.setText("Das Datenfeld \"Positionsbezeichnung\" darf nicht leer sein!");
+        mb.setText(tr("Das Datenfeld \"Positionsbezeichnung\" darf nicht leer sein!"));
         mb.exec();
     }else
     {
@@ -38,6 +39,11 @@ void Dialog_promatpos::on_pushButton_ok_clicked()
             emit signal_send_data(tz, current_id);
         }
     }
+}
+
+void Dialog_promatpos::closeEvent(QCloseEvent *ce)
+{
+    QDialog::closeEvent(ce);
 }
 
 void Dialog_promatpos::on_pushButton_cancel_clicked()

@@ -6,6 +6,7 @@ Dialog_tableparam::Dialog_tableparam(QWidget *parent) :
     ui(new Ui::Dialog_tableparam)
 {
     ui->setupUi(this);
+    setWindowFlags(windowFlags() & ~Qt::WindowCloseButtonHint);
 }
 
 Dialog_tableparam::~Dialog_tableparam()
@@ -13,9 +14,15 @@ Dialog_tableparam::~Dialog_tableparam()
     delete ui;
 }
 
+void Dialog_tableparam::closeEvent(QCloseEvent *ce)
+{
+    QDialog::closeEvent(ce);
+}
+
 void Dialog_tableparam::on_pushButton_cancel_clicked()
 {
     this->close();
+    emit signal_cancel();
 }
 
 void Dialog_tableparam::on_pushButton_ok_clicked()

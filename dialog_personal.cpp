@@ -7,6 +7,7 @@ Dialog_personal::Dialog_personal(QWidget *parent) :
 {
     ui->setupUi(this);
     current_id = "0";
+    setWindowFlags(windowFlags() & ~Qt::WindowCloseButtonHint);
 }
 
 Dialog_personal::~Dialog_personal()
@@ -19,7 +20,7 @@ void Dialog_personal::on_pushButton_ok_clicked()
     if( ui->lineEdit_vorname->text().isEmpty()  ||  ui->lineEdit_nachname->text().isEmpty()  )
     {
         QMessageBox mb;
-        mb.setText("Die Datenfelder \"Vorname\" und \"Nachname\" duerfen nicht leer sein!");
+        mb.setText(tr("Die Datenfelder \"Vorname\" und \"Nachname\" dürfen nicht leer sein!"));
         mb.exec();
     }else
     {
@@ -36,6 +37,11 @@ void Dialog_personal::on_pushButton_ok_clicked()
             emit signal_send_data(tz, current_id);
         }
     }
+}
+
+void Dialog_personal::closeEvent(QCloseEvent *ce)
+{
+    QDialog::closeEvent(ce);    
 }
 
 void Dialog_personal::on_pushButton_cancel_clicked()

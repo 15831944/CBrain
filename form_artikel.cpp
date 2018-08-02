@@ -20,9 +20,9 @@ void Form_artikel::resizeEvent(QResizeEvent *event)
     int hoehe = this->geometry().height();
     int breite = this->geometry().width();
 
-    //Buttons:
+    //links Buttons 1. Reihe:
     ui->pushButton_new->move(1,1);
-    ui->pushButton_new->setFixedWidth(breite/7);
+    ui->pushButton_new->setFixedWidth(breite/9);
 
     ui->pushButton_del->move(1 + ui->pushButton_new->geometry().width() + 1\
                              ,1);
@@ -31,8 +31,16 @@ void Form_artikel::resizeEvent(QResizeEvent *event)
     ui->pushButton_edit->move(1 + (ui->pushButton_new->geometry().width() + 1)*2\
                              ,1);
     ui->pushButton_edit->setFixedWidth(ui->pushButton_new->geometry().width());
+    ui->pushButton_dupli->move(1 + (ui->pushButton_new->geometry().width() + 1)*3\
+                             ,1);
+    ui->pushButton_dupli->setFixedWidth(ui->pushButton_new->geometry().width());
 
-    //Suchleiste:
+    //links Buttons 1. Reihe:
+    ui->pushButton_fav_order->setFixedWidth(breite/9*2);
+    ui->pushButton_fav_order->move(1,\
+                                   1 + ui->pushButton_new->geometry().height() + 1);
+
+    //rechts Suchleiste:
     ui->lineEdit_suche->setFixedHeight(ui->pushButton_new->geometry().height());
     ui->lineEdit_suche->setFixedWidth(breite/3);
     ui->lineEdit_suche->move(breite - 1 - ui->lineEdit_suche->geometry().width()\
@@ -43,9 +51,16 @@ void Form_artikel::resizeEvent(QResizeEvent *event)
                           - ui->label_suche->geometry().width()\
                           ,1);
 
+    //rechts checkbox nur Favoriten:
+    ui->checkBox_only_favorit->setFixedWidth(ui->lineEdit_suche->width());
+    ui->checkBox_only_favorit->setFixedHeight(ui->pushButton_new->height());
+    ui->checkBox_only_favorit->move(ui->lineEdit_suche->pos().x(),\
+                                    1 + ui->pushButton_new->geometry().height() + 1);
+
+
     //Tabelle:
     ui->tableView->move(1,\
-                        1 + ui->pushButton_new->geometry().height() + 1);
+                        1 + (ui->pushButton_new->geometry().height() + 1)*2);
     ui->tableView->setFixedWidth(breite -2);
     ui->tableView->setFixedHeight(hoehe - ui->tableView->pos().ry() -1);
 
@@ -62,9 +77,24 @@ void Form_artikel::set_user(QString u)
     user = u;
 }
 
+void Form_artikel::set_user(users *users)
+{
+    u = users;
+}
+
 void Form_artikel::show()
 {
     update_table();
+    if(u != NULL)
+    {
+        if(u->function_artfavsort())
+        {
+            ui->pushButton_fav_order->setEnabled(true);
+        }else
+        {
+            ui->pushButton_fav_order->setDisabled(true);
+        }
+    }
     setVisible(true);
 }
 
@@ -106,6 +136,11 @@ void Form_artikel::update_table()
             cmd += TABNAME_ARTIKEL;
             cmd += ".";
             cmd += PARAM_ARTIKEL_LAGERSTAND;
+            cmd += ", ";
+            //------------------------
+            cmd += TABNAME_ARTIKEL;
+            cmd += ".";
+            cmd += PARAM_ARTIKEL_PREIS;
             cmd += ", ";
             //------------------------
             cmd += TABNAME_ARTIKEL;
@@ -194,18 +229,32 @@ void Form_artikel::update_table()
             cmd += PARAM_PERSONAL_ID;
             cmd += ")";
             //------------------------
-            if(!ui->lineEdit_suche->text().isEmpty())
+            if(!ui->lineEdit_suche->text().isEmpty() || ui->checkBox_only_favorit->isChecked())
             {
                 cmd += " WHERE ";
-                cmd += PARAM_ARTIKEL_NR;
-                cmd += " LIKE \'%";
-                cmd += ui->lineEdit_suche->text();
-                cmd += "%\'";
-                cmd += " OR ";
-                cmd += PARAM_ARTIKEL_BEZ;
-                cmd += " LIKE \'%";
-                cmd += ui->lineEdit_suche->text();
-                cmd += "%\'";
+                if(!ui->lineEdit_suche->text().isEmpty() )
+                {
+                    cmd += "(";
+                    cmd += PARAM_ARTIKEL_NR;
+                    cmd += " LIKE \'%";
+                    cmd += ui->lineEdit_suche->text();
+                    cmd += "%\'";
+                    cmd += " OR ";
+                    cmd += PARAM_ARTIKEL_BEZ;
+                    cmd += " LIKE \'%";
+                    cmd += ui->lineEdit_suche->text();
+                    cmd += "%\'";
+                    cmd += ")";
+                }
+                if(!ui->lineEdit_suche->text().isEmpty() && ui->checkBox_only_favorit->isChecked())
+                {
+                    cmd += " AND ";
+                }
+                if(ui->checkBox_only_favorit->isChecked())
+                {
+                    cmd += PARAM_ARTIKEL_ISFAVORIT;
+                    cmd += " LIKE 1";
+                }
             }
             //------------------------
             cmd += " GROUP BY ";
@@ -213,10 +262,19 @@ void Form_artikel::update_table()
             cmd += ".";
             cmd += PARAM_ARTIKEL_ID;
             //------------------------
-            cmd += " ORDER BY ";            //Sortiert nach:
-            cmd += TABNAME_ARTIKEL;
-            cmd += ".";
-            cmd += PARAM_ARTIKEL_NR;
+            if(!ui->checkBox_only_favorit->isChecked())
+            {
+                cmd += " ORDER BY ";            //Sortiert nach:
+                cmd += TABNAME_ARTIKEL;
+                cmd += ".";
+                cmd += PARAM_ARTIKEL_NR;
+            }else
+            {
+                cmd += " ORDER BY ";            //Sortiert nach:
+                cmd += TABNAME_ARTIKEL;
+                cmd += ".";
+                cmd += PARAM_ARTIKEL_FAVORDER;
+            }
             //------------------------
 
             if(q.exec(cmd))
@@ -240,7 +298,7 @@ void Form_artikel::update_table()
         }else
         {
             QMessageBox mb;
-            mb.setText("Fehler bei Datenbankverbindung!");
+            mb.setText(tr("Fehler bei Datenbankverbindung!"));
             mb.exec();
         }
     }
@@ -250,6 +308,23 @@ void Form_artikel::update_table()
 void Form_artikel::on_lineEdit_suche_textChanged()
 {
     update_table();
+}
+
+text_zeilenweise Form_artikel::data_for_dialog_artikel(QString id)
+{
+    text_zeilenweise artikel;
+
+    artikel.zeile_anhaengen(dbeigen->get_data_qstring(TABNAME_ARTIKEL, PARAM_ARTIKEL_NR, id));
+    artikel.zeile_anhaengen(dbeigen->get_data_qstring(TABNAME_ARTIKEL, PARAM_ARTIKEL_BEZ, id));
+    artikel.zeile_anhaengen(dbeigen->get_data_qstring(TABNAME_ARTIKEL, PARAM_ARTIKEL_LIEFERANT, id));
+    artikel.zeile_anhaengen(dbeigen->get_data_qstring(TABNAME_ARTIKEL, PARAM_ARTIKEL_LAGERORT, id));
+    artikel.zeile_anhaengen(dbeigen->get_data_qstring(TABNAME_ARTIKEL, PARAM_ARTIKEL_VE, id));
+    artikel.zeile_anhaengen(dbeigen->get_data_qstring(TABNAME_ARTIKEL, PARAM_ARTIKEL_KOMENT, id));
+    artikel.zeile_anhaengen(dbeigen->get_data_qstring(TABNAME_ARTIKEL, PARAM_ARTIKEL_BEZIEHUNG, id));
+    artikel.zeile_anhaengen(dbeigen->get_data_qstring(TABNAME_ARTIKEL, PARAM_ARTIKEL_PREIS, id));
+    artikel.zeile_anhaengen(dbeigen->get_data_qstring(TABNAME_ARTIKEL, PARAM_ARTIKEL_ISFAVORIT, id));
+
+    return artikel;
 }
 
 //------------------------------------Buttons:
@@ -321,7 +396,7 @@ void Form_artikel::on_pushButton_del_clicked()
         }else
         {
             QMessageBox mb;
-            mb.setText("Fehler bei Datenbankverbindung!");
+            mb.setText(tr("Fehler bei Datenbankverbindung!"));
             mb.exec();
         }
     }
@@ -402,7 +477,7 @@ void Form_artikel::on_pushButton_edit_clicked()
         }else
         {
             QMessageBox mb;
-            mb.setText("Fehler bei Datenbankverbindung!");
+            mb.setText(tr("Fehler bei Datenbankverbindung!"));
             mb.exec();
         }
     }
@@ -421,6 +496,103 @@ void Form_artikel::on_pushButton_edit_clicked()
         delete d;
     }
 }
+
+void Form_artikel::on_pushButton_dupli_clicked()
+{
+    text_zeilenweise tz;
+    text_zeilenweise ids;
+    //-------------------------------------------
+    {
+        QSqlDatabase db;
+
+        db = QSqlDatabase::database("dbglobal");
+        db.setHostName(dbeigen->get_host());
+        db.setDatabaseName(dbeigen->get_dbname());
+        db.setUserName(dbeigen->get_user());
+        db.setPassword(dbeigen->get_pwd());
+
+        if(db.open())
+        {
+            QSqlQuery q(db);
+            QString cmd;
+            cmd += "SELECT * FROM ";
+            cmd += TABNAME_ARTIKEL;
+            if(!ui->lineEdit_suche->text().isEmpty())
+            {
+                cmd += " WHERE ";
+                cmd += PARAM_ARTIKEL_NR;
+                cmd += " LIKE \'%";
+                cmd += ui->lineEdit_suche->text();
+                cmd += "%\'";
+                cmd += " OR ";
+                cmd += PARAM_ARTIKEL_BEZ;
+                cmd += " LIKE \'%";
+                cmd += ui->lineEdit_suche->text();
+                cmd += "%\'";
+            }
+            //------------------------
+            cmd += " GROUP BY ";
+            cmd += TABNAME_ARTIKEL;
+            cmd += ".";
+            cmd += PARAM_ARTIKEL_ID;
+            //------------------------
+            cmd += " ORDER BY ";            //Sortiert nach:
+            cmd += TABNAME_ARTIKEL;
+            cmd += ".";
+            cmd += PARAM_ARTIKEL_NR;
+
+            if(q.exec(cmd))
+            {
+                while(q.next())
+                {
+                    ids.zeile_anhaengen(q.value(0).toString()); //ID
+
+                    QString tmp;
+                    tmp += q.value(1).toString();   //Artikelnummer
+                    tmp += " ||| ";
+                    tmp += q.value(2).toString();   //Bezeichnung
+                    tz.zeile_anhaengen(tmp);
+                }
+            }else
+            {
+                QMessageBox mb;
+                mb.setText("Fehler:\n" + q.lastError().text());
+                mb.exec();
+            }
+            db.close();
+
+        }else
+        {
+            QMessageBox mb;
+            mb.setText(tr("Fehler bei Datenbankverbindung!"));
+            mb.exec();
+        }
+    }
+    //-------------------------------------------
+    if(tz.zeilenanzahl() == 1)
+    {
+        slot_dupli(ids);
+    }else
+    {
+        Dialog_dataselection *d = new Dialog_dataselection(this);
+        d->set_data(tz, ids);
+        d->setWindowTitle("Artikel bearbeiten (nur einen)");
+        d->set_anz_returnwerte(1);
+        connect(d, SIGNAL(signal_send_selection(text_zeilenweise)), \
+                this, SLOT(slot_dupli(text_zeilenweise))            );
+        d->exec();
+        delete d;
+    }
+}
+
+void Form_artikel::on_pushButton_fav_order_clicked()
+{
+    Dialog_artikel_fav_reihenfolge *d = new Dialog_artikel_fav_reihenfolge(this);
+    d->setWindowTitle(tr("Reihenfolge der Favoriten bearbeiten"));
+    d->set_db(dbeigen);
+    d->exec();
+    delete d;
+}
 //------------------------------------slots:
 void Form_artikel::slot_new(text_zeilenweise data)
 {
@@ -436,6 +608,8 @@ void Form_artikel::slot_new(text_zeilenweise data)
     param.zeile_anhaengen(PARAM_ARTIKEL_VE);
     param.zeile_anhaengen(PARAM_ARTIKEL_KOMENT);
     param.zeile_anhaengen(PARAM_ARTIKEL_BEZIEHUNG);
+    param.zeile_anhaengen(PARAM_ARTIKEL_PREIS);
+    param.zeile_anhaengen(PARAM_ARTIKEL_ISFAVORIT);
 
     values.zeile_anhaengen(data.zeile(1));
     values.zeile_anhaengen(data.zeile(2));
@@ -448,6 +622,8 @@ void Form_artikel::slot_new(text_zeilenweise data)
     values.zeile_anhaengen(data.zeile(5));
     values.zeile_anhaengen(data.zeile(6));
     values.zeile_anhaengen(data.zeile(7));
+    values.zeile_anhaengen(data.zeile(8));
+    values.zeile_anhaengen(data.zeile(9));
 
     dbeigen->data_new(TABNAME_ARTIKEL, param, values);
     update_table();
@@ -474,19 +650,7 @@ void Form_artikel::slot_edit_dialog(text_zeilenweise ids)
 
         if(blockfromuser_id == USER_NOBODY_ID || blockfromuser.isEmpty() )
         {
-            text_zeilenweise artikel;
-            QString querryfilter;
-            querryfilter += PARAM_ARTIKEL_ID;
-            querryfilter += " LIKE \'";
-            querryfilter += idbuffer;
-            querryfilter += "\'";
-            artikel.zeile_anhaengen(dbeigen->get_values_from_column(TABNAME_ARTIKEL, 1, querryfilter).get_text());//Nr
-            artikel.zeile_anhaengen(dbeigen->get_values_from_column(TABNAME_ARTIKEL, 2, querryfilter).get_text());//Bez
-            artikel.zeile_anhaengen(dbeigen->get_values_from_column(TABNAME_ARTIKEL, 3, querryfilter).get_text());//Lieferant
-            artikel.zeile_anhaengen(dbeigen->get_values_from_column(TABNAME_ARTIKEL, 10, querryfilter).get_text());//Lagerort
-            artikel.zeile_anhaengen(dbeigen->get_values_from_column(TABNAME_ARTIKEL, 11, querryfilter).get_text());//VE
-            artikel.zeile_anhaengen(dbeigen->get_values_from_column(TABNAME_ARTIKEL, 12, querryfilter).get_text());//Kommentar
-            artikel.zeile_anhaengen(dbeigen->get_values_from_column(TABNAME_ARTIKEL, 13, querryfilter).get_text());//Beziehungen
+            text_zeilenweise artikel = data_for_dialog_artikel(idbuffer);
 
             Dialog_artikel *d = new Dialog_artikel(this);
             d->set_db(dbeigen);
@@ -519,26 +683,14 @@ void Form_artikel::slot_edit_dialog(text_zeilenweise ids)
     }else
     {
         QMessageBox mb;
-        mb.setText("Bitte nur einen Artikel zum Bearbeiten auswaelen!");
+        mb.setText(tr("Bitte nur einen Artikel zum Bearbeiten auswälen!"));
         mb.exec();
     }
 }
 
 void Form_artikel::slot_edit_dialog()
 {
-    text_zeilenweise artikel;
-    QString querryfilter;
-    querryfilter += PARAM_ARTIKEL_ID;
-    querryfilter += " LIKE \'";
-    querryfilter += idbuffer;
-    querryfilter += "\'";
-    artikel.zeile_anhaengen(dbeigen->get_values_from_column(TABNAME_ARTIKEL, 1, querryfilter).get_text());//Nr
-    artikel.zeile_anhaengen(dbeigen->get_values_from_column(TABNAME_ARTIKEL, 2, querryfilter).get_text());//Bez
-    artikel.zeile_anhaengen(dbeigen->get_values_from_column(TABNAME_ARTIKEL, 3, querryfilter).get_text());//Lieferant
-    artikel.zeile_anhaengen(dbeigen->get_values_from_column(TABNAME_ARTIKEL, 10, querryfilter).get_text());//Lagerort
-    artikel.zeile_anhaengen(dbeigen->get_values_from_column(TABNAME_ARTIKEL, 11, querryfilter).get_text());//VE
-    artikel.zeile_anhaengen(dbeigen->get_values_from_column(TABNAME_ARTIKEL, 12, querryfilter).get_text());//Kommentar
-    artikel.zeile_anhaengen(dbeigen->get_values_from_column(TABNAME_ARTIKEL, 13, querryfilter).get_text());//Beziehungen
+    text_zeilenweise artikel = data_for_dialog_artikel(idbuffer);
 
     Dialog_artikel *d = new Dialog_artikel(this);
     d->set_db(dbeigen);
@@ -583,20 +735,20 @@ void Form_artikel::slot_edit(text_zeilenweise data, QString id)
         if(blockfromuser_id == USER_NOBODY_ID)
         {
             QString msg;
-            msg += "Die Aenderungen konnten nicht gespeichert werden, da der Nutzer \"";
+            msg += "Die Änderungen konnten nicht gespeichert werden, da der Nutzer \"";
             msg += lasteditinguser;
             msg += "\" zwischenzeitlich den Datensatz bearbeitet hat!";
             QMessageBox mb;
-            mb.setText(msg);
+            mb.setText(tr(msg.toStdString().c_str()));
             mb.exec();
         }else
         {
             QString msg;
-            msg += "Die Aenderungen konnten nicht gespeichert werden, da der Nutzer \"";
+            msg += "Die Änderungen konnten nicht gespeichert werden, da der Nutzer \"";
             msg += blockfromuser;
             msg += "\" den Datensatz derzeit bearbeitet!";
             QMessageBox mb;
-            mb.setText(msg);
+            mb.setText(tr(msg.toStdString().c_str()));
             mb.exec();
         }
 
@@ -615,6 +767,8 @@ void Form_artikel::slot_edit(text_zeilenweise data, QString id)
         param.zeile_anhaengen(PARAM_ARTIKEL_VE);
         param.zeile_anhaengen(PARAM_ARTIKEL_KOMENT);
         param.zeile_anhaengen(PARAM_ARTIKEL_BEZIEHUNG);
+        param.zeile_anhaengen(PARAM_ARTIKEL_PREIS);
+        param.zeile_anhaengen(PARAM_ARTIKEL_ISFAVORIT);
 
         values.zeile_anhaengen(data.zeile(1));
         values.zeile_anhaengen(data.zeile(2));
@@ -626,10 +780,38 @@ void Form_artikel::slot_edit(text_zeilenweise data, QString id)
         values.zeile_anhaengen(data.zeile(5));
         values.zeile_anhaengen(data.zeile(6));
         values.zeile_anhaengen(data.zeile(7));
+        values.zeile_anhaengen(data.zeile(8));
+        values.zeile_anhaengen(data.zeile(9));
 
         dbeigen->data_edit(TABNAME_ARTIKEL, param, values, id);
     }
     update_table();
 }
 
+void Form_artikel::slot_dupli(text_zeilenweise ids)
+{
+    text_zeilenweise artikel = data_for_dialog_artikel(ids.zeile(1));
+    artikel.zeile_ersaetzen(1, "---");//Artikelnummer
+    artikel.zeile_ersaetzen(2, "---");//Bezeichnung
+
+    Dialog_artikel *d = new Dialog_artikel(this);
+    d->set_db(dbeigen);
+    d->setup();
+    d->set_data(artikel);
+    connect(d, SIGNAL(signal_send_data(text_zeilenweise)),  \
+            this, SLOT(slot_new(text_zeilenweise))          );
+    d->exec();
+    delete d;
+}
+
+void Form_artikel::on_checkBox_only_favorit_toggled()
+{
+    update_table();
+}
 //------------------------------------
+
+
+
+
+
+

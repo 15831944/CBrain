@@ -20,14 +20,15 @@ public:
 
 signals:
     void signal_userinput(QString msg);
+    void signal_cancel();
 
 private slots:
     void on_pushButton_cancel_clicked();
-
     void on_pushButton_ok_clicked();
 
 private:
     Ui::Dialog_text_input *ui;
+    void closeEvent(QCloseEvent *ce);
 };
 
 #endif // DIALOG_TEXT_INPUT_H

@@ -7,6 +7,7 @@ Dialog_artikel::Dialog_artikel(QWidget *parent) :
 {
     ui->setupUi(this);
     current_id = "0";
+    setWindowFlags(windowFlags() & ~Qt::WindowCloseButtonHint);
 }
 
 Dialog_artikel::~Dialog_artikel()
@@ -62,7 +63,7 @@ void Dialog_artikel::setup()
         }else
         {
             QMessageBox mb;
-            mb.setText("Fehler bei Datenbankverbindung!");
+            mb.setText(tr("Fehler bei Datenbankverbindung!"));
             mb.exec();
         }
     }
@@ -77,6 +78,11 @@ void Dialog_artikel::setup()
 void Dialog_artikel::set_data(text_zeilenweise daten, QString id)
 {
     current_id = id;
+    set_data(daten);
+}
+
+void Dialog_artikel::set_data(text_zeilenweise daten)
+{
     ui->lineEdit_artielnummer->setText(daten.zeile(1));
     ui->lineEdit_bezeichnung->setText(daten.zeile(2));
 
@@ -103,6 +109,14 @@ void Dialog_artikel::set_data(text_zeilenweise daten, QString id)
             ui->listWidget_beziehung->addItem(beziehungen_tz.zeile(i));
         }
     }
+    ui->doubleSpinBox_preis->setValue(daten.zeile(8).toDouble());
+    if(daten.zeile(9) == "1")
+    {
+        ui->checkBox_isfavorit->setChecked(true);
+    }else
+    {
+        ui->checkBox_isfavorit->setChecked(false);
+    }
 }
 
 void Dialog_artikel::clear()
@@ -115,6 +129,11 @@ void Dialog_artikel::clear()
 void Dialog_artikel::set_db(cbrainbatabase *new_db)
 {
     dbeigen = new_db;
+}
+
+void Dialog_artikel::closeEvent(QCloseEvent *ce)
+{
+    QDialog::closeEvent(ce);
 }
 
 //----------------------------------Buttons:
@@ -130,15 +149,16 @@ void Dialog_artikel::on_pushButton_ok_clicked()
         ui->lineEdit_bezeichnung->text().isEmpty()      )
     {
         QMessageBox mb;
-        mb.setText("Die Datenfelder \"Artikelnummer\" und \"Bezeichnung\" duerfen nicht leer sein!");
+        mb.setText(tr("Die Datenfelder \"Artikelnummer\" und \"Bezeichnung\" dürfen nicht leer sein!"));
         mb.exec();
     }else if( ui->comboBox_lieferant->currentText() == "---")
     {
         QMessageBox mb;
-        mb.setText("Bitte zuerst einen Lieferanten eintragen!");
+        mb.setText(tr("Bitte zuerst einen Lieferanten eintragen!"));
         mb.exec();
     }else
     {
+        //------------------------------------------------------------------------
         text_zeilenweise tz;
         tz.zeile_anhaengen(ui->lineEdit_artielnummer->text());      //Wert 1
         tz.zeile_anhaengen(ui->lineEdit_bezeichnung->text());       //Wert 2
@@ -147,19 +167,27 @@ void Dialog_artikel::on_pushButton_ok_clicked()
         tz.zeile_anhaengen(ui->lineEdit_lagerort->text());          //Wert 4
         tz.zeile_anhaengen(int_to_qstring(ui->spinBox_ve->value()));//Wert 5
         tz.zeile_anhaengen(ui->lineEdit_komment->text());           //Wert 6
-
         QString beziehungen;
         for(int i=1; i<=ui->listWidget_beziehung->count() ;i++)
         {
             beziehungen += ui->listWidget_beziehung->item(i-1)->text();
             if(i!=ui->listWidget_beziehung->count())
             {
-                beziehungen += "#br#";                              //Wert 7
+                beziehungen += "#br#";
                 //es darf kein \n enthalten sein weil später durch tz verarbeitet wird
             }
         }
-        tz.zeile_anhaengen(beziehungen);
+        tz.zeile_anhaengen(beziehungen);                            //Wert 7
+        tz.zeile_anhaengen(double_to_qstring(ui->doubleSpinBox_preis->value()));    //Wert 8
+        if(ui->checkBox_isfavorit->isChecked())
+        {
+            tz.zeile_anhaengen("1");                                //Wert 9
+        }else
+        {
+            tz.zeile_anhaengen("0");                                //Wert 9
+        }
 
+        //------------------------------------------------------------------------
         this->close();
         if(current_id == "0")
         {
@@ -269,7 +297,7 @@ void Dialog_artikel::slot_beziehung_new(text_zeilenweise data)
     }else
     {
         QMessageBox mb;
-        mb.setText("Dieser Artikel steht bereits in Beziehung!");
+        mb.setText(tr("Dieser Artikel steht bereits in Beziehung!"));
         mb.exec();
     }
 }

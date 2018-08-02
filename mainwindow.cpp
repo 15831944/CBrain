@@ -74,6 +74,8 @@ bool MainWindow::setup()
         widget_personal.set_db(&dbeigen);       //widget Zeiger auf DB übergeben
         widget_matlist.set_db(&dbeigen);        //widget Zeiger auf DB übergeben
 
+        widget_artikel.set_user(&u);
+
         widget_backup.set_ini(&ini);
     }
     return isvalid;
@@ -101,7 +103,7 @@ void MainWindow::on_actionNetzwerkordner_aendern_triggered()
         if(ini.get_rootdir().isEmpty())
         {
             QMessageBox mb;
-            mb.setText("Wurzelverzeichnis nicht bekannt!\nProgramm wird beendet.");
+            mb.setText(tr("Wurzelverzeichnis nicht bekannt!\nProgramm wird beendet."));
             mb.exec();
             isvalid = false;
         }
@@ -120,7 +122,7 @@ void MainWindow::on_actionInfo_triggered()
     //msg += "\n";
 
     QMessageBox mb;
-    mb.setText(msg);
+    mb.setText(tr(msg.toStdString().c_str()));
     mb.exec();
 }
 
@@ -184,7 +186,7 @@ void MainWindow::read_inifile()
             }else
             {
                 QMessageBox mb;
-                mb.setText("Fehler beim Zugriff auf INI-Datei!\nProgramm wird beendet.");
+                mb.setText(tr("Fehler beim Zugriff auf INI-Datei!\nProgramm wird beendet."));
                 mb.exec();
                 isvalid = false;
             }
@@ -302,7 +304,7 @@ void MainWindow::slot_get_settings_db_eigen(text_zeilenweise data)
             ini.set_settings_db_eigen(data);
             write_inifile();
             QMessageBox mb;
-            mb.setText("Bitte starten Sie das Programm nun neu damit die Aenderungen wirksam werden.");
+            mb.setText(tr("Bitte starten Sie das Programm nun neu damit die Änderungen wirksam werden."));
             mb.exec();
         }
     }
@@ -421,7 +423,7 @@ void MainWindow::change_modul(QString modul)
             }else
             {
                 QMessageBox mb;
-                mb.setText("Datenbank nicht erreichbar!\nModul wurden nicht geladen.");
+                mb.setText(tr("Datenbank nicht erreichbar!\nModul wurden nicht geladen."));
                 mb.exec();
             }
         }
@@ -438,7 +440,7 @@ void MainWindow::change_modul(QString modul)
             }else
             {
                 QMessageBox mb;
-                mb.setText("Datenbank nicht erreichbar!\nModul wurden nicht geladen.");
+                mb.setText(tr("Datenbank nicht erreichbar!\nModul wurden nicht geladen."));
                 mb.exec();
             }
         }
@@ -455,7 +457,7 @@ void MainWindow::change_modul(QString modul)
             }else
             {
                 QMessageBox mb;
-                mb.setText("Datenbank nicht erreichbar!\nModul wurden nicht geladen.");
+                mb.setText(tr("Datenbank nicht erreichbar!\nModul wurden nicht geladen."));
                 mb.exec();
             }
         }
@@ -472,7 +474,7 @@ void MainWindow::change_modul(QString modul)
             }else
             {
                 QMessageBox mb;
-                mb.setText("Datenbank nicht erreichbar!\nModul wurden nicht geladen.");
+                mb.setText(tr("Datenbank nicht erreichbar!\nModul wurden nicht geladen."));
                 mb.exec();
             }
         }
@@ -489,7 +491,7 @@ void MainWindow::change_modul(QString modul)
             }else
             {
                 QMessageBox mb;
-                mb.setText("Datenbank nicht erreichbar!\nModul wurden nicht geladen.");
+                mb.setText(tr("Datenbank nicht erreichbar!\nModul wurden nicht geladen."));
                 mb.exec();
             }
         }
@@ -506,7 +508,7 @@ void MainWindow::change_modul(QString modul)
             }else
             {
                 QMessageBox mb;
-                mb.setText("Datenbank nicht erreichbar!\nModul wurden nicht geladen.");
+                mb.setText(tr("Datenbank nicht erreichbar!\nModul wurden nicht geladen."));
                 mb.exec();
             }
         }
@@ -523,7 +525,7 @@ void MainWindow::change_modul(QString modul)
             }else
             {
                 QMessageBox mb;
-                mb.setText("Datenbank nicht erreichbar!\nModul wurden nicht geladen.");
+                mb.setText(tr("Datenbank nicht erreichbar!\nModul wurden nicht geladen."));
                 mb.exec();
             }
         }
@@ -540,7 +542,7 @@ void MainWindow::change_modul(QString modul)
             }else
             {
                 QMessageBox mb;
-                mb.setText("Datenbank nicht erreichbar!\nModul wurden nicht geladen.");
+                mb.setText(tr("Datenbank nicht erreichbar!\nModul wurden nicht geladen."));
                 mb.exec();
             }
         }
@@ -655,7 +657,7 @@ void MainWindow::on_actionTestfunktion_triggered()
 {
     //-------------------------
     QMessageBox mb;
-    mb.setText("Die Testfunktion ist derzteit nicht in Nutzung.");
+    mb.setText(tr("Die Testfunktion ist derzteit nicht in Nutzung."));
     mb.exec();
     //-------------------------
     /*

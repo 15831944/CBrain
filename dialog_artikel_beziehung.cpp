@@ -8,6 +8,7 @@ Dialog_artikel_beziehung::Dialog_artikel_beziehung(QWidget *parent) :
     ui->setupUi(this);
     artikelid_eigen = "0";
     id_ist_const = false;
+    setWindowFlags(windowFlags() & ~Qt::WindowCloseButtonHint);
 }
 
 Dialog_artikel_beziehung::~Dialog_artikel_beziehung()
@@ -82,7 +83,7 @@ void Dialog_artikel_beziehung::on_pushButton_artikel_id_clicked()
             }else
             {
                 QMessageBox mb;
-                mb.setText("Fehler bei Datenbankverbindung!");
+                mb.setText(tr("Fehler bei Datenbankverbindung!"));
                 mb.exec();
             }
         }
@@ -121,15 +122,21 @@ void Dialog_artikel_beziehung::slot_set_artikel(text_zeilenweise artikel_ids)
     }else
     {
         QMessageBox mb;
-        mb.setText("Diese ID ist unzulaessig, weil Verweis auf Artikel selbst!");
+        mb.setText(tr("Diese ID ist unzulässig, weil Verweis auf Artikel selbst!"));
         mb.exec();
     }
 
 }
 
+void Dialog_artikel_beziehung::closeEvent(QCloseEvent *ce)
+{
+    QDialog::closeEvent(ce);    
+}
+
 void Dialog_artikel_beziehung::on_pushButton_cancel_clicked()
 {
     this->close();
+    emit signal_cancel();
 }
 
 void Dialog_artikel_beziehung::on_pushButton_ok_clicked()
@@ -160,7 +167,7 @@ void Dialog_artikel_beziehung::on_pushButton_ok_clicked()
     }else
     {
         QMessageBox mb;
-        mb.setText("Artikel-ID darf nicht leer sein!");
+        mb.setText(tr("Artikel-ID darf nicht leer sein!"));
         mb.exec();
     }
 }

@@ -131,12 +131,12 @@ void Form_backup::on_pushButton_backup_clicked()
         file.close();
 
         QMessageBox mb;
-        mb.setText("Backup erfolgreich abgeschlossen.");
+        mb.setText(tr("Backup erfolgreich abgeschlossen."));
         mb.exec();
     }else
     {
         QMessageBox mb;
-        mb.setText("Backup fehlgeschlagen!\nDatei konnte nicht geschrieben werden.");
+        mb.setText(tr("Backup fehlgeschlagen!\nDatei konnte nicht geschrieben werden."));
         mb.exec();
     }
 }
@@ -288,7 +288,7 @@ void Form_backup::on_pushButton_restore_clicked()
                         msg += current_table;
                         msg += "\" konnte nicht automatisch abgeglichen werden!";
                         QMessageBox mb;
-                        mb.setText(msg);
+                        mb.setText(tr(msg.toStdString().c_str()));
                         mb.exec();
                     }
                 }else   //Es gibt die Tabelle noch nicht
@@ -367,7 +367,7 @@ void Form_backup::on_pushButton_restore_clicked()
                     }else
                     {
                         QMessageBox mb;
-                        mb.setText("Fehler bei Datenbankverbindung!");
+                        mb.setText(tr("Fehler bei Datenbankverbindung!"));
                         mb.exec();
                     }
                     //-------------------------------------
@@ -385,7 +385,7 @@ void Form_backup::on_pushButton_restore_clicked()
         msg += "\"!";
 
         QMessageBox mb;
-        mb.setText(msg);
+        mb.setText(tr(msg.toStdString().c_str()));
         mb.exec();
     }
 }

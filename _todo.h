@@ -5,11 +5,7 @@
 template_Materialliste:
 soll als Template zum Anlegen von neuen projektbezogenen Materiallisten dienen
 
--->Artikeltabelle erweitern
-    ->Preis -->wird dann jedoch nicht als ID in Materialliste eingefügt, sondern als Kopie (Variierender Preis in den Aufträgen)
-    ->Beziehung zu anderen Artiklen (Liste von Artiklen)
-        ->Diese Artiklen werden Vorgeschlagen zum Mit-Bestellen
-        ->id | default-Verhalten (mit bestellen/nur vorschlagen == checked/unchecked)
+-->Artikel-Preis -->soll nicht als ID in Materialliste eingefügt werden, sondern als Kopie (Variierender Preis in den Aufträgen)
 
 -->Interaktionen zwischen modul lager und modul bestellungen (noch nicht vorhanden)
 
@@ -24,17 +20,10 @@ soll als Template zum Anlegen von neuen projektbezogenen Materiallisten dienen
    evtl Kopie des gesamten Datensatzes merken und vergleichen wenn datensatz nicht blockiert ist
    (block wird aufgehoben wenn user_B cancelt)
    dialog von user_A erwartet jedoch das die daten noch von ihm selbst blockiert sind
+   ->evtl einfach nicht zulassen, dass user_B abbrechen kann (disable btn cancel)
 
 --> void Form_matlist::on_pushButton_pos_edit_rumpf_clicked()
     connect...
-
--->void Dialog_artikel::on_pushButton_beziehung_new_clicked()
--->void Dialog_artikel::on_pushButton_beziehung_delete_clicked()
--->void Dialog_artikel::on_pushButton_beziehung_edit_clicked()
-
--->Dialog-Schließen X oben rechts
-    -->Funktion überladen auf btn_abbrechen
-        ->weil block durch user wieder freigegeben werden muss!!
 
 -->tr(...) für Ausgabe von Umlauten verwenden
 

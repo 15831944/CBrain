@@ -18,6 +18,7 @@ class Dialog_settings_db : public QDialog
 
 signals:
     void signal_send_data(text_zeilenweise data);
+    void signal_cancel();
 
 public:
     explicit Dialog_settings_db(QWidget *parent = 0);
@@ -33,6 +34,7 @@ private:
     Ui::Dialog_settings_db *ui;
     void clear();
     void setup();
+    void closeEvent(QCloseEvent *ce);
 };
 
 #endif // DIALOG_SETTINGS_DB_H

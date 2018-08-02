@@ -24,6 +24,7 @@ public:
 
 signals:
     void signal_send_selection(text_zeilenweise ids);
+    void signal_cancel();
 
 private slots:
     void on_pushButton_cancel_clicked();
@@ -40,7 +41,7 @@ private:
 
     void set_data(text_zeilenweise data);
     void update_listwidget();
-
+    void closeEvent(QCloseEvent *ce);
 };
 
 #endif // DIALOG_DATASELECTION_H

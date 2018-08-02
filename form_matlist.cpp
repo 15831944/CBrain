@@ -161,7 +161,7 @@ void Form_matlist::create_table_promatposlist()
         }else
         {
             QMessageBox mb;
-            mb.setText("Fehler bei Datenbankverbindung!");
+            mb.setText(tr("Fehler bei Datenbankverbindung!"));
             mb.exec();
         }        
     }
@@ -245,7 +245,7 @@ void Form_matlist::create_table_promatpos(QString bez, QString menge)
         }else
         {
             QMessageBox mb;
-            mb.setText("Fehler bei Datenbankverbindung!");
+            mb.setText(tr("Fehler bei Datenbankverbindung!"));
             mb.exec();
         }
     }
@@ -319,7 +319,7 @@ void Form_matlist::on_pushButton_pos_new_clicked()
     }else
     {
         QMessageBox mb;
-        mb.setText("Bitte zuerst ein Projekt festlegen!");
+        mb.setText(tr("Bitte zuerst ein Projekt festlegen!"));
         mb.exec();
     }
 }
@@ -380,13 +380,13 @@ void Form_matlist::on_pushButton_pos_edit_clicked()
         }else
         {
             QMessageBox mb;
-            mb.setText("Bitte zuerst eine Position waelen!");
+            mb.setText(tr("Bitte zuerst eine Position wälen!"));
             mb.exec();
         }
     }else
     {
         QMessageBox mb;
-        mb.setText("Bitte zuerst ein Projekt festlegen!");
+        mb.setText(tr("Bitte zuerst ein Projekt festlegen!"));
         mb.exec();
     }
 }
@@ -415,13 +415,13 @@ void Form_matlist::on_pushButton_pos_edit_rumpf_clicked()
         }else
         {
             QMessageBox mb;
-            mb.setText("Bitte zuerst eine Position waelen!");
+            mb.setText(tr("Bitte zuerst eine Position wälen!"));
             mb.exec();
         }
     }else
     {
         QMessageBox mb;
-        mb.setText("Bitte zuerst ein Projekt festlegen!");
+        mb.setText(tr("Bitte zuerst ein Projekt festlegen!"));
         mb.exec();
     }
 }
@@ -447,13 +447,13 @@ void Form_matlist::on_pushButton_pos_delete_clicked()
         }else
         {
             QMessageBox mb;
-            mb.setText("Bitte zuerst eine Position waelen!");
+            mb.setText(tr("Bitte zuerst eine Position wälen!"));
             mb.exec();
         }
     }else
     {
         QMessageBox mb;
-        mb.setText("Bitte zuerst ein Projekt festlegen!");
+        mb.setText(tr("Bitte zuerst ein Projekt festlegen!"));
         mb.exec();
     }
 }
@@ -537,20 +537,20 @@ void Form_matlist::slot_edit_matposlist()
         if(blockfromuser_id == USER_NOBODY_ID)
         {
             QString msg;
-            msg += "Die Aenderungen konnten nicht gespeichert werden, da der Nutzer \"";
+            msg += "Die Änderungen konnten nicht gespeichert werden, da der Nutzer \"";
             msg += lasteditinguser;
             msg += "\" zwischenzeitlich den Datensatz bearbeitet hat!";
             QMessageBox mb;
-            mb.setText(msg);
+            mb.setText(tr(msg.toStdString().c_str()));
             mb.exec();
         }else
         {
             QString msg;
-            msg += "Die Aenderungen konnten nicht gespeichert werden, da der Nutzer \"";
+            msg += "Die Änderungen konnten nicht gespeichert werden, da der Nutzer \"";
             msg += blockfromuser;
             msg += "\" den Datensatz derzeit bearbeitet!";
             QMessageBox mb;
-            mb.setText(msg);
+            mb.setText(tr(msg.toStdString().c_str()));
             mb.exec();
         }
     }else
@@ -655,7 +655,7 @@ void Form_matlist::slot_delete_matpos()
         }else
         {
             QMessageBox mb;
-            mb.setText("Mindestens ein Datensatz in der Materialposition ist durch einen Benutzer blockiert! Position kann nicht geloescht werden");
+            mb.setText(tr("Mindestens ein Datensatz in der Materialposition ist durch einen Benutzer blockiert! Position kann nicht gelöscht werden"));
             mb.exec();
         }
     }else
@@ -663,9 +663,9 @@ void Form_matlist::slot_delete_matpos()
         QString msg;
         msg += "Der Datensetz ist derzeit durch den Nutzer \"";
         msg += blockfromuser;
-        msg += "\" gesperrt und kann nicht geloescht werden!";
+        msg += "\" gesperrt und kann nicht gelöscht werden!";
         QMessageBox mb;
-        mb.setText(msg);
+        mb.setText(tr(msg.toStdString().c_str()));
         mb.exec();
     }
 
