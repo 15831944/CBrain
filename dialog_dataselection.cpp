@@ -7,6 +7,7 @@ Dialog_dataselection::Dialog_dataselection(QWidget *parent) :
 {
     ui->setupUi(this);
     anzretwerte = 0;
+    setWindowFlags(windowFlags() & ~Qt::WindowCloseButtonHint);
 }
 
 Dialog_dataselection::~Dialog_dataselection()
@@ -16,13 +17,13 @@ Dialog_dataselection::~Dialog_dataselection()
 
 void Dialog_dataselection::closeEvent(QCloseEvent *ce)
 {
-    QDialog::closeEvent(ce);
-    emit signal_cancel();
+    QDialog::closeEvent(ce);    
 }
 
 void Dialog_dataselection::on_pushButton_cancel_clicked()
 {
     this->close();
+    emit signal_cancel();
 }
 
 void Dialog_dataselection::set_data(text_zeilenweise data)

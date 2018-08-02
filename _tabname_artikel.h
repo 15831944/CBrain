@@ -18,6 +18,9 @@
 #define PARAM_ARTIKEL_VE            "VE"                //Wert 11   //Verpackungseinheit = Menge pro Packung
 #define PARAM_ARTIKEL_KOMENT        "Kommentar"         //Wert 12
 #define PARAM_ARTIKEL_BEZIEHUNG     "Beziehung"         //Wert 13
+#define PARAM_ARTIKEL_ISFAVORIT     "ist_Favorit"       //Wert 14
+#define PARAM_ARTIKEL_PREIS         "Preis"             //Wert 15
+#define PARAM_ARTIKEL_FAVORDER      "Favoritenrang"     //Wert 16
 
 
 

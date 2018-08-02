@@ -17,9 +17,9 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>40</y>
+     <y>80</y>
      <width>651</width>
-     <height>251</height>
+     <height>211</height>
     </rect>
    </property>
    <property name="dragEnabled">
@@ -44,7 +44,7 @@
     <rect>
      <x>10</x>
      <y>10</y>
-     <width>85</width>
+     <width>51</width>
      <height>26</height>
     </rect>
    </property>
@@ -55,9 +55,9 @@
   <widget class="QPushButton" name="pushButton_del">
    <property name="geometry">
     <rect>
-     <x>100</x>
+     <x>70</x>
      <y>10</y>
-     <width>85</width>
+     <width>51</width>
      <height>26</height>
     </rect>
    </property>
@@ -68,9 +68,9 @@
   <widget class="QPushButton" name="pushButton_edit">
    <property name="geometry">
     <rect>
-     <x>200</x>
+     <x>130</x>
      <y>10</y>
-     <width>85</width>
+     <width>51</width>
      <height>26</height>
     </rect>
    </property>
@@ -89,6 +89,45 @@
    </property>
    <property name="text">
     <string>xxx Artikel:</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_dupli">
+   <property name="geometry">
+    <rect>
+     <x>190</x>
+     <y>10</y>
+     <width>51</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>dupli</string>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="checkBox_only_favorit">
+   <property name="geometry">
+    <rect>
+     <x>460</x>
+     <y>40</y>
+     <width>191</width>
+     <height>18</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>nur Favoriten</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_fav_order">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>40</y>
+     <width>111</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Favoritenreihenfolge</string>
    </property>
   </widget>
  </widget>

@@ -7,6 +7,7 @@ Dialog_projekte::Dialog_projekte(QWidget *parent) :
 {
     ui->setupUi(this);
     current_id = "0";
+    setWindowFlags(windowFlags() & ~Qt::WindowCloseButtonHint);
 }
 
 Dialog_projekte::~Dialog_projekte()
@@ -40,13 +41,13 @@ void Dialog_projekte::on_pushButton_ok_clicked()
 
 void Dialog_projekte::closeEvent(QCloseEvent *ce)
 {
-    QDialog::closeEvent(ce);
-    emit signal_cancel();
+    QDialog::closeEvent(ce);    
 }
 
 void Dialog_projekte::on_pushButton_cancel_clicked()
 {
     this->close();
+    emit signal_cancel();
 }
 
 void Dialog_projekte::set_data(text_zeilenweise daten, QString id)

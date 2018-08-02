@@ -8,6 +8,7 @@ Dialog_artikel_beziehung::Dialog_artikel_beziehung(QWidget *parent) :
     ui->setupUi(this);
     artikelid_eigen = "0";
     id_ist_const = false;
+    setWindowFlags(windowFlags() & ~Qt::WindowCloseButtonHint);
 }
 
 Dialog_artikel_beziehung::~Dialog_artikel_beziehung()
@@ -129,13 +130,13 @@ void Dialog_artikel_beziehung::slot_set_artikel(text_zeilenweise artikel_ids)
 
 void Dialog_artikel_beziehung::closeEvent(QCloseEvent *ce)
 {
-    QDialog::closeEvent(ce);
-    emit signal_cancel();
+    QDialog::closeEvent(ce);    
 }
 
 void Dialog_artikel_beziehung::on_pushButton_cancel_clicked()
 {
     this->close();
+    emit signal_cancel();
 }
 
 void Dialog_artikel_beziehung::on_pushButton_ok_clicked()

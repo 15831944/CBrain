@@ -15,6 +15,9 @@ Lagerort	varchar(40)	YES	---	---	---
 VE	int(11)	YES	---	---	---	
 Kommentar	varchar(400)	YES	---	---	---	
 Beziehung	text	YES	---	---	---	
+ist_Favorit	tinyint(1)	YES	---	---	---	
+Preis	float	YES	---	---	---	
+Favoritenrang	int(11)	YES	---	---	---	
 <ENDE_Tabelle>
 <BEGIN_Tabelle>
 table_lager

@@ -26,6 +26,7 @@ public:
     void set_db(cbrainbatabase *new_db);
     void setup();
     void set_data(text_zeilenweise daten, QString id);
+    void set_data(text_zeilenweise daten);
 
 signals:
     void signal_send_data(text_zeilenweise data);

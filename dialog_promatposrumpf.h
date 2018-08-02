@@ -26,6 +26,7 @@ public:
     void set_tabname(QString name);
     void set_userid(QString id);
     void set_db(cbrainbatabase *new_db);
+    void show();
 
 protected:
     void resizeEvent(QResizeEvent *event);
@@ -39,6 +40,7 @@ private:
     QSqlQueryModel *model;
 
     void update_table();
+    void update_favorit();
 };
 
 #endif // DIALOG_PROMATPOSRUMPF_H

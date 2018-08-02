@@ -6,6 +6,7 @@ Dialog_lager::Dialog_lager(QWidget *parent) :
     ui(new Ui::Dialog_lager)
 {
     ui->setupUi(this);
+    setWindowFlags(windowFlags() & ~Qt::WindowCloseButtonHint);
 }
 
 Dialog_lager::~Dialog_lager()
@@ -168,14 +169,14 @@ void Dialog_lager::on_pushButton_ok_clicked()
 
 void Dialog_lager::closeEvent(QCloseEvent *ce)
 {
-    QDialog::closeEvent(ce);
-    printmsg.clear();
-    emit signal_cancel();
+    QDialog::closeEvent(ce);    
 }
 
 void Dialog_lager::on_pushButton_cancel_clicked()
 {    
     this->close();
+    printmsg.clear();
+    emit signal_cancel();
 }
 
 void Dialog_lager::on_lineEdit_artikelfilter_textChanged()

@@ -7,6 +7,7 @@ Dialog_personal::Dialog_personal(QWidget *parent) :
 {
     ui->setupUi(this);
     current_id = "0";
+    setWindowFlags(windowFlags() & ~Qt::WindowCloseButtonHint);
 }
 
 Dialog_personal::~Dialog_personal()
@@ -40,13 +41,13 @@ void Dialog_personal::on_pushButton_ok_clicked()
 
 void Dialog_personal::closeEvent(QCloseEvent *ce)
 {
-    QDialog::closeEvent(ce);
-    emit signal_cancel();
+    QDialog::closeEvent(ce);    
 }
 
 void Dialog_personal::on_pushButton_cancel_clicked()
 {
     this->close();
+    emit signal_cancel();
 }
 
 void Dialog_personal::set_data(text_zeilenweise daten, QString id)

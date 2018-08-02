@@ -64,7 +64,7 @@
        <x>0</x>
        <y>10</y>
        <width>381</width>
-       <height>331</height>
+       <height>351</height>
       </rect>
      </property>
      <layout class="QGridLayout" name="gridLayout">
@@ -145,6 +145,27 @@
         </property>
        </widget>
       </item>
+      <item row="7" column="0">
+       <widget class="QLabel" name="label_4">
+        <property name="text">
+         <string>Preis</string>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="1">
+       <widget class="QDoubleSpinBox" name="doubleSpinBox_preis">
+        <property name="decimals">
+         <number>4</number>
+        </property>
+       </widget>
+      </item>
+      <item row="8" column="1">
+       <widget class="QCheckBox" name="checkBox_isfavorit">
+        <property name="text">
+         <string>ist Favorit</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </widget>
@@ -162,7 +183,7 @@
       </rect>
      </property>
     </widget>
-    <widget class="QWidget" name="">
+    <widget class="QWidget" name="layoutWidget">
      <property name="geometry">
       <rect>
        <x>10</x>
@@ -206,7 +227,14 @@
   <tabstop>lineEdit_lagerort</tabstop>
   <tabstop>spinBox_ve</tabstop>
   <tabstop>lineEdit_komment</tabstop>
+  <tabstop>doubleSpinBox_preis</tabstop>
+  <tabstop>checkBox_isfavorit</tabstop>
+  <tabstop>listWidget_beziehung</tabstop>
+  <tabstop>pushButton_beziehung_new</tabstop>
+  <tabstop>pushButton_beziehung_edit</tabstop>
   <tabstop>pushButton_ok</tabstop>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>pushButton_beziehung_delete</tabstop>
   <tabstop>pushButton_cancel</tabstop>
  </tabstops>
  <resources/>

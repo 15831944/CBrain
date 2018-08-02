@@ -6,6 +6,7 @@ Dialog_login::Dialog_login(QWidget *parent) :
     ui(new Ui::Dialog_login)
 {
     ui->setupUi(this);
+    setWindowFlags(windowFlags() & ~Qt::WindowCloseButtonHint);
 }
 
 Dialog_login::~Dialog_login()
@@ -22,12 +23,12 @@ void Dialog_login::on_pushButton_ok_clicked()
 
 void Dialog_login::on_pushButton_cancel_clicked()
 {
-    this->close();    
+    this->close();
+    emit signal_ok("",  \
+                   ""   );
 }
 
 void Dialog_login::closeEvent(QCloseEvent *ce)
 {
-    QDialog::closeEvent(ce);
-    emit signal_ok("",  \
-                   ""   );
+    QDialog::closeEvent(ce);    
 }
