@@ -430,18 +430,32 @@ void Form_artikel::on_pushButton_edit_clicked()
             QString cmd;
             cmd += "SELECT * FROM ";
             cmd += TABNAME_ARTIKEL;
-            if(!ui->lineEdit_suche->text().isEmpty())
+            if(!ui->lineEdit_suche->text().isEmpty() || ui->checkBox_only_favorit->isChecked())
             {
                 cmd += " WHERE ";
-                cmd += PARAM_ARTIKEL_NR;
-                cmd += " LIKE \'%";
-                cmd += ui->lineEdit_suche->text();
-                cmd += "%\'";
-                cmd += " OR ";
-                cmd += PARAM_ARTIKEL_BEZ;
-                cmd += " LIKE \'%";
-                cmd += ui->lineEdit_suche->text();
-                cmd += "%\'";
+                if(!ui->lineEdit_suche->text().isEmpty() )
+                {
+                    cmd += "(";
+                    cmd += PARAM_ARTIKEL_NR;
+                    cmd += " LIKE \'%";
+                    cmd += ui->lineEdit_suche->text();
+                    cmd += "%\'";
+                    cmd += " OR ";
+                    cmd += PARAM_ARTIKEL_BEZ;
+                    cmd += " LIKE \'%";
+                    cmd += ui->lineEdit_suche->text();
+                    cmd += "%\'";
+                    cmd += ")";
+                }
+                if(!ui->lineEdit_suche->text().isEmpty() && ui->checkBox_only_favorit->isChecked())
+                {
+                    cmd += " AND ";
+                }
+                if(ui->checkBox_only_favorit->isChecked())
+                {
+                    cmd += PARAM_ARTIKEL_ISFAVORIT;
+                    cmd += " LIKE 1";
+                }
             }
             //------------------------
             cmd += " GROUP BY ";
@@ -449,10 +463,20 @@ void Form_artikel::on_pushButton_edit_clicked()
             cmd += ".";
             cmd += PARAM_ARTIKEL_ID;
             //------------------------
-            cmd += " ORDER BY ";            //Sortiert nach:
-            cmd += TABNAME_ARTIKEL;
-            cmd += ".";
-            cmd += PARAM_ARTIKEL_NR;
+            if(!ui->checkBox_only_favorit->isChecked())
+            {
+                cmd += " ORDER BY ";            //Sortiert nach:
+                cmd += TABNAME_ARTIKEL;
+                cmd += ".";
+                cmd += PARAM_ARTIKEL_NR;
+            }else
+            {
+                cmd += " ORDER BY ";            //Sortiert nach:
+                cmd += TABNAME_ARTIKEL;
+                cmd += ".";
+                cmd += PARAM_ARTIKEL_FAVORDER;
+            }
+            //------------------------
 
             if(q.exec(cmd))
             {

@@ -231,6 +231,9 @@ void Form_matlist::create_table_promatpos(QString bez, QString menge)
             cmd += ", ";
             cmd += PARAM_PROMATPOS_BLOCK;
             cmd += " int(11) unsigned";
+            cmd += ", ";
+            cmd += PARAM_PROMATPOS_BEZIEHUNG;
+            cmd += " tinytext";
             cmd += ")";
             cmd += " ENGINE=InnoDB";
 
@@ -273,7 +276,7 @@ void Form_matlist::update_listwidget_matpos()
         QString itemname;
         itemname += table_ids.zeile(i);
         itemname += " ||| ";
-        itemname += table_bez.zeile(i).replace("#br#", "   ");
+        itemname += table_bez.zeile(i).replace(NEW_LINE_BR, "   ");
         item[i-1] = new QListWidgetItem(itemname  , ui->listWidget_matpos);
         item[i-1]->setFlags(item[i-1]->flags() | Qt::ItemIsUserCheckable); // set checkable flag
         item[i-1]->setCheckState(Qt::Checked); // AND initialize check state
@@ -408,7 +411,7 @@ void Form_matlist::on_pushButton_pos_edit_rumpf_clicked()
             d->set_db(dbeigen);
             d->set_tabname(tabname);
 
-            //connect....
+            //update_table();
 
             d->exec();
             delete d;

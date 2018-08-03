@@ -16,6 +16,7 @@
 #define PARAM_PROMATPOS_ERSTELLER    "Ersteller"         //Wert 4
 #define PARAM_PROMATPOS_BEARBEITER   "Bearbeiter"        //Wert 5
 #define PARAM_PROMATPOS_BLOCK        "blockiert"         //Wert 6
+#define PARAM_PROMATPOS_BEZIEHUNG    "Beziehung"         //Wert 7
 
 
 

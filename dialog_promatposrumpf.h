@@ -10,6 +10,9 @@
 #include "_tabname_artikel.h"
 #include "_tabname_status.h"
 #include "_tabname_promatpos.h"
+#include "dialog_artikel_verwenden.h"
+#include "text.h"
+#include "dialog_dataselection.h"
 
 namespace Ui {
 class Dialog_promatposrumpf;
@@ -28,8 +31,21 @@ public:
     void set_db(cbrainbatabase *new_db);
     void show();
 
+public slots:
+    void slot_new_data(text_zeilenweise data);
+    void slot_edit_data(text_zeilenweise data);
+    void slot_delete(text_zeilenweise ids);
+    void slot_new_artikel(text_zeilenweise artikel_ids);//muss als tz wegen Dialog_dataselection
+
 protected:
     void resizeEvent(QResizeEvent *event);
+
+private slots:
+    void on_pushButton_usefavourite_clicked();
+    void on_pushButton_delete_clicked();
+    void on_lineEdit_filter_textChanged();
+
+    void on_pushButton_new_clicked();
 
 private:
     Ui::Dialog_promatposrumpf *ui;
@@ -39,8 +55,12 @@ private:
     cbrainbatabase *dbeigen;
     QSqlQueryModel *model;
 
+    text_zeilenweise fav_id_tz, fav_nr_tz, fav_bez_tz;
+
     void update_table();
     void update_favorit();
+    bool artikel_bereits_erfasst(QString artikel_id);
+    QString get_own_id_from_artikel_id(QString artikel_id);
 };
 
 #endif // DIALOG_PROMATPOSRUMPF_H

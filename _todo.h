@@ -23,9 +23,15 @@ soll als Template zum Anlegen von neuen projektbezogenen Materiallisten dienen
    ->evtl einfach nicht zulassen, dass user_B abbrechen kann (disable btn cancel)
 
 --> void Form_matlist::on_pushButton_pos_edit_rumpf_clicked()
-    connect...
+    ->//update_table();
 
--->tr(...) für Ausgabe von Umlauten verwenden
+-->dialog_promatposrumpf:
+    ->btn edit
+    ->userblock einrichten
+        >edit
+        >new (wenn Artikeleintrag bereits vorhanden ist)
+        >use_favorit(wenn Artikeleintrag bereits vorhanden ist)
+        >möglichst alle 3 funktionen auf den gleichen Slot lenken!!
 
 -->Im-Export-Dialog
 
