@@ -25,13 +25,10 @@ soll als Template zum Anlegen von neuen projektbezogenen Materiallisten dienen
 --> void Form_matlist::on_pushButton_pos_edit_rumpf_clicked()
     ->//update_table();
 
--->dialog_promatposrumpf:
-    ->btn edit
-    ->userblock einrichten
-        >edit
-        >new (wenn Artikeleintrag bereits vorhanden ist)
-        >use_favorit(wenn Artikeleintrag bereits vorhanden ist)
-        >möglichst alle 3 funktionen auf den gleichen Slot lenken!!
+
+-->modul_backup
+    ->Backup data to csv-file
+    ->restore data from csv-file
 
 -->Im-Export-Dialog
 

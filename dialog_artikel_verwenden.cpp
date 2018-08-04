@@ -16,6 +16,7 @@ Dialog_artikel_verwenden::~Dialog_artikel_verwenden()
 void Dialog_artikel_verwenden::on_pushButton_cancel_clicked()
 {
     this->close();
+    emit signal_cancel();
 }
 
 void Dialog_artikel_verwenden::set_db(cbrainbatabase *new_db)

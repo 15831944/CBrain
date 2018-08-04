@@ -27,7 +27,8 @@ public:
     void set_data(text_zeilenweise data);
 
 signals:
-    signal_send_data(text_zeilenweise data);
+    void signal_send_data(text_zeilenweise data);
+    void signal_cancel();
 
 private slots:
     void on_pushButton_cancel_clicked();
