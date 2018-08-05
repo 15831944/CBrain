@@ -238,6 +238,18 @@ void Form_projekte::create_table_promat(QString project_id)
             cmd += " int(11) unsigned";
             cmd += ", ";
             cmd += PARAM_PROMAT_ME_VERARBEITET;
+            cmd += " int(11)";            
+            cmd += ", ";
+            cmd += PARAM_PROMAT_ME_GESAMTBEDARF;
+            cmd += " int(11)";
+            cmd += ", ";
+            cmd += PARAM_PROMAT_ME_ERFASST;
+            cmd += " int(11)";
+            cmd += ", ";
+            cmd += PARAM_PROMAT_ME_UNKLAR;
+            cmd += " int(11)";
+            cmd += ", ";
+            cmd += PARAM_PROMAT_ME_ZURBEST;
             cmd += " int(11)";
             cmd += ")";
             cmd += " ENGINE=InnoDB";

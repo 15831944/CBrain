@@ -25,7 +25,7 @@ void Dialog_promatpos::on_pushButton_ok_clicked()
     }else
     {
         QString bez = ui->plainTextEdit_bez->toPlainText();
-        bez.replace("\n", "#br#");
+        bez.replace("\n", NEW_LINE_BR);
         text_zeilenweise tz;
         tz.zeile_anhaengen(bez);                                                //Wert 1
         tz.zeile_anhaengen(int_to_qstring(ui->spinBox_menge->value()));         //Wert 2
@@ -56,7 +56,7 @@ void Dialog_promatpos::set_data(text_zeilenweise daten, QString id)
 {
     current_id = id;
     QString bez = daten.zeile(1);
-    bez.replace("#br#", "\n");
+    bez.replace(NEW_LINE_BR, "\n");
     ui->plainTextEdit_bez->setPlainText(bez);
     ui->spinBox_menge->setValue(daten.zeile(2).toInt());
 }

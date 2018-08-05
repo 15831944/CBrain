@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>598</width>
-    <height>419</height>
+    <width>853</width>
+    <height>447</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -117,7 +117,7 @@
      <x>10</x>
      <y>60</y>
      <width>311</width>
-     <height>351</height>
+     <height>321</height>
     </rect>
    </property>
    <property name="dragEnabled">
@@ -125,6 +125,19 @@
    </property>
    <property name="alternatingRowColors">
     <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_close">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>390</y>
+     <width>301</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Fertig / Schließen</string>
    </property>
   </widget>
  </widget>

@@ -16,6 +16,16 @@
 #define PARAM_PROMATPOS_ERSTELLER    "Ersteller"         //Wert 4
 #define PARAM_PROMATPOS_BEARBEITER   "Bearbeiter"        //Wert 5
 #define PARAM_PROMATPOS_BLOCK        "blockiert"         //Wert 6
+#define PARAM_PROMATPOS_BEZIEHUNG    "Beziehung"         //Wert 7
+
+/*
+Beziehung:
+"Artikel_id" + " || " + "Menge" + ggf. NEW_LINE_BR
+
+NEW_LINE_BR muss dann beim vor dem Einlaesen in tz ersetz werden mit "\n"
+
+
+*/
 
 
 

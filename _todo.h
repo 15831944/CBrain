@@ -23,11 +23,18 @@ soll als Template zum Anlegen von neuen projektbezogenen Materiallisten dienen
    ->evtl einfach nicht zulassen, dass user_B abbrechen kann (disable btn cancel)
 
 --> void Form_matlist::on_pushButton_pos_edit_rumpf_clicked()
-    connect...
+    ->//update_table();
 
--->tr(...) für Ausgabe von Umlauten verwenden
+
+-->modul_backup
+    ->Backup data to csv-file
+    ->restore data from csv-file
 
 -->Im-Export-Dialog
+
+-->beim Löschen eines Projektes müssen auch alle promatpos-Tabellen mit gelöscht werden
+
+-->für das löschen von Projekten eine extra-Berechtigung anlegen
 
 
 

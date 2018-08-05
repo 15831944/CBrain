@@ -7,11 +7,13 @@ Form_matlist::Form_matlist(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->lineEdit_projekt->setText("Projekt?");
+    this->model = new QSqlQueryModel();
 }
 
 Form_matlist::~Form_matlist()
 {
     delete ui;
+    delete model;
 }
 
 void Form_matlist::set_db(cbrainbatabase *new_db)
@@ -231,6 +233,9 @@ void Form_matlist::create_table_promatpos(QString bez, QString menge)
             cmd += ", ";
             cmd += PARAM_PROMATPOS_BLOCK;
             cmd += " int(11) unsigned";
+            cmd += ", ";
+            cmd += PARAM_PROMATPOS_BEZIEHUNG;
+            cmd += " tinytext";
             cmd += ")";
             cmd += " ENGINE=InnoDB";
 
@@ -273,7 +278,7 @@ void Form_matlist::update_listwidget_matpos()
         QString itemname;
         itemname += table_ids.zeile(i);
         itemname += " ||| ";
-        itemname += table_bez.zeile(i).replace("#br#", "   ");
+        itemname += table_bez.zeile(i).replace(NEW_LINE_BR, "   ");
         item[i-1] = new QListWidgetItem(itemname  , ui->listWidget_matpos);
         item[i-1]->setFlags(item[i-1]->flags() | Qt::ItemIsUserCheckable); // set checkable flag
         item[i-1]->setCheckState(Qt::Checked); // AND initialize check state
@@ -286,6 +291,98 @@ void Form_matlist::update_listwidget_matpos()
         ui->listWidget_matpos->setCurrentRow(current_row);
     }
 
+}
+
+void Form_matlist::update_table()
+{
+    //-------------------------------------------
+    {
+        QSqlDatabase db;
+
+        db = QSqlDatabase::database("dbglobal");
+        db.setHostName(dbeigen->get_host());
+        db.setDatabaseName(dbeigen->get_dbname());
+        db.setUserName(dbeigen->get_user());
+        db.setPassword(dbeigen->get_pwd());
+
+        if(db.open())
+        {
+            QSqlQuery q(db);
+            QString cmd;
+            cmd += "SELECT ";
+            //------------------------
+            cmd += TABNAME_ARTIKEL;
+            cmd += ".";
+            cmd += PARAM_ARTIKEL_NR;
+            cmd += ", ";
+            //------------------------
+            cmd += TABNAME_ARTIKEL;
+            cmd += ".";
+            cmd += PARAM_ARTIKEL_BEZ;
+            cmd += ", ";
+            //------------------------
+            cmd += promat_tabname;
+            cmd += ".";
+            cmd += PARAM_PROMAT_ME_GESAMTBEDARF;
+            cmd += ", ";
+            //------------------------
+            cmd += promat_tabname;
+            cmd += ".";
+            cmd += PARAM_PROMAT_ME_ERFASST;
+            cmd += ", ";
+            //------------------------
+            cmd += promat_tabname;
+            cmd += ".";
+            cmd += PARAM_PROMAT_ME_UNKLAR;
+            cmd += ", ";
+            //------------------------
+            cmd += promat_tabname;
+            cmd += ".";
+            cmd += PARAM_PROMAT_ME_ZURBEST;
+            cmd += ", ";
+            //------------------------
+            cmd += promat_tabname;
+            cmd += ".";
+            cmd += PARAM_PROMAT_ME_VERARBEITET;
+            //cmd += ", ";
+            //------------------------
+            //------------------------
+            cmd += " FROM ";
+            cmd += promat_tabname;
+            //------------------------
+            //------------------------
+            cmd += " LEFT JOIN ";
+            cmd += TABNAME_ARTIKEL;
+            cmd += " ON (";
+            cmd += promat_tabname;
+            cmd += ".";
+            cmd += PARAM_PROMAT_ARTIKEL_ID;
+            cmd += " = ";
+            cmd += TABNAME_ARTIKEL;
+            cmd += ".";
+            cmd += PARAM_ARTIKEL_ID;
+            cmd += ")";
+            //------------------------
+
+            if(q.exec(cmd))
+            {
+                model->setQuery(q);
+                ui->tableView->setModel(model);
+            }else
+            {
+                QMessageBox mb;
+                mb.setText("Fehler:\n" + q.lastError().text());
+                mb.exec();
+            }
+            db.close();
+        }else
+        {
+            QMessageBox mb;
+            mb.setText(tr("Fehler bei Datenbankverbindung!"));
+            mb.exec();
+        }
+    }
+    //-------------------------------------------
 }
 
 //-------------------------------------Buttons:
@@ -407,9 +504,8 @@ void Form_matlist::on_pushButton_pos_edit_rumpf_clicked()
             d->set_userid(user);
             d->set_db(dbeigen);
             d->set_tabname(tabname);
-
-            //connect....
-
+            connect(d, SIGNAL(signal_close()),          \
+                    this, SLOT(slot_update_table())     );
             d->exec();
             delete d;
         }else
@@ -487,6 +583,9 @@ void Form_matlist::on_lineEdit_projekt_id_textChanged(const QString &arg1)
         // *** == Wert von arg1 == ID des Projektes
         create_table_promatposlist();
         update_listwidget_matpos();
+        promat_tabname  = TABNAME_PROMAT;
+        promat_tabname += arg1;
+        update_table();
     }
 }
 
@@ -671,6 +770,113 @@ void Form_matlist::slot_delete_matpos()
 
 }
 
+void Form_matlist::slot_update_table()
+{
+    QString posliste;
+    posliste  = TABNAME_PROMATPOSLIST;
+    posliste += ui->lineEdit_projekt_id->text();
+
+    QString promat_id_tabname;
+    promat_id_tabname += TABNAME_PROMAT;
+    promat_id_tabname += ui->lineEdit_projekt_id->text();
+
+    text_zeilenweise matpos_ids = dbeigen->get_data_tz(posliste, PARAM_PROMATPOSLIST_ID);
+    text_zeilenweise names_postables;
+    for(uint i=1; i<=matpos_ids.zeilenanzahl() ;i++)
+    {
+        QString name;
+        name += TABNAME_PROMATPOS;
+        name += ui->lineEdit_projekt_id->text();
+        name += "_";
+        name += int_to_qstring(i);
+        names_postables.zeile_anhaengen(name);
+    }
+    artikel_mengenerfassung ame;
+    for(uint i=1; i<=names_postables.zeilenanzahl() ;i++)
+    {
+        text_zeilenweise artikel_ids = dbeigen->get_data_tz(names_postables.zeile(i), \
+                                                            PARAM_PROMATPOS_ARTIKEL_ID);
+        text_zeilenweise mengen = dbeigen->get_data_tz(names_postables.zeile(i), \
+                                                       PARAM_PROMATPOS_MENGE);
+        text_zeilenweise status_ids = dbeigen->get_data_tz(names_postables.zeile(i), \
+                                                            PARAM_PROMATPOS_STATUS_ID);
+        text_zeilenweise beziehungen = dbeigen->get_data_tz(names_postables.zeile(i), \
+                                                            PARAM_PROMATPOS_BEZIEHUNG);
+        ame.add_matpos(artikel_ids,\
+                       mengen,\
+                       status_ids,\
+                       beziehungen);
+    }
+
+    //Mengen aller erfassten Artikel nullen:
+    {
+        text_zeilenweise ids = dbeigen->get_data_tz(promat_id_tabname, PARAM_PROMAT_ID);
+        text_zeilenweise pa, val;
+        pa.zeile_anhaengen(PARAM_PROMAT_ME_GESAMTBEDARF);
+        pa.zeile_anhaengen(PARAM_PROMAT_ME_ERFASST);
+        pa.zeile_anhaengen(PARAM_PROMAT_ME_UNKLAR);
+        pa.zeile_anhaengen(PARAM_PROMAT_ME_ZURBEST);
+        val.zeile_anhaengen("0");
+        val.zeile_anhaengen("0");
+        val.zeile_anhaengen("0");
+        val.zeile_anhaengen("0");
+
+        for(uint i=1; i<=ids.zeilenanzahl() ;i++)
+        {
+            dbeigen->data_edit(promat_id_tabname, pa, val, ids.zeile(i));
+        }
+    }
+    //Daten von ame zurück in Tabelle "promat_id" speichern
+    text_zeilenweise artikel_ids    = ame.get_artikel_ids();
+    text_zeilenweise menge_gesamt   = ame.get_mengen_gesamt();
+    text_zeilenweise menge_erfasst  = ame.get_mengen_erfasst();
+    text_zeilenweise menge_unklar   = ame.get_mengen_unklar();
+    text_zeilenweise menge_bestellen= ame.get_mengen_bestellen();    
+
+    for(uint i=1; i<=artikel_ids.zeilenanzahl() ;i++)
+    {
+        QString akt_artikel_id = artikel_ids.zeile(i);
+        QString index = dbeigen->get_data_id_QString(promat_id_tabname, PARAM_PROMAT_ARTIKEL_ID, \
+                                                     akt_artikel_id);
+        if(index.isEmpty())
+        {
+            text_zeilenweise pa, val;
+            pa.zeile_anhaengen(PARAM_PROMAT_ARTIKEL_ID);
+            val.zeile_anhaengen(akt_artikel_id);
+            dbeigen->data_new(promat_id_tabname, pa,\
+                              val);
+            index = dbeigen->get_data_id_QString(promat_id_tabname, PARAM_PROMAT_ARTIKEL_ID, \
+                                                                 akt_artikel_id);
+        }
+        dbeigen->data_edit(promat_id_tabname, PARAM_PROMAT_ME_GESAMTBEDARF,\
+                           menge_gesamt.zeile(i), index);
+        dbeigen->data_edit(promat_id_tabname, PARAM_PROMAT_ME_ERFASST,\
+                           menge_erfasst.zeile(i), index);
+        dbeigen->data_edit(promat_id_tabname, PARAM_PROMAT_ME_UNKLAR,\
+                           menge_unklar.zeile(i), index);
+        dbeigen->data_edit(promat_id_tabname, PARAM_PROMAT_ME_ZURBEST,\
+                           menge_bestellen.zeile(i), index);
+    }
+
+    //Zeilen mit Artikeln löschen bei denen alle Mengenangaben 0 sind
+    {
+        text_zeilenweise ids = dbeigen->get_data_tz(promat_id_tabname, PARAM_PROMAT_ID);
+        text_zeilenweise menge_verarbeitet;
+        menge_gesamt        = dbeigen->get_data_tz(promat_id_tabname, PARAM_PROMAT_ME_GESAMTBEDARF);
+        menge_verarbeitet   = dbeigen->get_data_tz(promat_id_tabname, PARAM_PROMAT_ME_VERARBEITET);
+
+        for(uint i=1; i<=ids.zeilenanzahl() ;i++)
+        {
+            double summe = menge_gesamt.zeile(i).toDouble() + menge_verarbeitet.zeile(i).toDouble();
+            if(summe == 0)
+            {
+                dbeigen->data_del(promat_id_tabname, ids.zeile(i));
+            }
+        }
+    }
+
+    update_table();
+}
 
 
 

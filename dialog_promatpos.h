@@ -6,6 +6,7 @@
 
 #include "text_zeilenweise.h"
 #include "umwandeln.h"
+#include "_tabellennamen.h"
 
 namespace Ui {
 class Dialog_promatpos;

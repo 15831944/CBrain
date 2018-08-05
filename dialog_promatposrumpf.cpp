@@ -8,7 +8,7 @@ Dialog_promatposrumpf::Dialog_promatposrumpf(QWidget *parent) :
     ui->setupUi(this);
     current_userid = "0";
     this->model = new QSqlQueryModel();
-    //setWindowFlags(windowFlags() & ~Qt::WindowCloseButtonHint);
+    setWindowFlags(windowFlags() & ~Qt::WindowCloseButtonHint);
     setWindowFlags(windowFlags() | Qt::WindowMaximizeButtonHint);
 }
 
@@ -66,8 +66,14 @@ void Dialog_promatposrumpf::resizeEvent(QResizeEvent *event)
 
     //links tableview:
     ui->tableView->setFixedWidth(b_li);
-    ui->tableView->setFixedHeight(hoehe - 3 - h_btn - ui->lineEdit_filter->height());
+    ui->tableView->setFixedHeight(hoehe - 4 - h_btn*2 - ui->lineEdit_filter->height());
     ui->tableView->move(1, 1 + h_btn + 1 + ui->lineEdit_filter->height() - 1);
+
+    //links Ferig btn:
+    ui->pushButton_close->setFixedWidth(ui->tableView->width());
+    ui->pushButton_close->move(1, \
+                               1 + h_btn + 1 + ui->lineEdit_filter->height() - 1 \
+                               + 1 + ui->tableView->height());
 
     //rechts Kopfzeile:
     ui->label_favourite->setFixedSize(b_li, h_btn);
@@ -152,7 +158,7 @@ void Dialog_promatposrumpf::update_table()
         cmd += " = ";
         cmd += TABNAME_STATUS;
         cmd += ".";
-        cmd += PARAM_STATUS_STATUS;
+        cmd += PARAM_STATUS_ID;
         cmd += ")";
         //------------------------
         if(!ui->lineEdit_filter->text().isEmpty())
@@ -207,10 +213,12 @@ void Dialog_promatposrumpf::update_table()
 
 void Dialog_promatposrumpf::update_favorit()
 {
-    text_zeilenweise fav;
-
     if(dbeigen != NULL)
     {
+        fav_id_tz.clear();
+        fav_nr_tz.clear();
+        fav_bez_tz.clear();
+
         QSqlDatabase db;
 
         db = QSqlDatabase::database("dbglobal");
@@ -251,13 +259,9 @@ void Dialog_promatposrumpf::update_favorit()
             {
                 while(q.next())
                 {
-                    QString tmp;
-                    tmp += q.value(0).toString();
-                    tmp += " ||| ";
-                    tmp += q.value(1).toString();
-                    tmp += " ||| ";
-                    tmp += q.value(2).toString();
-                    fav.zeile_anhaengen(tmp);
+                    fav_id_tz.zeile_anhaengen(q.value(0).toString());
+                    fav_nr_tz.zeile_anhaengen(q.value(1).toString());
+                    fav_bez_tz.zeile_anhaengen(q.value(2).toString());
                 }
             }else
             {
@@ -273,9 +277,632 @@ void Dialog_promatposrumpf::update_favorit()
             mb.setText(tr("Fehler bei Datenbankverbindung!"));
             mb.exec();
         }
-        for(uint i=1; i<=fav.zeilenanzahl() ;i++)
+
+        for(uint i=1; i<=fav_id_tz.zeilenanzahl() ;i++)
         {
-            ui->listWidget_favourite->addItem(fav.zeile(i));
+            QString zeile;
+            zeile += fav_nr_tz.zeile(i);
+            zeile += "   ";
+            zeile += fav_bez_tz.zeile(i);
+            ui->listWidget_favourite->addItem(zeile);
         }
     }
 }
+
+//--------------------------------------------private Funktionen:
+bool Dialog_promatposrumpf::artikel_bereits_erfasst(QString artikel_id)
+{
+    if(dbeigen != NULL)
+    {
+        text_zeilenweise ids = dbeigen->get_data_tz(tabname, PARAM_PROMATPOS_ARTIKEL_ID);
+
+        for(uint i=1; i<=ids.zeilenanzahl() ;i++)
+        {
+            if(ids.zeile(i) == artikel_id)
+            {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+QString Dialog_promatposrumpf::get_own_id_from_artikel_id(QString artikel_id)
+{
+    if(dbeigen != NULL)
+    {
+        text_zeilenweise ids = dbeigen->get_data_tz(tabname, PARAM_PROMATPOS_ID);
+        text_zeilenweise artikal_ids = dbeigen->get_data_tz(tabname, PARAM_PROMATPOS_ARTIKEL_ID);
+
+        for(uint i=1; i<=ids.zeilenanzahl() ;i++)
+        {
+            if(artikal_ids.zeile(i) == artikel_id)
+            {
+                return ids.zeile(i);
+            }
+        }
+    }
+    return "";
+}
+
+void Dialog_promatposrumpf::bearbeiten_dialog(QString artikel_id)
+{
+    idbuffer = get_own_id_from_artikel_id(artikel_id);
+    dbeigen->data_edit(tabname, PARAM_PROMATPOS_BLOCK, current_userid, idbuffer);
+
+    Dialog_artikel_verwenden *d = new Dialog_artikel_verwenden(this);
+    d->set_db(dbeigen);
+    d->set_artikel_id(artikel_id);
+    text_zeilenweise data_for_dialog;
+    data_for_dialog.zeile_anhaengen(dbeigen->get_data_qstring(tabname, PARAM_PROMATPOS_MENGE, idbuffer));
+    data_for_dialog.zeile_anhaengen(dbeigen->get_data_qstring(tabname, PARAM_PROMATPOS_STATUS_ID, idbuffer));
+    data_for_dialog.zeile_anhaengen(dbeigen->get_data_qstring(tabname, PARAM_PROMATPOS_BEZIEHUNG, idbuffer));
+    d->set_data(data_for_dialog);
+    d->setWindowTitle(tr("Artikeleintrag bearbeiten"));
+    connect(d, SIGNAL(signal_send_data(text_zeilenweise)), \
+            this, SLOT(slot_edit_data(text_zeilenweise))    );
+    connect(d, SIGNAL(signal_cancel()),             \
+            this, SLOT(slot_edit_dialog_cancel())   );
+    d->exec();
+    delete d;
+}
+//--------------------------------------------Buttons:
+void Dialog_promatposrumpf::on_pushButton_usefavourite_clicked()
+{
+    if(ui->listWidget_favourite->currentRow() != -1)
+    {
+        QString artikel_id = fav_id_tz.zeile(ui->listWidget_favourite->currentRow()+1);
+
+        if(!artikel_bereits_erfasst(artikel_id) == true)
+        {
+            Dialog_artikel_verwenden *d = new Dialog_artikel_verwenden(this);
+            d->set_db(dbeigen);
+            d->set_artikel_id(artikel_id);
+            d->setWindowTitle(tr("Favoriten verwenden"));
+            connect(d, SIGNAL(signal_send_data(text_zeilenweise)), \
+                    this, SLOT(slot_new_data(text_zeilenweise))    );
+            d->exec();
+            delete d;
+        }else
+        {
+            QMessageBox mb;
+            mb.setText(tr("Artikeleintrag ist bereits in der Liste!"));
+            mb.exec();
+
+            //Bearbeiten-Dialog öffnen
+            bearbeiten_dialog(artikel_id);
+        }
+
+    }else
+    {
+        QMessageBox mb;
+        mb.setText(tr("Bitte zuest einen Favoriten wählen"));
+        mb.exec();
+    }
+}
+
+void Dialog_promatposrumpf::on_pushButton_new_clicked()
+{
+    text_zeilenweise tz;
+    text_zeilenweise ids;
+    //-------------------------------------------
+    {
+        QSqlDatabase db;
+
+        db = QSqlDatabase::database("dbglobal");
+        db.setHostName(dbeigen->get_host());
+        db.setDatabaseName(dbeigen->get_dbname());
+        db.setUserName(dbeigen->get_user());
+        db.setPassword(dbeigen->get_pwd());
+
+        if(db.open())
+        {
+            QSqlQuery q(db);
+            QString cmd;
+            cmd += "SELECT ";
+            //------------------------
+            cmd += TABNAME_ARTIKEL;
+            cmd += ".";
+            cmd += PARAM_ARTIKEL_ID;
+            cmd += ", ";
+            //------------------------
+            cmd += TABNAME_ARTIKEL;
+            cmd += ".";
+            cmd += PARAM_ARTIKEL_NR;
+            cmd += ", ";
+            //------------------------
+            cmd += TABNAME_ARTIKEL;
+            cmd += ".";
+            cmd += PARAM_ARTIKEL_BEZ;
+            //cmd += ", ";
+            //------------------------
+            cmd += " FROM ";
+            cmd += TABNAME_ARTIKEL;
+            //------------------------
+            cmd += " GROUP BY ";
+            cmd += TABNAME_ARTIKEL;
+            cmd += ".";
+            cmd += PARAM_ARTIKEL_ID;
+            //------------------------
+            cmd += " ORDER BY ";            //Sortiert nach:
+            cmd += TABNAME_ARTIKEL;
+            cmd += ".";
+            cmd += PARAM_ARTIKEL_NR;
+            //------------------------
+
+            if(q.exec(cmd))
+            {
+                while(q.next())
+                {
+                    ids.zeile_anhaengen(q.value(0).toString()); //ID
+
+                    QString tmp;
+                    tmp += q.value(1).toString();   //Artikel-Nummer
+                    tmp += "   ";
+                    tmp += q.value(2).toString();   //Artikel-Bezeichnung
+                    tz.zeile_anhaengen(tmp);
+                }
+            }else
+            {
+                QMessageBox mb;
+                mb.setText("Fehler:\n" + q.lastError().text());
+                mb.exec();
+            }
+            db.close();
+
+        }else
+        {
+            QMessageBox mb;
+            mb.setText(tr("Fehler bei Datenbankverbindung!"));
+            mb.exec();
+        }
+    }
+    //-------------------------------------------
+    Dialog_dataselection *d = new Dialog_dataselection(this);
+    d->set_data(tz, ids);
+    d->setWindowTitle("Artikeleintag erstellen");
+    d->set_anz_returnwerte(1);
+    connect(d, SIGNAL(signal_send_selection(text_zeilenweise)), \
+            this, SLOT(slot_new_artikel(text_zeilenweise))           );
+    d->exec();
+    delete d;
+}
+
+void Dialog_promatposrumpf::on_pushButton_delete_clicked()
+{
+    text_zeilenweise tz;
+    text_zeilenweise ids;
+    //-------------------------------------------
+    {
+        QSqlDatabase db;
+
+        db = QSqlDatabase::database("dbglobal");
+        db.setHostName(dbeigen->get_host());
+        db.setDatabaseName(dbeigen->get_dbname());
+        db.setUserName(dbeigen->get_user());
+        db.setPassword(dbeigen->get_pwd());
+
+        if(db.open())
+        {
+            QSqlQuery q(db);
+            QString cmd;
+            cmd += "SELECT ";
+            //------------------------
+            cmd += tabname;
+            cmd += ".";
+            cmd += PARAM_PROMATPOS_ID;
+            cmd += ", ";
+            //------------------------
+            cmd += TABNAME_ARTIKEL;
+            cmd += ".";
+            cmd += PARAM_ARTIKEL_NR;
+            cmd += ", ";
+            //------------------------
+            cmd += TABNAME_ARTIKEL;
+            cmd += ".";
+            cmd += PARAM_ARTIKEL_BEZ;
+            //cmd += ", ";
+            //------------------------
+            cmd += " FROM ";
+            cmd += tabname;
+            //------------------------
+            cmd += " LEFT JOIN ";
+            cmd += TABNAME_ARTIKEL;
+            cmd += " ON (";
+            cmd += tabname;
+            cmd += ".";
+            cmd += PARAM_PROMATPOS_ARTIKEL_ID;
+            cmd += " = ";
+            cmd += TABNAME_ARTIKEL;
+            cmd += ".";
+            cmd += PARAM_ARTIKEL_ID;
+            cmd += ")";
+            //------------------------
+            if(!ui->lineEdit_filter->text().isEmpty())
+            {
+                cmd += " WHERE ";
+                cmd += PARAM_ARTIKEL_NR;
+                cmd += " LIKE \'%";
+                cmd += ui->lineEdit_filter->text();
+                cmd += "%\'";
+                cmd += " OR ";
+                cmd += PARAM_ARTIKEL_BEZ;
+                cmd += " LIKE \'%";
+                cmd += ui->lineEdit_filter->text();
+                cmd += "%\'";
+            }
+            //------------------------
+            cmd += " GROUP BY ";
+            cmd += tabname;
+            cmd += ".";
+            cmd += PARAM_PROMATPOS_ID;
+            //------------------------
+            cmd += " ORDER BY ";            //Sortiert nach:
+            cmd += TABNAME_ARTIKEL;
+            cmd += ".";
+            cmd += PARAM_ARTIKEL_NR;
+            //------------------------
+
+            if(q.exec(cmd))
+            {
+                while(q.next())
+                {
+                    ids.zeile_anhaengen(q.value(0).toString()); //ID
+
+                    QString tmp;
+                    tmp += q.value(1).toString();   //Artikel-Nummer
+                    tmp += "   ";
+                    tmp += q.value(2).toString();   //Artikel-Bezeichnung
+                    tz.zeile_anhaengen(tmp);
+                }
+            }else
+            {
+                QMessageBox mb;
+                mb.setText("Fehler:\n" + q.lastError().text());
+                mb.exec();
+            }
+            db.close();
+
+        }else
+        {
+            QMessageBox mb;
+            mb.setText(tr("Fehler bei Datenbankverbindung!"));
+            mb.exec();
+        }
+    }
+    //-------------------------------------------
+    Dialog_dataselection *d = new Dialog_dataselection(this);
+    d->set_data(tz, ids);
+    d->setWindowTitle("Artikeleintag loeschen");
+    connect(d, SIGNAL(signal_send_selection(text_zeilenweise)), \
+            this, SLOT(slot_delete(text_zeilenweise))           );
+    d->exec();
+    delete d;
+}
+
+void Dialog_promatposrumpf::on_pushButton_edit_clicked()
+{
+    text_zeilenweise tz;
+    text_zeilenweise ids;
+    //-------------------------------------------
+    {
+        QSqlDatabase db;
+
+        db = QSqlDatabase::database("dbglobal");
+        db.setHostName(dbeigen->get_host());
+        db.setDatabaseName(dbeigen->get_dbname());
+        db.setUserName(dbeigen->get_user());
+        db.setPassword(dbeigen->get_pwd());
+
+        if(db.open())
+        {
+            QSqlQuery q(db);
+            QString cmd;
+            cmd += "SELECT ";
+            //------------------------
+            cmd += tabname;
+            cmd += ".";
+            cmd += PARAM_PROMATPOS_ID;
+            cmd += ", ";
+            //------------------------
+            cmd += TABNAME_ARTIKEL;
+            cmd += ".";
+            cmd += PARAM_ARTIKEL_NR;
+            cmd += ", ";
+            //------------------------
+            cmd += TABNAME_ARTIKEL;
+            cmd += ".";
+            cmd += PARAM_ARTIKEL_BEZ;
+            //cmd += ", ";
+            //------------------------
+            cmd += " FROM ";
+            cmd += tabname;
+            //------------------------
+            cmd += " LEFT JOIN ";
+            cmd += TABNAME_ARTIKEL;
+            cmd += " ON (";
+            cmd += tabname;
+            cmd += ".";
+            cmd += PARAM_PROMATPOS_ARTIKEL_ID;
+            cmd += " = ";
+            cmd += TABNAME_ARTIKEL;
+            cmd += ".";
+            cmd += PARAM_ARTIKEL_ID;
+            cmd += ")";
+            //------------------------
+            //------------------------
+            if(!ui->lineEdit_filter->text().isEmpty())
+            {
+                cmd += " WHERE ";
+                cmd += PARAM_ARTIKEL_NR;
+                cmd += " LIKE \'%";
+                cmd += ui->lineEdit_filter->text();
+                cmd += "%\'";
+                cmd += " OR ";
+                cmd += PARAM_ARTIKEL_BEZ;
+                cmd += " LIKE \'%";
+                cmd += ui->lineEdit_filter->text();
+                cmd += "%\'";
+            }
+            //------------------------
+            cmd += " GROUP BY ";
+            cmd += tabname;
+            cmd += ".";
+            cmd += PARAM_PROMATPOS_ID;
+            //------------------------
+            cmd += " ORDER BY ";            //Sortiert nach:
+            cmd += TABNAME_ARTIKEL;
+            cmd += ".";
+            cmd += PARAM_ARTIKEL_NR;
+            //------------------------
+            //------------------------
+
+            if(q.exec(cmd))
+            {
+                while(q.next())
+                {
+                    ids.zeile_anhaengen(q.value(0).toString()); //ID in der eigenen TAbelle
+
+                    QString tmp;
+                    tmp += q.value(1).toString();   //Artikelnummer
+                    tmp += " ||| ";
+                    tmp += q.value(2).toString();   //Bezeichnung
+                    tz.zeile_anhaengen(tmp);
+                }
+            }else
+            {
+                QMessageBox mb;
+                mb.setText("Fehler:\n" + q.lastError().text());
+                mb.exec();
+            }
+            db.close();
+
+        }else
+        {
+            QMessageBox mb;
+            mb.setText(tr("Fehler bei Datenbankverbindung!"));
+            mb.exec();
+        }
+    }
+    //-------------------------------------------
+    if(tz.zeilenanzahl() == 1)
+    {
+        slot_edit_dialog(ids);
+    }else
+    {
+        Dialog_dataselection *d = new Dialog_dataselection(this);
+        d->set_data(tz, ids);
+        d->set_anz_returnwerte(1);
+        d->setWindowTitle("Artikeleintrag bearbeiten (nur einen)");
+        connect(d, SIGNAL(signal_send_selection(text_zeilenweise)), \
+                this, SLOT(slot_edit_dialog(text_zeilenweise))      );
+        d->exec();
+        delete d;
+    }
+}
+
+void Dialog_promatposrumpf::on_pushButton_close_clicked()
+{
+    this->close();
+    emit signal_close();
+}
+
+//--------------------------------------------private slots:
+void Dialog_promatposrumpf::on_lineEdit_filter_textChanged()
+{
+    update_table();
+}
+
+//--------------------------------------------public slots:
+void Dialog_promatposrumpf::slot_new_data(text_zeilenweise data)
+{
+    if(dbeigen != NULL)
+    {
+        text_zeilenweise pa, val;
+
+        pa.zeile_anhaengen(PARAM_PROMATPOS_ARTIKEL_ID);
+        pa.zeile_anhaengen(PARAM_PROMATPOS_MENGE);
+        pa.zeile_anhaengen(PARAM_PROMATPOS_STATUS_ID);
+        pa.zeile_anhaengen(PARAM_PROMATPOS_ERSTELLER);
+        pa.zeile_anhaengen(PARAM_PROMATPOS_BEZIEHUNG);
+
+        val.zeile_anhaengen(data.zeile(1));
+        val.zeile_anhaengen(data.zeile(2));
+        val.zeile_anhaengen(data.zeile(3));
+        val.zeile_anhaengen(current_userid);
+        val.zeile_anhaengen(data.zeile(4));
+
+        dbeigen->data_new(tabname, pa, val);
+
+        update_table();
+    }
+}
+
+void Dialog_promatposrumpf::slot_edit_data(text_zeilenweise data)
+{
+    if(dbeigen != NULL)
+    {
+        QString blockfromuser_id = dbeigen->get_data_qstring(tabname, PARAM_PROMATPOS_BLOCK, idbuffer);
+        QString blockfromuser = dbeigen->get_data_qstring(tabname, PARAM_PROMATPOS_BLOCK, idbuffer,\
+                                                          TABNAME_PERSONAL, PARAM_PERSONAL_VORNAME);
+        blockfromuser += " ";
+        blockfromuser += dbeigen->get_data_qstring(tabname, PARAM_PROMATPOS_BLOCK, idbuffer,\
+                                                   TABNAME_PERSONAL, PARAM_PERSONAL_NACHNAME);
+
+        QString lasteditinguser = dbeigen->get_data_qstring(tabname, PARAM_PROMATPOS_BEARBEITER, idbuffer,\
+                                                          TABNAME_PERSONAL, PARAM_PERSONAL_VORNAME);
+        lasteditinguser += " ";
+        lasteditinguser += dbeigen->get_data_qstring(tabname, PARAM_PROMATPOS_BEARBEITER, idbuffer,\
+                                                     TABNAME_PERSONAL, PARAM_PERSONAL_NACHNAME);
+
+        if(blockfromuser_id != current_userid)
+        {
+            if(blockfromuser_id == USER_NOBODY_ID)
+            {
+                QString msg;
+                msg += "Die Änderungen konnten nicht gespeichert werden, da der Nutzer \"";
+                msg += lasteditinguser;
+                msg += "\" zwischenzeitlich den Datensatz bearbeitet hat!";
+                QMessageBox mb;
+                mb.setText(tr(msg.toStdString().c_str()));
+                mb.exec();
+            }else
+            {
+                QString msg;
+                msg += "Die Änderungen konnten nicht gespeichert werden, da der Nutzer \"";
+                msg += blockfromuser;
+                msg += "\" den Datensatz derzeit bearbeitet!";
+                QMessageBox mb;
+                mb.setText(tr(msg.toStdString().c_str()));
+                mb.exec();
+            }
+
+        }else
+        {
+            text_zeilenweise pa, val;
+
+            pa.zeile_anhaengen(PARAM_PROMATPOS_MENGE);
+            pa.zeile_anhaengen(PARAM_PROMATPOS_STATUS_ID);
+            pa.zeile_anhaengen(PARAM_PROMATPOS_BEARBEITER);
+            pa.zeile_anhaengen(PARAM_PROMATPOS_BEZIEHUNG);
+            pa.zeile_anhaengen(PARAM_PROMATPOS_BLOCK);
+
+            val.zeile_anhaengen(data.zeile(2));
+            val.zeile_anhaengen(data.zeile(3));
+            val.zeile_anhaengen(current_userid);
+            val.zeile_anhaengen(data.zeile(4));
+            val.zeile_anhaengen(USER_NOBODY_ID);
+
+            QString artikel_id = data.zeile(1);
+
+            dbeigen->data_edit(tabname, pa, val, get_own_id_from_artikel_id(artikel_id));
+        }
+        update_table();
+    }
+}
+
+void Dialog_promatposrumpf::slot_delete(text_zeilenweise ids)
+{
+    dbeigen->data_del(tabname, ids);
+    update_table();
+}
+
+void Dialog_promatposrumpf::slot_new_artikel(text_zeilenweise artikel_ids)
+{
+    QString artikel_id = artikel_ids.zeile(1);
+    if(!artikel_bereits_erfasst(artikel_id) == true)
+    {
+        Dialog_artikel_verwenden *d = new Dialog_artikel_verwenden(this);
+        d->set_db(dbeigen);
+        d->set_artikel_id(artikel_id);
+        d->setWindowTitle(tr("Artikel verwenden"));
+        connect(d, SIGNAL(signal_send_data(text_zeilenweise)), \
+                this, SLOT(slot_new_data(text_zeilenweise))    );
+        d->exec();
+        delete d;
+    }else
+    {
+        QMessageBox mb;
+        mb.setText(tr("Artikeleintrag ist bereits in der Liste!"));
+        mb.exec();
+
+        //Bearbeiten-Dialog öffnen
+        bearbeiten_dialog(artikel_id);
+    }
+
+}
+
+void Dialog_promatposrumpf::slot_edit_dialog(text_zeilenweise ids)
+{
+    idbuffer = ids.zeile(1);
+
+    QString blockfromuser_id = dbeigen->get_data_qstring(tabname, PARAM_PROMATPOS_BLOCK, idbuffer);
+    QString blockfromuser = dbeigen->get_data_qstring(TABNAME_ARTIKEL, PARAM_ARTIKEL_BLOCK, idbuffer,\
+                                                      TABNAME_PERSONAL, PARAM_PERSONAL_VORNAME);
+    blockfromuser += " ";
+    blockfromuser += dbeigen->get_data_qstring(tabname, PARAM_PROMATPOS_BLOCK, idbuffer,\
+                                               TABNAME_PERSONAL, PARAM_PERSONAL_NACHNAME);
+
+    if(blockfromuser_id == USER_NOBODY_ID || blockfromuser.isEmpty() )
+    {
+        QString artikel_id = dbeigen->get_data_qstring(tabname, PARAM_PROMATPOS_ARTIKEL_ID, idbuffer);
+        bearbeiten_dialog(artikel_id);
+    }else
+    {
+        Dialog_yes_no *d = new Dialog_yes_no(this);
+        d->setWindowTitle("Datensatz bereits gesperrt");
+        QString msg;
+        msg += "Dieser Datensatz wurde bereits vom Nutzer \"";
+        msg += blockfromuser;
+        msg += "\" gesperrt.\nBitte stimmen Sie sich mit dem Benutzer ab!\n";
+        msg += "Soll dieser trotzdem zum Bearbeiten geoeffnet werden?";
+        d->setup(msg);
+        idbuffer = ids.zeile(1);
+        connect(d, SIGNAL(signal_yes()), this, SLOT(slot_edit_dialog()));
+
+        d->exec();
+        delete d;
+    }
+}
+
+void Dialog_promatposrumpf::slot_edit_dialog()
+{
+    QString artikel_id = dbeigen->get_data_qstring(tabname, PARAM_PROMATPOS_ARTIKEL_ID, idbuffer);
+    bearbeiten_dialog(artikel_id);
+}
+
+void Dialog_promatposrumpf::slot_edit_dialog_cancel()
+{
+    dbeigen->data_edit(tabname, PARAM_PROMATPOS_BLOCK, USER_NOBODY_ID, idbuffer);
+}
+
+//--------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
