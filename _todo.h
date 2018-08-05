@@ -32,6 +32,13 @@ soll als Template zum Anlegen von neuen projektbezogenen Materiallisten dienen
 
 -->Im-Export-Dialog
 
+-->beim Löschen eines Projektes müssen auch alle promatpos-Tabellen mit gelöscht werden
+
+-->für das löschen von Projekten eine extra-Berechtigung anlegen
+
+-->void Form_matlist::slot_update_table()
+    ->//Mengen der zuvor erfassten Artikel, und nun nicht mehr erfassten Artikel nullen:
+    ->//Zeilen mit Artikeln löschen bei denen alle Mengenangaben 0 sind
 
 
 

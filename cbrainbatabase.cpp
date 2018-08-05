@@ -1061,6 +1061,37 @@ QString cbrainbatabase::get_highest_id(QString tablename)
     return tz.zeile(tz.zeilenanzahl());
 }
 
+QString cbrainbatabase::get_data_id_QString(QString tablename, QString param, QString value)
+{
+    QString id = "";
+    text_zeilenweise ids = get_data_tz(tablename, "id");
+    text_zeilenweise values = get_data_tz(tablename, param);
+    for(uint i=1; i<=ids.zeilenanzahl() ;i++)
+    {
+        if(values.zeile(i) == value)
+        {
+            id = ids.zeile(i);
+            break;
+        }
+    }
+    return id;
+}
+
+text_zeilenweise cbrainbatabase::get_data_id_tz(QString tablename, QString param, QString value)
+{
+    text_zeilenweise return_ids;
+    text_zeilenweise ids = get_data_tz(tablename, "id");
+    text_zeilenweise values = get_data_tz(tablename, param);
+    for(uint i=1; i<=ids.zeilenanzahl() ;i++)
+    {
+        if(values.zeile(i) == value)
+        {
+            return_ids.zeile_anhaengen(ids.zeile(i));
+        }
+    }
+    return return_ids;
+}
+
 //------------------------------------------
 //-------------------------------values:
 text_zeilenweise cbrainbatabase::get_values_from_column(QString tablename,  int column, QString querryfilter)

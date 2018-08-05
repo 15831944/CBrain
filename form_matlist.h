@@ -6,6 +6,7 @@
 #include "cbrainbatabase.h"
 #include "_tabellennamen.h"
 #include "_tabname_projekt.h"
+#include "_tabname_promat.h"
 #include "_tabname_promatpos.h"
 #include "_tabname_promatposlist.h"
 #include "_tabname_personal.h"
@@ -14,6 +15,7 @@
 #include "dialog_promatposrumpf.h"
 #include "text.h"
 #include "dialog_yes_no.h"
+#include "artikel_mengenerfassung.h"
 
 namespace Ui {
 class Form_matlist;
@@ -38,6 +40,7 @@ public slots:
     void slot_edit_matposlist_with_block();
     void slot_edit_matposlist_unblock();
     void slot_delete_matpos();
+    void slot_update_table();
 
 protected:
     void resizeEvent(QResizeEvent *event);
@@ -50,19 +53,21 @@ private slots:
     void on_pushButton_pos_delete_clicked();
     void on_pushButton_check_all_pos_clicked();
     void on_pushButton_check_activ_pos_clicked();
-
     void on_pushButton_pos_edit_rumpf_clicked();
 
 private:
     Ui::Form_matlist *ui;
     cbrainbatabase *dbeigen;
+    QSqlQueryModel *model;
     QString user;
     text_zeilenweise promatposlist_current_data;
     QString promatposlist_current_id;
+    QString promat_tabname;
 
     void create_table_promatposlist();  //Tabelle die die Materialpositionen erfasst
     void create_table_promatpos(QString bez, QString menge); //Tabelle die den Inhalt einer Materialposition erfasst
     void update_listwidget_matpos();
+    void update_table();
 };
 
 #endif // FORM_MATLIST_H

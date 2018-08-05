@@ -8,7 +8,7 @@ Dialog_promatposrumpf::Dialog_promatposrumpf(QWidget *parent) :
     ui->setupUi(this);
     current_userid = "0";
     this->model = new QSqlQueryModel();
-    //setWindowFlags(windowFlags() & ~Qt::WindowCloseButtonHint);
+    setWindowFlags(windowFlags() & ~Qt::WindowCloseButtonHint);
     setWindowFlags(windowFlags() | Qt::WindowMaximizeButtonHint);
 }
 
@@ -66,8 +66,14 @@ void Dialog_promatposrumpf::resizeEvent(QResizeEvent *event)
 
     //links tableview:
     ui->tableView->setFixedWidth(b_li);
-    ui->tableView->setFixedHeight(hoehe - 3 - h_btn - ui->lineEdit_filter->height());
+    ui->tableView->setFixedHeight(hoehe - 4 - h_btn*2 - ui->lineEdit_filter->height());
     ui->tableView->move(1, 1 + h_btn + 1 + ui->lineEdit_filter->height() - 1);
+
+    //links Ferig btn:
+    ui->pushButton_close->setFixedWidth(ui->tableView->width());
+    ui->pushButton_close->move(1, \
+                               1 + h_btn + 1 + ui->lineEdit_filter->height() - 1 \
+                               + 1 + ui->tableView->height());
 
     //rechts Kopfzeile:
     ui->label_favourite->setFixedSize(b_li, h_btn);
@@ -696,6 +702,12 @@ void Dialog_promatposrumpf::on_pushButton_edit_clicked()
     }
 }
 
+void Dialog_promatposrumpf::on_pushButton_close_clicked()
+{
+    this->close();
+    emit signal_close();
+}
+
 //--------------------------------------------private slots:
 void Dialog_promatposrumpf::on_lineEdit_filter_textChanged()
 {
@@ -866,6 +878,8 @@ void Dialog_promatposrumpf::slot_edit_dialog_cancel()
 }
 
 //--------------------------------------------
+
+
 
 
 

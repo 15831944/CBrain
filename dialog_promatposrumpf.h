@@ -33,6 +33,9 @@ public:
     void set_db(cbrainbatabase *new_db);
     void show();
 
+signals:
+    void signal_close();
+
 public slots:
     void slot_new_data(text_zeilenweise data);
     void slot_edit_data(text_zeilenweise data);
@@ -51,7 +54,7 @@ private slots:
     void on_lineEdit_filter_textChanged();
     void on_pushButton_new_clicked();
     void on_pushButton_edit_clicked();
-
+    void on_pushButton_close_clicked();
 
 private:
     Ui::Dialog_promatposrumpf *ui;

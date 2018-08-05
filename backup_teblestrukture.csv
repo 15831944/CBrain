@@ -88,8 +88,3 @@ Field	Type	Null	Key	Default	Extra
 id	int(11) unsigned	NO	PRI	---	auto_increment	
 Vorgang	varchar(40)	YES	---	---	---	
 <ENDE_Tabelle>
-<BEGIN_Tabelle>
-template_materialliste
-Field	Type	Null	Key	Default	Extra
-id	int(11) unsigned	NO	PRI	---	auto_increment	
-<ENDE_Tabelle>

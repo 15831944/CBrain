@@ -14,6 +14,8 @@ Werte:
 03  zur Bestellung freigegeben
 
 */
-
+#define STATUS_ERFASST   "1"
+#define STATUS_UNKLAR    "2"
+#define STATUS_BESTELLEN "3"
 
 #endif // _TABNAME_STATUS_H

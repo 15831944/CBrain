@@ -18,6 +18,15 @@
 #define PARAM_PROMATPOS_BLOCK        "blockiert"         //Wert 6
 #define PARAM_PROMATPOS_BEZIEHUNG    "Beziehung"         //Wert 7
 
+/*
+Beziehung:
+"Artikel_id" + " || " + "Menge" + ggf. NEW_LINE_BR
+
+NEW_LINE_BR muss dann beim vor dem Einlaesen in tz ersetz werden mit "\n"
+
+
+*/
+
 
 
 #endif // _TABNAME_PROMATPOS_H

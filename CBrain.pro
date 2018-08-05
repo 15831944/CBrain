@@ -49,7 +49,8 @@ SOURCES += main.cpp\
     dialog_promatposrumpf.cpp \
     dialog_artikel_beziehung.cpp \
     dialog_artikel_fav_reihenfolge.cpp \
-    dialog_artikel_verwenden.cpp
+    dialog_artikel_verwenden.cpp \
+    artikel_mengenerfassung.cpp
 
 HEADERS  += mainwindow.h \
     defines_filenames.h \
@@ -99,7 +100,8 @@ HEADERS  += mainwindow.h \
     dialog_promatposrumpf.h \
     dialog_artikel_beziehung.h \
     dialog_artikel_fav_reihenfolge.h \
-    dialog_artikel_verwenden.h
+    dialog_artikel_verwenden.h \
+    artikel_mengenerfassung.h
 
 FORMS    += mainwindow.ui \
     dialog_login.ui \
