@@ -775,6 +775,11 @@ void Form_matlist::slot_update_table()
     QString posliste;
     posliste  = TABNAME_PROMATPOSLIST;
     posliste += ui->lineEdit_projekt_id->text();
+
+    QString promat_id_tabname;
+    promat_id_tabname += TABNAME_PROMAT;
+    promat_id_tabname += ui->lineEdit_projekt_id->text();
+
     text_zeilenweise matpos_ids = dbeigen->get_data_tz(posliste, PARAM_PROMATPOSLIST_ID);
     text_zeilenweise names_postables;
     for(uint i=1; i<=matpos_ids.zeilenanzahl() ;i++)
@@ -803,15 +808,30 @@ void Form_matlist::slot_update_table()
                        beziehungen);
     }
 
+    //Mengen aller erfassten Artikel nullen:
+    {
+        text_zeilenweise ids = dbeigen->get_data_tz(promat_id_tabname, PARAM_PROMAT_ID);
+        text_zeilenweise pa, val;
+        pa.zeile_anhaengen(PARAM_PROMAT_ME_GESAMTBEDARF);
+        pa.zeile_anhaengen(PARAM_PROMAT_ME_ERFASST);
+        pa.zeile_anhaengen(PARAM_PROMAT_ME_UNKLAR);
+        pa.zeile_anhaengen(PARAM_PROMAT_ME_ZURBEST);
+        val.zeile_anhaengen("0");
+        val.zeile_anhaengen("0");
+        val.zeile_anhaengen("0");
+        val.zeile_anhaengen("0");
+
+        for(uint i=1; i<=ids.zeilenanzahl() ;i++)
+        {
+            dbeigen->data_edit(promat_id_tabname, pa, val, ids.zeile(i));
+        }
+    }
     //Daten von ame zurück in Tabelle "promat_id" speichern
     text_zeilenweise artikel_ids    = ame.get_artikel_ids();
     text_zeilenweise menge_gesamt   = ame.get_mengen_gesamt();
     text_zeilenweise menge_erfasst  = ame.get_mengen_erfasst();
     text_zeilenweise menge_unklar   = ame.get_mengen_unklar();
-    text_zeilenweise menge_bestellen= ame.get_mengen_bestellen();
-    QString promat_id_tabname;
-    promat_id_tabname += TABNAME_PROMAT;
-    promat_id_tabname += ui->lineEdit_projekt_id->text();
+    text_zeilenweise menge_bestellen= ame.get_mengen_bestellen();    
 
     for(uint i=1; i<=artikel_ids.zeilenanzahl() ;i++)
     {
@@ -838,9 +858,22 @@ void Form_matlist::slot_update_table()
                            menge_bestellen.zeile(i), index);
     }
 
-    //Mengen der zuvor erfassten Artikel, und nun nicht mehr erfassten Artikel nullen:
-
     //Zeilen mit Artikeln löschen bei denen alle Mengenangaben 0 sind
+    {
+        text_zeilenweise ids = dbeigen->get_data_tz(promat_id_tabname, PARAM_PROMAT_ID);
+        text_zeilenweise menge_verarbeitet;
+        menge_gesamt        = dbeigen->get_data_tz(promat_id_tabname, PARAM_PROMAT_ME_GESAMTBEDARF);
+        menge_verarbeitet   = dbeigen->get_data_tz(promat_id_tabname, PARAM_PROMAT_ME_VERARBEITET);
+
+        for(uint i=1; i<=ids.zeilenanzahl() ;i++)
+        {
+            double summe = menge_gesamt.zeile(i).toDouble() + menge_verarbeitet.zeile(i).toDouble();
+            if(summe == 0)
+            {
+                dbeigen->data_del(promat_id_tabname, ids.zeile(i));
+            }
+        }
+    }
 
     update_table();
 }

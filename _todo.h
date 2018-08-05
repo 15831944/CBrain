@@ -36,9 +36,6 @@ soll als Template zum Anlegen von neuen projektbezogenen Materiallisten dienen
 
 -->für das löschen von Projekten eine extra-Berechtigung anlegen
 
--->void Form_matlist::slot_update_table()
-    ->//Mengen der zuvor erfassten Artikel, und nun nicht mehr erfassten Artikel nullen:
-    ->//Zeilen mit Artikeln löschen bei denen alle Mengenangaben 0 sind
 
 
 
