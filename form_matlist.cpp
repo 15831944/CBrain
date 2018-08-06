@@ -69,6 +69,7 @@ void Form_matlist::resizeEvent(QResizeEvent *event)
     ui->checkBox_erfasst->setFixedHeight(h_btn);
     ui->checkBox_unklar->setFixedHeight(h_btn);
     ui->checkBox_bestellen->setFixedHeight(h_btn);
+    ui->checkBox_pos_status->setFixedHeight(h_btn);
 
     ui->checkBox_erfasst->move(1,\
                                1 + h_btn + 1);
@@ -76,6 +77,10 @@ void Form_matlist::resizeEvent(QResizeEvent *event)
                               1 + h_btn + 1);
     ui->checkBox_bestellen->move(1 + ui->checkBox_erfasst->width() + 1 + ui->checkBox_unklar->width() + 1,\
                                  1 + h_btn + 1);
+    ui->checkBox_pos_status->move(1 + ui->checkBox_erfasst->width() + 1 +   \
+                                  ui->checkBox_unklar->width() + 1 +        \
+                                  ui->checkBox_bestellen->width() + 1,      \
+                                  1 + h_btn + 1                             );
 
     //links Tabelle:
     ui->tableView->setFixedSize(b_li,\
@@ -326,7 +331,7 @@ void Form_matlist::update_table()
             name += TABNAME_PROMATPOS;
             name += ui->lineEdit_projekt_id->text();
             name += "_";
-            name += int_to_qstring(i);
+            name += matpos_ids.zeile(i);
             names_postables.zeile_anhaengen(name);
         }
     }
@@ -427,16 +432,20 @@ void Form_matlist::update_table()
                 cmd += PARAM_PROMATPOS_MENGE;
                 cmd += " AS ";
                 cmd += matpos_names.zeile(i);
-                cmd += ", ";
-                //------------------------
-                cmd += "status_";
-                cmd += names_postables.zeile(i);
-                cmd += ".";
-                cmd += PARAM_STATUS_STATUS;
-                cmd += " AS ";
-                cmd += "Status";
-                //cmd += ", ";
-                //------------------------
+                if(ui->checkBox_pos_status->isChecked())
+                {
+                    cmd += ", ";
+                    //------------------------
+                    cmd += "status_";
+                    cmd += names_postables.zeile(i);
+                    cmd += ".";
+                    cmd += PARAM_STATUS_STATUS;
+                    cmd += " AS ";
+                    cmd += "Status";
+                    //cmd += ", ";
+                    //------------------------
+                }
+
                 if(i != names_postables.zeilenanzahl())
                 {
                     cmd += ", ";
@@ -808,6 +817,76 @@ void Form_matlist::on_pushButton_update_table_clicked()
     update_table();
 }
 
+void Form_matlist::on_pushButton_pos_copy_clicked()
+{
+    if(!ui->lineEdit_projekt_id->text().isEmpty())
+    {
+        if(ui->listWidget_matpos->currentRow() != -1)
+        {
+            QString tabnameposlist;
+            tabnameposlist  = TABNAME_PROMATPOSLIST;
+            tabnameposlist += ui->lineEdit_projekt_id->text();
+
+            QString id_promatposlist = text_links(ui->listWidget_matpos->currentItem()->text(), " ||| ");
+            QString bez, menge;
+            bez = dbeigen->get_data_qstring(tabnameposlist, PARAM_PROMATPOSLIST_BEZ, id_promatposlist);
+            bez += "_Kopie";
+            menge = dbeigen->get_data_qstring(tabnameposlist, PARAM_PROMATPOSLIST_MENGE, id_promatposlist);
+
+            //Eintrag in promatposlist-Tabelle anlegen:
+            create_table_promatpos(bez, menge);
+
+            //Tabelleninhalt kopieren:
+            QString tabname = tabnameposlist;
+            tabname += "_";
+            tabname += id_promatposlist;
+
+            //Inhalt der altenTabelle auslesen:
+            text_zeilenweise artikel_ids, mengen, status_ids, beziehungen;
+            artikel_ids     = dbeigen->get_data_tz(tabname, PARAM_PROMATPOS_ARTIKEL_ID);
+            mengen          = dbeigen->get_data_tz(tabname, PARAM_PROMATPOS_MENGE);
+            status_ids      = dbeigen->get_data_tz(tabname, PARAM_PROMATPOS_STATUS_ID);
+            beziehungen     = dbeigen->get_data_tz(tabname, PARAM_PROMATPOS_BEZIEHUNG);
+
+            //Inhalt in neue Tabelle schreiben:
+            text_zeilenweise pa, val;
+            pa.zeile_anhaengen(PARAM_PROMATPOS_ARTIKEL_ID);
+            pa.zeile_anhaengen(PARAM_PROMATPOS_MENGE);
+            pa.zeile_anhaengen(PARAM_PROMATPOS_STATUS_ID);
+            pa.zeile_anhaengen(PARAM_PROMATPOS_ERSTELLER);
+            pa.zeile_anhaengen(PARAM_PROMATPOS_BEZIEHUNG);
+
+            tabname  = tabnameposlist;
+            tabname += "_";
+            tabname += dbeigen->get_highest_id(tabnameposlist);
+
+            for(uint i=1; i<=artikel_ids.zeilenanzahl() ;i++)
+            {
+                val.clear();
+                val.zeile_anhaengen(artikel_ids.zeile(i));
+                val.zeile_anhaengen(mengen.zeile(i));
+                val.zeile_anhaengen(status_ids.zeile(i));
+                val.zeile_anhaengen(user);
+                val.zeile_anhaengen(beziehungen.zeile(i));
+                dbeigen->data_new(tabname, pa, val);
+            }
+
+            update_listwidget_matpos();
+            slot_update_table();
+        }else
+        {
+            QMessageBox mb;
+            mb.setText(tr("Bitte zuerst eine Position wälen!"));
+            mb.exec();
+        }
+    }else
+    {
+        QMessageBox mb;
+        mb.setText(tr("Bitte zuerst ein Projekt festlegen!"));
+        mb.exec();
+    }
+}
+
 //-------------------------------------private Slots:
 void Form_matlist::on_lineEdit_projekt_id_textChanged(const QString &arg1)
 {
@@ -834,20 +913,38 @@ void Form_matlist::on_lineEdit_filter_textChanged()
     update_table();
 }
 
-void Form_matlist::on_checkBox_erfasst_toggled(bool checked)
+void Form_matlist::on_checkBox_erfasst_toggled()
 {
-    update_table();
+    if(!ui->lineEdit_projekt_id->text().isEmpty())
+    {
+        update_table();
+    }
 }
 
-void Form_matlist::on_checkBox_unklar_toggled(bool checked)
+void Form_matlist::on_checkBox_unklar_toggled()
 {
-    update_table();
+    if(!ui->lineEdit_projekt_id->text().isEmpty())
+    {
+        update_table();
+    }
 }
 
-void Form_matlist::on_checkBox_bestellen_toggled(bool checked)
+void Form_matlist::on_checkBox_bestellen_toggled()
 {
-    update_table();
+    if(!ui->lineEdit_projekt_id->text().isEmpty())
+    {
+        update_table();
+    }
 }
+
+void Form_matlist::on_checkBox_pos_status_toggled()
+{
+    if(!ui->lineEdit_projekt_id->text().isEmpty())
+    {
+        update_table();
+    }
+}
+
 //-------------------------------------public Slots:
 void Form_matlist::slot_new_matpos(text_zeilenweise data)
 {
@@ -1145,6 +1242,9 @@ void Form_matlist::slot_update_table()
 
     update_table();
 }
+
+
+
 
 
 

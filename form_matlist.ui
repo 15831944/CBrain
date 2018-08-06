@@ -234,7 +234,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>erfasst</string>
+    <string>erf.</string>
    </property>
    <property name="checked">
     <bool>false</bool>
@@ -250,7 +250,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>unklar</string>
+    <string>unk.</string>
    </property>
    <property name="checked">
     <bool>false</bool>
@@ -266,10 +266,23 @@
     </rect>
    </property>
    <property name="text">
-    <string>bestellen</string>
+    <string>best.</string>
    </property>
    <property name="checked">
     <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="checkBox_pos_status">
+   <property name="geometry">
+    <rect>
+     <x>240</x>
+     <y>30</y>
+     <width>91</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Pos-Status</string>
    </property>
   </widget>
  </widget>

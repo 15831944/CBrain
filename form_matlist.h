@@ -57,9 +57,12 @@ private slots:
     void on_pushButton_pos_edit_rumpf_clicked();
     void on_pushButton_update_table_clicked();
     void on_lineEdit_filter_textChanged();
-    void on_checkBox_erfasst_toggled(bool checked);
-    void on_checkBox_unklar_toggled(bool checked);
-    void on_checkBox_bestellen_toggled(bool checked);
+    void on_checkBox_erfasst_toggled();
+    void on_checkBox_unklar_toggled();
+    void on_checkBox_bestellen_toggled();
+    void on_checkBox_pos_status_toggled();
+
+    void on_pushButton_pos_copy_clicked();
 
 private:
     Ui::Form_matlist *ui;
