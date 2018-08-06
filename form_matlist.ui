@@ -72,9 +72,9 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>40</y>
+     <y>60</y>
      <width>521</width>
-     <height>421</height>
+     <height>401</height>
     </rect>
    </property>
   </widget>
@@ -93,7 +93,7 @@
     <rect>
      <x>540</x>
      <y>10</y>
-     <width>131</width>
+     <width>71</width>
      <height>23</height>
     </rect>
    </property>
@@ -104,9 +104,9 @@
   <widget class="QPushButton" name="pushButton_check_activ_pos">
    <property name="geometry">
     <rect>
-     <x>680</x>
+     <x>620</x>
      <y>10</y>
-     <width>161</width>
+     <width>101</width>
      <height>23</height>
     </rect>
    </property>
@@ -209,6 +209,67 @@
    </property>
    <property name="text">
     <string>edit Rumpf</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_update_table">
+   <property name="geometry">
+    <rect>
+     <x>740</x>
+     <y>10</y>
+     <width>75</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>aktualisieren</string>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="checkBox_erfasst">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>30</y>
+     <width>61</width>
+     <height>18</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>erfasst</string>
+   </property>
+   <property name="checked">
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="checkBox_unklar">
+   <property name="geometry">
+    <rect>
+     <x>90</x>
+     <y>30</y>
+     <width>51</width>
+     <height>18</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>unklar</string>
+   </property>
+   <property name="checked">
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="checkBox_bestellen">
+   <property name="geometry">
+    <rect>
+     <x>160</x>
+     <y>30</y>
+     <width>71</width>
+     <height>18</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>bestellen</string>
+   </property>
+   <property name="checked">
+    <bool>false</bool>
    </property>
   </widget>
  </widget>

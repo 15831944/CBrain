@@ -16,7 +16,10 @@ void artikel_mengenerfassung::add_matpos(text_zeilenweise artikel_ids, \
         QString akt_menge       = mengen.zeile(i);
         QString akt_status      = status_ids.zeile(i);
 
-        add_artikel(akt_artikel_id, akt_menge, akt_status);
+        if(!akt_artikel_id.isEmpty())
+        {
+            add_artikel(akt_artikel_id, akt_menge, akt_status);
+        }
 
         QString akt_beziehungen = beziehungen.zeile(i);
         akt_beziehungen.replace(NEW_LINE_BR, "\n");
@@ -26,9 +29,15 @@ void artikel_mengenerfassung::add_matpos(text_zeilenweise artikel_ids, \
         {
             QString zeile = akt_beziehungen_tz.zeile(i);
             akt_artikel_id  = text_links(zeile, " ||| ");
+            double menge_bezugsartikel = akt_menge.toDouble();
             akt_menge       = text_rechts(zeile, " ||| ");
+            double akt_menge_double = menge_bezugsartikel * akt_menge.toDouble();
+            akt_menge = double_to_qstring(akt_menge_double);
 
-            add_artikel(akt_artikel_id, akt_menge, akt_status);
+            if(!akt_artikel_id.isEmpty())
+            {
+                add_artikel(akt_artikel_id, akt_menge, akt_status);
+            }
         }
     }
 }

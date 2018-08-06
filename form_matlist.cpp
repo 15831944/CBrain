@@ -65,19 +65,35 @@ void Form_matlist::resizeEvent(QResizeEvent *event)
         ui->label_filter->show();
     }
 
+    //links 2. Zeile:
+    ui->checkBox_erfasst->setFixedHeight(h_btn);
+    ui->checkBox_unklar->setFixedHeight(h_btn);
+    ui->checkBox_bestellen->setFixedHeight(h_btn);
+
+    ui->checkBox_erfasst->move(1,\
+                               1 + h_btn + 1);
+    ui->checkBox_unklar->move(1 + ui->checkBox_erfasst->width() + 1,\
+                              1 + h_btn + 1);
+    ui->checkBox_bestellen->move(1 + ui->checkBox_erfasst->width() + 1 + ui->checkBox_unklar->width() + 1,\
+                                 1 + h_btn + 1);
+
     //links Tabelle:
     ui->tableView->setFixedSize(b_li,\
-                                hoehe - 1 - h_btn - 1 - 1);
+                                hoehe - 1 - h_btn*2 - 3 );
     ui->tableView->move(1,\
-                        1 + h_btn + 1);
+                        1 + (h_btn + 1)*2);
 
     //rechts Kopfzeile:
-    ui->pushButton_check_all_pos->setFixedWidth(b_re/2-2);
+    ui->pushButton_check_all_pos->setFixedWidth(b_re/3-3);
     ui->pushButton_check_all_pos->move(1 + b_li + 2,\
                                        1);
 
     ui->pushButton_check_activ_pos->setFixedWidth(ui->pushButton_check_all_pos->width());
     ui->pushButton_check_activ_pos->move(1 + b_li + 2 + ui->pushButton_check_all_pos->width() + 1,\
+                                         1);
+
+    ui->pushButton_update_table->setFixedWidth(ui->pushButton_check_all_pos->width());
+    ui->pushButton_update_table->move(1 + b_li + 2 + (ui->pushButton_check_all_pos->width() + 1)*2,\
                                       1);
 
     //rechts Listwidget + Buttons
@@ -295,6 +311,59 @@ void Form_matlist::update_listwidget_matpos()
 
 void Form_matlist::update_table()
 {
+    //Namen aller Positionstabellen erfassen:
+    QString posliste;
+    posliste  = TABNAME_PROMATPOSLIST;
+    posliste += ui->lineEdit_projekt_id->text();
+
+    text_zeilenweise matpos_ids = dbeigen->get_data_tz(posliste, PARAM_PROMATPOSLIST_ID);
+    text_zeilenweise names_postables;
+    for(uint i=1; i<=matpos_ids.zeilenanzahl() ;i++)
+    {
+        if(ui->listWidget_matpos->item(i-1)->checkState() == Qt::Checked)
+        {
+            QString name;
+            name += TABNAME_PROMATPOS;
+            name += ui->lineEdit_projekt_id->text();
+            name += "_";
+            name += int_to_qstring(i);
+            names_postables.zeile_anhaengen(name);
+        }
+    }
+    text_zeilenweise matpos_names_alle = dbeigen->get_data_tz(posliste, PARAM_PROMATPOSLIST_BEZ);
+    text_zeilenweise matpos_names;
+    for(uint i=1; i<=matpos_names_alle.zeilenanzahl() ;i++)
+    {
+        if(ui->listWidget_matpos->item(i-1)->checkState() == Qt::Checked)
+        {
+            QString name = matpos_names_alle.zeile(i);
+            if(name.contains("\n"))
+            {
+                name = text_links(name, "\n");
+            }
+            name.replace(" ", "_");
+            matpos_names.zeile_anhaengen(name);
+        }
+    }
+
+    bool statusfilter_is_aktiv;
+    if(!ui->checkBox_erfasst->isChecked()  ||   \
+       !ui->checkBox_unklar->isChecked()   ||   \
+       !ui->checkBox_bestellen->isChecked()     )
+    {
+        if(!ui->checkBox_erfasst->isChecked()  &&   \
+           !ui->checkBox_unklar->isChecked()   &&   \
+           !ui->checkBox_bestellen->isChecked()     )
+        {
+            statusfilter_is_aktiv = false;
+        }else
+        {
+            statusfilter_is_aktiv = true;
+        }
+    }else
+    {
+        statusfilter_is_aktiv = false;
+    }
     //-------------------------------------------
     {
         QSqlDatabase db;
@@ -344,7 +413,35 @@ void Form_matlist::update_table()
             cmd += promat_tabname;
             cmd += ".";
             cmd += PARAM_PROMAT_ME_VERARBEITET;
-            //cmd += ", ";
+            if(names_postables.zeilenanzahl() > 0)
+            {
+                cmd += ", ";
+            }
+            //------------------------
+            //------------------------
+            for(uint i=1; i<=names_postables.zeilenanzahl() ;i++)
+            {
+                //------------------------
+                cmd += names_postables.zeile(i);
+                cmd += ".";
+                cmd += PARAM_PROMATPOS_MENGE;
+                cmd += " AS ";
+                cmd += matpos_names.zeile(i);
+                cmd += ", ";
+                //------------------------
+                cmd += "status_";
+                cmd += names_postables.zeile(i);
+                cmd += ".";
+                cmd += PARAM_STATUS_STATUS;
+                cmd += " AS ";
+                cmd += "Status";
+                //cmd += ", ";
+                //------------------------
+                if(i != names_postables.zeilenanzahl())
+                {
+                    cmd += ", ";
+                }
+            }
             //------------------------
             //------------------------
             cmd += " FROM ";
@@ -363,11 +460,113 @@ void Form_matlist::update_table()
             cmd += PARAM_ARTIKEL_ID;
             cmd += ")";
             //------------------------
-
+            for(uint i=1; i<=names_postables.zeilenanzahl() ;i++)
+            {
+                //------------------------
+                cmd += " LEFT JOIN ";
+                cmd += names_postables.zeile(i);
+                cmd += " ON (";
+                cmd += promat_tabname;
+                cmd += ".";
+                cmd += PARAM_PROMAT_ARTIKEL_ID;
+                cmd += " = ";
+                cmd += names_postables.zeile(i);
+                cmd += ".";
+                cmd += PARAM_PROMATPOS_ARTIKEL_ID;
+                cmd += ")";
+                //------------------------
+                //------------------------
+                cmd += " LEFT JOIN ";
+                cmd += TABNAME_STATUS;
+                cmd += " AS ";
+                cmd += "status_";
+                cmd += names_postables.zeile(i);
+                cmd += " ON (";
+                cmd += names_postables.zeile(i);
+                cmd += ".";
+                cmd += PARAM_PROMATPOS_STATUS_ID;
+                cmd += " = ";
+                cmd += "status_";
+                cmd += names_postables.zeile(i);
+                cmd += ".";
+                cmd += PARAM_STATUS_ID;
+                cmd += ")";
+                //------------------------
+            }
+            //------------------------
+            if(!ui->lineEdit_filter->text().isEmpty() || statusfilter_is_aktiv == true)
+            {
+                cmd += " WHERE ";
+                if(!ui->lineEdit_filter->text().isEmpty())
+                {
+                    cmd += "(";
+                    cmd += TABNAME_ARTIKEL;
+                    cmd += ".";
+                    cmd += PARAM_ARTIKEL_NR;
+                    cmd += " LIKE \'%";
+                    cmd += ui->lineEdit_filter->text();
+                    cmd += "%\'";
+                    cmd += " OR ";
+                    cmd += TABNAME_ARTIKEL;
+                    cmd += ".";
+                    cmd += PARAM_ARTIKEL_BEZ;
+                    cmd += " LIKE \'%";
+                    cmd += ui->lineEdit_filter->text();
+                    cmd += "%\'";
+                    cmd += ")";
+                }
+                if(!ui->lineEdit_filter->text().isEmpty() && statusfilter_is_aktiv == true)
+                {
+                    cmd += " AND ";
+                }
+                if(statusfilter_is_aktiv == true)
+                {
+                    cmd += "(";
+                    if(ui->checkBox_erfasst->isChecked())
+                    {
+                        cmd += promat_tabname;
+                        cmd += ".";
+                        cmd += PARAM_PROMAT_ME_ERFASST;
+                        cmd += " > ";
+                        cmd += "0";
+                    }
+                    if(ui->checkBox_unklar->isChecked())
+                    {
+                        if(ui->checkBox_erfasst->isChecked())
+                        {
+                            cmd += " OR ";
+                        }
+                        cmd += promat_tabname;
+                        cmd += ".";
+                        cmd += PARAM_PROMAT_ME_UNKLAR;
+                        cmd += " > ";
+                        cmd += "0";
+                    }
+                    if(ui->checkBox_bestellen->isChecked())
+                    {
+                        if(ui->checkBox_unklar->isChecked() || ui->checkBox_erfasst->isChecked())
+                        {
+                            cmd += " OR ";
+                        }
+                        cmd += promat_tabname;
+                        cmd += ".";
+                        cmd += PARAM_PROMAT_ME_ZURBEST;
+                        cmd += " > ";
+                        cmd += "0";
+                    }
+                    cmd += ")";
+                }
+            }
+            //------------------------
             if(q.exec(cmd))
             {
                 model->setQuery(q);
                 ui->tableView->setModel(model);
+
+                QString msg;
+                msg += int_to_qstring(model->rowCount());
+                msg += " Artikel:";
+                ui->label_filter->setText(msg);
             }else
             {
                 QMessageBox mb;
@@ -383,6 +582,31 @@ void Form_matlist::update_table()
         }
     }
     //-------------------------------------------
+}
+
+void Form_matlist::update_promatpos_mengen(QString pro_id, QString pos_id, double pos_me_vor, double pos_me_nach)
+{
+    QString promatpos_tabname;
+    promatpos_tabname += TABNAME_PROMATPOS;
+    promatpos_tabname += pro_id;
+    promatpos_tabname += "_";
+    promatpos_tabname += pos_id;
+
+    text_zeilenweise ids, mengen;
+    ids = dbeigen->get_data_tz(promatpos_tabname, PARAM_PROMATPOS_ID);
+    mengen = dbeigen->get_data_tz(promatpos_tabname, PARAM_PROMATPOS_MENGE);
+
+    for(uint i=1; i<=ids.zeilenanzahl() ;i++)
+    {
+        double artikel_menge_vor = mengen.zeile(i).toDouble();
+        double artikel_menge_nach = artikel_menge_vor / pos_me_vor * pos_me_nach;
+        mengen.zeile_ersaetzen(i, double_to_qstring(artikel_menge_nach));
+    }
+
+    for(uint i=1; i<=ids.zeilenanzahl() ;i++)
+    {
+        dbeigen->data_edit(promatpos_tabname, PARAM_PROMATPOS_MENGE, mengen.zeile(i), ids.zeile(i));
+    }
 }
 
 //-------------------------------------Buttons:
@@ -447,16 +671,19 @@ void Form_matlist::on_pushButton_pos_edit_clicked()
                 d->setWindowTitle("Materialposition bearbeiten");
                 QString id = text_links(ui->listWidget_matpos->currentItem()->text(), " ||| ");
 
+                promatpos_menge_vor = dbeigen->get_data_qstring(tabname, PARAM_PROMATPOSLIST_MENGE, id).toInt();
+
                 text_zeilenweise data;
                 data.zeile_anhaengen(dbeigen->get_data_qstring(tabname, PARAM_PROMATPOSLIST_BEZ, id));
-                data.zeile_anhaengen(dbeigen->get_data_qstring(tabname, PARAM_PROMATPOSLIST_MENGE, id));
+                data.zeile_anhaengen(int_to_qstring(promatpos_menge_vor));
 
                 d->set_data(data, id);
 
                 connect(d, SIGNAL(signal_send_data(text_zeilenweise, QString)),  \
                         this, SLOT(slot_edit_matposlist(text_zeilenweise, QString))   );
                 connect(d, SIGNAL(signal_cancel()), this, SLOT(slot_edit_matposlist_unblock()));                
-                dbeigen->data_edit(tabname, PARAM_PROMATPOSLIST_BLOCK, user, idbuffer);
+                dbeigen->data_edit(tabname, PARAM_PROMATPOSLIST_BLOCK, user, idbuffer);                
+
                 d->exec();
                 delete d;
             }else
@@ -560,6 +787,7 @@ void Form_matlist::on_pushButton_check_all_pos_clicked()
     {
         ui->listWidget_matpos->item(i-1)->setCheckState(Qt::Checked);
     }
+    update_table();
 }
 
 void Form_matlist::on_pushButton_check_activ_pos_clicked()
@@ -572,6 +800,12 @@ void Form_matlist::on_pushButton_check_activ_pos_clicked()
         }
         ui->listWidget_matpos->currentItem()->setCheckState(Qt::Checked);
     }
+    update_table();
+}
+
+void Form_matlist::on_pushButton_update_table_clicked()
+{
+    update_table();
 }
 
 //-------------------------------------private Slots:
@@ -595,6 +829,25 @@ void Form_matlist::slot_set_project(text_zeilenweise p)
     ui->lineEdit_projekt->setText(dbeigen->get_data_qstring(TABNAME_PROJEKT, PARAM_PROJEKT_NAME, p.zeile(1)));
 }
 
+void Form_matlist::on_lineEdit_filter_textChanged()
+{
+    update_table();
+}
+
+void Form_matlist::on_checkBox_erfasst_toggled(bool checked)
+{
+    update_table();
+}
+
+void Form_matlist::on_checkBox_unklar_toggled(bool checked)
+{
+    update_table();
+}
+
+void Form_matlist::on_checkBox_bestellen_toggled(bool checked)
+{
+    update_table();
+}
 //-------------------------------------public Slots:
 void Form_matlist::slot_new_matpos(text_zeilenweise data)
 {
@@ -603,6 +856,7 @@ void Form_matlist::slot_new_matpos(text_zeilenweise data)
 
     create_table_promatpos(bez, menge);
     update_listwidget_matpos();
+    update_table();
 }
 
 void Form_matlist::slot_edit_matposlist(text_zeilenweise data, QString id)
@@ -672,6 +926,16 @@ void Form_matlist::slot_edit_matposlist()
         dbeigen->data_edit(tabname, pa, val, promatposlist_current_id);
     }
     update_listwidget_matpos();
+    double pos_menge_vor = promatpos_menge_vor;
+    double pos_menge_nach = promatposlist_current_data.zeile(2).toDouble();
+    if(pos_menge_vor != pos_menge_nach)
+    {
+        QString pro_id, pos_id;
+        pro_id = ui->lineEdit_projekt_id->text();
+        pos_id = idbuffer;
+        update_promatpos_mengen(pro_id, pos_id, pos_menge_vor, pos_menge_nach);
+        slot_update_table();
+    }
 }
 void Form_matlist::slot_edit_matposlist_with_block()
 {
@@ -684,9 +948,11 @@ void Form_matlist::slot_edit_matposlist_with_block()
     d->setWindowTitle("Materialposition bearbeiten");
     QString id = text_links(ui->listWidget_matpos->currentItem()->text(), " ||| ");
 
+    promatpos_menge_vor = dbeigen->get_data_qstring(tabname, PARAM_PROMATPOSLIST_MENGE, id).toInt();
+
     text_zeilenweise data;
     data.zeile_anhaengen(dbeigen->get_data_qstring(tabname, PARAM_PROMATPOSLIST_BEZ, id));
-    data.zeile_anhaengen(dbeigen->get_data_qstring(tabname, PARAM_PROMATPOSLIST_MENGE, id));
+    data.zeile_anhaengen(int_to_qstring(promatpos_menge_vor));
 
     d->set_data(data, id);
 
@@ -751,6 +1017,7 @@ void Form_matlist::slot_delete_matpos()
             dbeigen->table_del(tabname_matpos);
             //GUI aktualisieren:
             update_listwidget_matpos();
+            slot_update_table();
         }else
         {
             QMessageBox mb;
@@ -780,18 +1047,20 @@ void Form_matlist::slot_update_table()
     promat_id_tabname += TABNAME_PROMAT;
     promat_id_tabname += ui->lineEdit_projekt_id->text();
 
-    text_zeilenweise matpos_ids = dbeigen->get_data_tz(posliste, PARAM_PROMATPOSLIST_ID);
+    text_zeilenweise matposlist_ids = dbeigen->get_data_tz(posliste, PARAM_PROMATPOSLIST_ID);
     text_zeilenweise names_postables;
-    for(uint i=1; i<=matpos_ids.zeilenanzahl() ;i++)
+    for(uint i=1; i<=matposlist_ids.zeilenanzahl() ;i++)
     {
         QString name;
         name += TABNAME_PROMATPOS;
         name += ui->lineEdit_projekt_id->text();
         name += "_";
-        name += int_to_qstring(i);
+        name += matposlist_ids.zeile(i);
         names_postables.zeile_anhaengen(name);
     }
+
     artikel_mengenerfassung ame;
+    //Aktuelle Mengen berechnen:
     for(uint i=1; i<=names_postables.zeilenanzahl() ;i++)
     {
         text_zeilenweise artikel_ids = dbeigen->get_data_tz(names_postables.zeile(i), \
@@ -802,10 +1071,13 @@ void Form_matlist::slot_update_table()
                                                             PARAM_PROMATPOS_STATUS_ID);
         text_zeilenweise beziehungen = dbeigen->get_data_tz(names_postables.zeile(i), \
                                                             PARAM_PROMATPOS_BEZIEHUNG);
-        ame.add_matpos(artikel_ids,\
-                       mengen,\
-                       status_ids,\
-                       beziehungen);
+        if(artikel_ids.zeilenanzahl() != 0)
+        {
+            ame.add_matpos(artikel_ids,\
+                           mengen,\
+                           status_ids,\
+                           beziehungen);
+        }
     }
 
     //Mengen aller erfassten Artikel nullen:
@@ -837,16 +1109,12 @@ void Form_matlist::slot_update_table()
     {
         QString akt_artikel_id = artikel_ids.zeile(i);
         QString index = dbeigen->get_data_id_QString(promat_id_tabname, PARAM_PROMAT_ARTIKEL_ID, \
-                                                     akt_artikel_id);
+                                                     akt_artikel_id);        
         if(index.isEmpty())
         {
-            text_zeilenweise pa, val;
-            pa.zeile_anhaengen(PARAM_PROMAT_ARTIKEL_ID);
-            val.zeile_anhaengen(akt_artikel_id);
-            dbeigen->data_new(promat_id_tabname, pa,\
-                              val);
-            index = dbeigen->get_data_id_QString(promat_id_tabname, PARAM_PROMAT_ARTIKEL_ID, \
-                                                                 akt_artikel_id);
+            dbeigen->data_new(promat_id_tabname);
+            index = dbeigen->get_highest_id(promat_id_tabname);
+            dbeigen->data_edit(promat_id_tabname, PARAM_PROMAT_ARTIKEL_ID, akt_artikel_id, index);
         }
         dbeigen->data_edit(promat_id_tabname, PARAM_PROMAT_ME_GESAMTBEDARF,\
                            menge_gesamt.zeile(i), index);
@@ -877,6 +1145,14 @@ void Form_matlist::slot_update_table()
 
     update_table();
 }
+
+
+
+
+
+
+
+
 
 
 

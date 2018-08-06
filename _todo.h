@@ -22,9 +22,6 @@ soll als Template zum Anlegen von neuen projektbezogenen Materiallisten dienen
    dialog von user_A erwartet jedoch das die daten noch von ihm selbst blockiert sind
    ->evtl einfach nicht zulassen, dass user_B abbrechen kann (disable btn cancel)
 
---> void Form_matlist::on_pushButton_pos_edit_rumpf_clicked()
-    ->//update_table();
-
 
 -->modul_backup
     ->Backup data to csv-file
