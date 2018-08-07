@@ -887,6 +887,30 @@ void Form_matlist::on_pushButton_pos_copy_clicked()
     }
 }
 
+void Form_matlist::on_pushButton_pos_import_clicked()
+{
+    if(!ui->lineEdit_projekt_id->text().isEmpty())
+    {
+        text_zeilenweise projekte, ids;
+        projekte = dbeigen->get_data_tz(TABNAME_PROJEKT, PARAM_PROJEKT_NAME);
+        ids = dbeigen->get_data_tz(TABNAME_PROJEKT, PARAM_PROJEKT_ID);
+
+        Dialog_dataselection *d = new Dialog_dataselection(this);
+        d->set_data(projekte, ids);
+        d->setWindowTitle("Impost von Projekt");
+        d->set_anz_returnwerte(1);
+        connect(d, SIGNAL(signal_send_selection(text_zeilenweise)),         \
+                this, SLOT(slot_import_get_projekt_id(text_zeilenweise))    );
+        d->exec();
+        delete d;
+    }else
+    {
+        QMessageBox mb;
+        mb.setText(tr("Bitte zuerst ein Projekt festlegen!"));
+        mb.exec();
+    }
+}
+
 //-------------------------------------private Slots:
 void Form_matlist::on_lineEdit_projekt_id_textChanged(const QString &arg1)
 {
@@ -1243,6 +1267,83 @@ void Form_matlist::slot_update_table()
     update_table();
 }
 
+void Form_matlist::slot_import_get_projekt_id(text_zeilenweise ids)
+{
+    import_projekt_id = ids.zeile(1);
+    //Positionen des Projektes finden:
+    QString tabnameposlist;
+    tabnameposlist  = TABNAME_PROMATPOSLIST;
+    tabnameposlist += import_projekt_id;
+
+    text_zeilenweise pos_ids, pos_bez;
+    pos_ids = dbeigen->get_data_tz(tabnameposlist, PARAM_PROMATPOSLIST_ID);
+    pos_bez = dbeigen->get_data_tz(tabnameposlist, PARAM_PROMATPOSLIST_BEZ);
+
+    Dialog_dataselection *d = new Dialog_dataselection(this);
+    d->set_data(pos_bez, pos_ids);
+    d->setWindowTitle("Impost von Projektposition");
+    d->set_anz_returnwerte(1);
+    connect(d, SIGNAL(signal_send_selection(text_zeilenweise)),         \
+            this, SLOT(slot_import_get_pos_id(text_zeilenweise))    );
+    d->exec();
+    delete d;
+}
+
+void Form_matlist::slot_import_get_pos_id(text_zeilenweise ids)
+{
+    QString pos_id = ids.zeile(1);
+    QString tabnameposlist;
+    tabnameposlist  = TABNAME_PROMATPOSLIST;
+    tabnameposlist += import_projekt_id;
+    QString bez, menge;
+    bez = dbeigen->get_data_qstring(tabnameposlist, PARAM_PROMATPOSLIST_BEZ, pos_id);
+    bez += "_Kopie";
+    menge = dbeigen->get_data_qstring(tabnameposlist, PARAM_PROMATPOSLIST_MENGE, pos_id);
+
+    //Eintrag in promatposlist-Tabelle anlegen:
+    create_table_promatpos(bez, menge);
+
+    //Tabelleninhalt aus dem alten Projekt kopieren:
+    QString tabname = tabnameposlist;
+    tabname += "_";
+    tabname += pos_id;
+
+    //Inhalt der altenTabelle auslesen:
+    text_zeilenweise artikel_ids, mengen, status_ids, beziehungen;
+    artikel_ids     = dbeigen->get_data_tz(tabname, PARAM_PROMATPOS_ARTIKEL_ID);
+    mengen          = dbeigen->get_data_tz(tabname, PARAM_PROMATPOS_MENGE);
+    status_ids      = dbeigen->get_data_tz(tabname, PARAM_PROMATPOS_STATUS_ID);
+    beziehungen     = dbeigen->get_data_tz(tabname, PARAM_PROMATPOS_BEZIEHUNG);
+
+    //Inhalt in neue Tabelle schreiben:
+    text_zeilenweise pa, val;
+    pa.zeile_anhaengen(PARAM_PROMATPOS_ARTIKEL_ID);
+    pa.zeile_anhaengen(PARAM_PROMATPOS_MENGE);
+    pa.zeile_anhaengen(PARAM_PROMATPOS_STATUS_ID);
+    pa.zeile_anhaengen(PARAM_PROMATPOS_ERSTELLER);
+    pa.zeile_anhaengen(PARAM_PROMATPOS_BEZIEHUNG);
+
+    tabnameposlist  = TABNAME_PROMATPOSLIST;
+    tabnameposlist += ui->lineEdit_projekt_id->text();
+
+    tabname  = tabnameposlist;
+    tabname += "_";
+    tabname += dbeigen->get_highest_id(tabnameposlist);
+
+    for(uint i=1; i<=artikel_ids.zeilenanzahl() ;i++)
+    {
+        val.clear();
+        val.zeile_anhaengen(artikel_ids.zeile(i));
+        val.zeile_anhaengen(mengen.zeile(i));
+        val.zeile_anhaengen(status_ids.zeile(i));
+        val.zeile_anhaengen(user);
+        val.zeile_anhaengen(beziehungen.zeile(i));
+        dbeigen->data_new(tabname, pa, val);
+    }
+
+    update_listwidget_matpos();
+    slot_update_table();
+}
 
 
 

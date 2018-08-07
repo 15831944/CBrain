@@ -42,6 +42,8 @@ public slots:
     void slot_edit_matposlist_unblock();
     void slot_delete_matpos();
     void slot_update_table();
+    void slot_import_get_projekt_id(text_zeilenweise ids);
+    void slot_import_get_pos_id(text_zeilenweise ids);
 
 protected:
     void resizeEvent(QResizeEvent *event);
@@ -61,8 +63,8 @@ private slots:
     void on_checkBox_unklar_toggled();
     void on_checkBox_bestellen_toggled();
     void on_checkBox_pos_status_toggled();
-
     void on_pushButton_pos_copy_clicked();
+    void on_pushButton_pos_import_clicked();
 
 private:
     Ui::Form_matlist *ui;
@@ -73,6 +75,7 @@ private:
     QString promatposlist_current_id;
     int promatpos_menge_vor;
     QString promat_tabname;
+    QString import_projekt_id;
 
     void create_table_promatposlist();  //Tabelle die die Materialpositionen erfasst
     void create_table_promatpos(QString bez, QString menge); //Tabelle die den Inhalt einer Materialposition erfasst
