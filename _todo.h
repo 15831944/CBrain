@@ -27,7 +27,6 @@
 
 -->beim Löschen eines Projektes müssen auch alle promatpos-Tabellen mit gelöscht werden
 
--->für das löschen von Projekten eine extra-Berechtigung anlegen
 
 
 

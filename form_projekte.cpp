@@ -62,9 +62,24 @@ void Form_projekte::set_user(QString u)
     user = u;
 }
 
+void Form_projekte::set_user(users *users)
+{
+    u = users;
+}
+
 void Form_projekte::show()
 {
     update_table();
+    if(u != NULL)
+    {
+        if(u->function_projektdel())
+        {
+            ui->pushButton_del->setEnabled(true);
+        }else
+        {
+            ui->pushButton_del->setDisabled(true);
+        }
+    }
     setVisible(true);
 }
 

@@ -75,6 +75,7 @@ bool MainWindow::setup()
         widget_matlist.set_db(&dbeigen);        //widget Zeiger auf DB übergeben
 
         widget_artikel.set_user(&u);
+        widget_projekte.set_user(&u);
 
         widget_backup.set_ini(&ini);
     }
