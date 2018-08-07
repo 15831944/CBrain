@@ -95,11 +95,11 @@
       <item row="3" column="1">
        <widget class="QComboBox" name="comboBox_lieferant"/>
       </item>
-      <item row="1" column="1">
-       <widget class="QLineEdit" name="lineEdit_bezeichnung"/>
-      </item>
       <item row="2" column="1">
        <widget class="QLineEdit" name="lineEdit_filter_lieferant"/>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="lineEdit_bezeichnung"/>
       </item>
       <item row="2" column="0">
        <widget class="QLabel" name="label_filter_lieferant">
@@ -115,6 +115,9 @@
         </property>
        </widget>
       </item>
+      <item row="4" column="1">
+       <widget class="QLineEdit" name="lineEdit_lagerort"/>
+      </item>
       <item row="5" column="0">
        <widget class="QLabel" name="label_ve">
         <property name="text">
@@ -122,18 +125,15 @@
         </property>
        </widget>
       </item>
-      <item row="6" column="0">
+      <item row="7" column="1">
+       <widget class="QLineEdit" name="lineEdit_komment"/>
+      </item>
+      <item row="7" column="0">
        <widget class="QLabel" name="label_komment">
         <property name="text">
          <string>Kommentar</string>
         </property>
        </widget>
-      </item>
-      <item row="4" column="1">
-       <widget class="QLineEdit" name="lineEdit_lagerort"/>
-      </item>
-      <item row="6" column="1">
-       <widget class="QLineEdit" name="lineEdit_komment"/>
       </item>
       <item row="5" column="1">
        <widget class="QSpinBox" name="spinBox_ve">
@@ -145,14 +145,14 @@
         </property>
        </widget>
       </item>
-      <item row="7" column="0">
+      <item row="8" column="0">
        <widget class="QLabel" name="label_4">
         <property name="text">
          <string>Preis</string>
         </property>
        </widget>
       </item>
-      <item row="7" column="1">
+      <item row="8" column="1">
        <widget class="QDoubleSpinBox" name="doubleSpinBox_preis">
         <property name="decimals">
          <number>4</number>
@@ -162,10 +162,24 @@
         </property>
        </widget>
       </item>
-      <item row="8" column="1">
+      <item row="9" column="1">
        <widget class="QCheckBox" name="checkBox_isfavorit">
         <property name="text">
          <string>ist Favorit</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="1">
+       <widget class="QSpinBox" name="spinBox_mind_lagerstand">
+        <property name="maximum">
+         <number>9999</number>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="0">
+       <widget class="QLabel" name="label_5">
+        <property name="text">
+         <string>mind Lagerstand</string>
         </property>
        </widget>
       </item>
@@ -229,6 +243,7 @@
   <tabstop>comboBox_lieferant</tabstop>
   <tabstop>lineEdit_lagerort</tabstop>
   <tabstop>spinBox_ve</tabstop>
+  <tabstop>spinBox_mind_lagerstand</tabstop>
   <tabstop>lineEdit_komment</tabstop>
   <tabstop>doubleSpinBox_preis</tabstop>
   <tabstop>checkBox_isfavorit</tabstop>

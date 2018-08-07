@@ -348,6 +348,7 @@ text_zeilenweise Form_artikel::data_for_dialog_artikel(QString id)
     artikel.zeile_anhaengen(dbeigen->get_data_qstring(TABNAME_ARTIKEL, PARAM_ARTIKEL_BEZIEHUNG, id));
     artikel.zeile_anhaengen(dbeigen->get_data_qstring(TABNAME_ARTIKEL, PARAM_ARTIKEL_PREIS, id));
     artikel.zeile_anhaengen(dbeigen->get_data_qstring(TABNAME_ARTIKEL, PARAM_ARTIKEL_ISFAVORIT, id));
+    artikel.zeile_anhaengen(dbeigen->get_data_qstring(TABNAME_ARTIKEL, PARAM_ARTIKEL_LAGERST_MIN, id));
 
     return artikel;
 }
@@ -659,6 +660,7 @@ void Form_artikel::slot_new(text_zeilenweise data)
     param.zeile_anhaengen(PARAM_ARTIKEL_BEZIEHUNG);
     param.zeile_anhaengen(PARAM_ARTIKEL_PREIS);
     param.zeile_anhaengen(PARAM_ARTIKEL_ISFAVORIT);
+    param.zeile_anhaengen(PARAM_ARTIKEL_LAGERSTAND);
 
     values.zeile_anhaengen(data.zeile(1));
     values.zeile_anhaengen(data.zeile(2));
@@ -673,6 +675,7 @@ void Form_artikel::slot_new(text_zeilenweise data)
     values.zeile_anhaengen(data.zeile(7));
     values.zeile_anhaengen(data.zeile(8));
     values.zeile_anhaengen(data.zeile(9));
+    values.zeile_anhaengen(data.zeile(10));
 
     dbeigen->data_new(TABNAME_ARTIKEL, param, values);
     update_table();
@@ -818,6 +821,7 @@ void Form_artikel::slot_edit(text_zeilenweise data, QString id)
         param.zeile_anhaengen(PARAM_ARTIKEL_BEZIEHUNG);
         param.zeile_anhaengen(PARAM_ARTIKEL_PREIS);
         param.zeile_anhaengen(PARAM_ARTIKEL_ISFAVORIT);
+        param.zeile_anhaengen(PARAM_ARTIKEL_LAGERST_MIN);
 
         values.zeile_anhaengen(data.zeile(1));
         values.zeile_anhaengen(data.zeile(2));
@@ -831,6 +835,7 @@ void Form_artikel::slot_edit(text_zeilenweise data, QString id)
         values.zeile_anhaengen(data.zeile(7));
         values.zeile_anhaengen(data.zeile(8));
         values.zeile_anhaengen(data.zeile(9));
+        values.zeile_anhaengen(data.zeile(10));
 
         dbeigen->data_edit(TABNAME_ARTIKEL, param, values, id);
     }

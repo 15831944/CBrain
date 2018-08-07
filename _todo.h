@@ -29,8 +29,7 @@
 
 -->für das löschen von Projekten eine extra-Berechtigung anlegen
 
--->dialog_artikel Datenfeld ergänzen:
-    #define PARAM_ARTIKEL_LAGERST_MIN   "mind_Bestand"      //Wert 17
+
 
 
 

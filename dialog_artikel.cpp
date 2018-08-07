@@ -117,6 +117,7 @@ void Dialog_artikel::set_data(text_zeilenweise daten)
     {
         ui->checkBox_isfavorit->setChecked(false);
     }
+    ui->spinBox_mind_lagerstand->setValue(daten.zeile(10).toInt());
 }
 
 void Dialog_artikel::clear()
@@ -186,6 +187,7 @@ void Dialog_artikel::on_pushButton_ok_clicked()
         {
             tz.zeile_anhaengen("0");                                //Wert 9
         }
+        tz.zeile_anhaengen(int_to_qstring(ui->spinBox_mind_lagerstand->value()));//Wert 10
 
         //------------------------------------------------------------------------
         this->close();

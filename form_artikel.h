@@ -52,7 +52,6 @@ private slots:
     void on_pushButton_edit_clicked();
     void on_pushButton_dupli_clicked();
     void on_checkBox_only_favorit_toggled();
-
     void on_pushButton_fav_order_clicked();
 
 private:
