@@ -2,12 +2,8 @@
 #define _TODO_H
 /*
 
-template_Materialliste:
-soll als Template zum Anlegen von neuen projektbezogenen Materiallisten dienen
 
--->Artikel-Preis -->soll nicht als ID in Materialliste eingefügt werden, sondern als Kopie (Variierender Preis in den Aufträgen)
-
--->Interaktionen zwischen modul lager und modul bestellungen (noch nicht vorhanden)
+-->Konzept für Artikelpreis überlegen
 
 -->user_A editiert ein Datenfeld
    user_B möchte auch editieren
@@ -22,10 +18,10 @@ soll als Template zum Anlegen von neuen projektbezogenen Materiallisten dienen
    dialog von user_A erwartet jedoch das die daten noch von ihm selbst blockiert sind
    ->evtl einfach nicht zulassen, dass user_B abbrechen kann (disable btn cancel)
 
-
 -->modul_backup
     ->Backup data to csv-file
     ->restore data from csv-file
+    ->wahrscheinlich Hilfe von Reno Kohmann
 
 -->Im-Export-Dialog
 
@@ -33,6 +29,8 @@ soll als Template zum Anlegen von neuen projektbezogenen Materiallisten dienen
 
 -->für das löschen von Projekten eine extra-Berechtigung anlegen
 
+-->dialog_artikel Datenfeld ergänzen:
+    #define PARAM_ARTIKEL_LAGERST_MIN   "mind_Bestand"      //Wert 17
 
 
 

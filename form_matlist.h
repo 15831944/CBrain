@@ -65,6 +65,13 @@ private slots:
     void on_checkBox_pos_status_toggled();
     void on_pushButton_pos_copy_clicked();
     void on_pushButton_pos_import_clicked();
+    void on_checkBox_reserviert_toggled();
+    void on_checkBox_einzelmengen_toggled();
+    void on_checkBox_verarbeitet_toggled();
+
+    void on_checkBox_show_pos_toggled(bool checked);
+
+    void on_pushButton_reservieren_clicked();
 
 private:
     Ui::Form_matlist *ui;

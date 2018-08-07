@@ -31,8 +31,14 @@ void Form_matlist::resizeEvent(QResizeEvent *event)
     int hoehe = this->height();
     int breite = this->width();
 
-    int b_li = breite/5*3;
-    int b_re = breite - b_li - 4;   //Rand_li = 1 + Rand_re = 1 + Rand_mi = 2 == 4
+    //Rand_li = 1 + Rand_re = 1 + Rand_mi = 2 == 4
+    int b_re = breite/5*2;
+    if(b_re > 250)
+    {
+        b_re = 250;
+    }
+    int b_li = breite - b_re - 4;
+
 
     int h_btn = ui->pushButton_projektauswahl->height();
 
@@ -65,28 +71,54 @@ void Form_matlist::resizeEvent(QResizeEvent *event)
         ui->label_filter->show();
     }
 
-    //links 2. Zeile:
+    //links 2. Zeile Button(s):
+    ui->pushButton_reservieren->move(1,\
+                                     1 + h_btn + 1);
+
+    //links 2. Zeile Filter:
     ui->checkBox_erfasst->setFixedHeight(h_btn);
     ui->checkBox_unklar->setFixedHeight(h_btn);
-    ui->checkBox_bestellen->setFixedHeight(h_btn);
+    ui->checkBox_bestellen->setFixedHeight(h_btn);    
+
+    ui->checkBox_erfasst->move(b_li - ui->checkBox_bestellen->width() \
+                               - 1 - ui->checkBox_unklar->width()       \
+                               -1 - ui->checkBox_erfasst->width(),\
+                               1 + h_btn + 1);
+    ui->checkBox_unklar->move(b_li - ui->checkBox_bestellen->width() \
+                              - 1 - ui->checkBox_unklar->width(),\
+                              1 + h_btn + 1);
+    ui->checkBox_bestellen->move(b_li - ui->checkBox_bestellen->width(),\
+                                 1 + h_btn + 1);
+
+    //links 3. Zeile:
+    ui->checkBox_einzelmengen->setFixedHeight(h_btn);
+    ui->checkBox_reserviert->setFixedHeight(h_btn);
+    ui->checkBox_verarbeitet->setFixedHeight(h_btn);
     ui->checkBox_pos_status->setFixedHeight(h_btn);
 
-    ui->checkBox_erfasst->move(1,\
-                               1 + h_btn + 1);
-    ui->checkBox_unklar->move(1 + ui->checkBox_erfasst->width() + 1,\
-                              1 + h_btn + 1);
-    ui->checkBox_bestellen->move(1 + ui->checkBox_erfasst->width() + 1 + ui->checkBox_unklar->width() + 1,\
-                                 1 + h_btn + 1);
-    ui->checkBox_pos_status->move(1 + ui->checkBox_erfasst->width() + 1 +   \
-                                  ui->checkBox_unklar->width() + 1 +        \
-                                  ui->checkBox_bestellen->width() + 1,      \
-                                  1 + h_btn + 1                             );
+    ui->checkBox_einzelmengen->move(1,\
+                                    1 + (h_btn + 1)*2                             );
+    ui->checkBox_reserviert->move(1\
+                                  + ui->checkBox_einzelmengen->width() +1 \
+                                  ,\
+                                  1 + (h_btn + 1)*2                             );
+    ui->checkBox_verarbeitet->move(1\
+                                  + ui->checkBox_einzelmengen->width() +1 \
+                                   + ui->checkBox_reserviert->width() +1 \
+                                  ,\
+                                  1 + (h_btn + 1)*2                             );
+    ui->checkBox_pos_status->move(1\
+                                  + ui->checkBox_einzelmengen->width() +1 \
+                                  + ui->checkBox_reserviert->width() +1 \
+                                  + ui->checkBox_verarbeitet->width() +1 \
+                                  ,\
+                                  1 + (h_btn + 1)*2                             );
 
     //links Tabelle:
     ui->tableView->setFixedSize(b_li,\
-                                hoehe - 1 - h_btn*2 - 3 );
+                                hoehe - 1 - h_btn*3 - 4 );
     ui->tableView->move(1,\
-                        1 + (h_btn + 1)*2);
+                        1 + (h_btn + 1)*3);
 
     //rechts Kopfzeile:
     ui->pushButton_check_all_pos->setFixedWidth(b_re/3-3);
@@ -101,12 +133,19 @@ void Form_matlist::resizeEvent(QResizeEvent *event)
     ui->pushButton_update_table->move(1 + b_li + 2 + (ui->pushButton_check_all_pos->width() + 1)*2,\
                                       1);
 
-    //rechts Listwidget + Buttons
-    ui->listWidget_matpos->setFixedSize(b_re,\
-                                        hoehe - 1*5 - h_btn*3);
-    ui->listWidget_matpos->move(1 + b_li + 2,\
-                                1 + h_btn + 1);
 
+    //rechts 2. Zeile:
+    ui->checkBox_show_pos->setFixedHeight(h_btn);
+    ui->checkBox_show_pos->move(1 + b_li + 2,\
+                                1 + (h_btn + 1));
+
+    //rechts Listwidget
+    ui->listWidget_matpos->setFixedSize(b_re,\
+                                        hoehe - 1*5 - h_btn*4);
+    ui->listWidget_matpos->move(1 + b_li + 2,\
+                                1 + (h_btn + 1)*2);
+
+    //rechts Buttons unter Listwidget:
     ui->pushButton_pos_new->setFixedWidth(b_re/3 - 2*2);
     ui->pushButton_pos_delete->setFixedWidth(ui->pushButton_pos_new->width());
     ui->pushButton_pos_edit->setFixedWidth(ui->pushButton_pos_new->width());
@@ -115,18 +154,18 @@ void Form_matlist::resizeEvent(QResizeEvent *event)
     ui->pushButton_pos_edit_rumpf->setFixedWidth(ui->pushButton_pos_new->width());
 
     ui->pushButton_pos_new->move(1 + b_li + 2,\
-                                 1 + h_btn + 1 + ui->listWidget_matpos->height() + 1);
+                                 1 + (h_btn + 1)*2 + ui->listWidget_matpos->height() + 1);
     ui->pushButton_pos_delete->move(1 + b_li + 2 + (ui->pushButton_pos_new->width()+1),\
-                                    1 + h_btn + 1 + ui->listWidget_matpos->height() + 1);
+                                    1 + (h_btn + 1)*2 + ui->listWidget_matpos->height() + 1);
     ui->pushButton_pos_edit->move(1 + b_li + 2 + (ui->pushButton_pos_new->width()+1)*2,\
-                                  1 + h_btn + 1 + ui->listWidget_matpos->height() + 1);
+                                  1 + (h_btn + 1)*2 + ui->listWidget_matpos->height() + 1);
 
     ui->pushButton_pos_copy->move(1 + b_li + 2,\
-                                  1 + h_btn + 1 + ui->listWidget_matpos->height() + 1 + h_btn + 1);
+                                  1 + (h_btn + 1)*2 + ui->listWidget_matpos->height() + 1 + h_btn + 1);
     ui->pushButton_pos_import->move(1 + b_li + 2 + (ui->pushButton_pos_new->width()+1),\
-                                    1 + h_btn + 1 + ui->listWidget_matpos->height() + 1 + h_btn + 1);
+                                    1 + (h_btn + 1)*2 + ui->listWidget_matpos->height() + 1 + h_btn + 1);
     ui->pushButton_pos_edit_rumpf->move(1 + b_li + 2 + (ui->pushButton_pos_new->width()+1)*2,\
-                                        1 + h_btn + 1 + ui->listWidget_matpos->height() + 1 + h_btn + 1);
+                                        1 + (h_btn + 1)*2 + ui->listWidget_matpos->height() + 1 + h_btn + 1);
 
     QWidget::resizeEvent(event);
 }
@@ -400,56 +439,76 @@ void Form_matlist::update_table()
             cmd += PARAM_PROMAT_ME_GESAMTBEDARF;
             cmd += ", ";
             //------------------------
-            cmd += promat_tabname;
-            cmd += ".";
-            cmd += PARAM_PROMAT_ME_ERFASST;
-            cmd += ", ";
-            //------------------------
-            cmd += promat_tabname;
-            cmd += ".";
-            cmd += PARAM_PROMAT_ME_UNKLAR;
-            cmd += ", ";
-            //------------------------
-            cmd += promat_tabname;
-            cmd += ".";
-            cmd += PARAM_PROMAT_ME_ZURBEST;
-            cmd += ", ";
-            //------------------------
-            cmd += promat_tabname;
-            cmd += ".";
-            cmd += PARAM_PROMAT_ME_VERARBEITET;
-            if(names_postables.zeilenanzahl() > 0)
+            if(ui->checkBox_einzelmengen->isChecked())
             {
+                //------------------------
+                cmd += promat_tabname;
+                cmd += ".";
+                cmd += PARAM_PROMAT_ME_ERFASST;
+                cmd += ", ";
+                //------------------------
+                cmd += promat_tabname;
+                cmd += ".";
+                cmd += PARAM_PROMAT_ME_UNKLAR;
+                cmd += ", ";
+                //------------------------
+                cmd += promat_tabname;
+                cmd += ".";
+                cmd += PARAM_PROMAT_ME_ZURBEST;
+                cmd += ", ";
+                //------------------------
+            }
+            //------------------------
+            if(ui->checkBox_reserviert->isChecked())
+            {
+                cmd += promat_tabname;
+                cmd += ".";
+                cmd += PARAM_PROMAT_ME_RESERVIERT;
+                cmd += ", ";
+            }
+            //------------------------
+            if(ui->checkBox_verarbeitet->isChecked())
+            {
+                cmd += promat_tabname;
+                cmd += ".";
+                cmd += PARAM_PROMAT_ME_VERARBEITET;
                 cmd += ", ";
             }
             //------------------------
             //------------------------
             for(uint i=1; i<=names_postables.zeilenanzahl() ;i++)
             {
-                //------------------------
-                cmd += names_postables.zeile(i);
-                cmd += ".";
-                cmd += PARAM_PROMATPOS_MENGE;
-                cmd += " AS ";
-                cmd += matpos_names.zeile(i);
-                if(ui->checkBox_pos_status->isChecked())
+                if(ui->checkBox_show_pos->isChecked())
                 {
-                    cmd += ", ";
                     //------------------------
-                    cmd += "status_";
                     cmd += names_postables.zeile(i);
                     cmd += ".";
-                    cmd += PARAM_STATUS_STATUS;
+                    cmd += PARAM_PROMATPOS_MENGE;
                     cmd += " AS ";
-                    cmd += "Status";
-                    //cmd += ", ";
-                    //------------------------
-                }
-
-                if(i != names_postables.zeilenanzahl())
-                {
+                    cmd += matpos_names.zeile(i);
                     cmd += ", ";
+                    //------------------------
+                    if(ui->checkBox_pos_status->isChecked() )
+                    {
+                        //------------------------
+                        cmd += "status_";
+                        cmd += names_postables.zeile(i);
+                        cmd += ".";
+                        cmd += PARAM_STATUS_STATUS;
+                        cmd += " AS ";
+                        cmd += "Status";
+                        cmd += ", ";
+                        //------------------------
+                    }
                 }
+            }
+            //------------------------
+            QString letzte_zwei;
+            letzte_zwei += cmd.at(cmd.count()-2);
+            letzte_zwei += cmd.at(cmd.count()-1);
+            if(letzte_zwei == ", ")
+            {
+                cmd = cmd.left(cmd.count()-2);
             }
             //------------------------
             //------------------------
@@ -911,6 +970,98 @@ void Form_matlist::on_pushButton_pos_import_clicked()
     }
 }
 
+void Form_matlist::on_pushButton_reservieren_clicked()
+{
+    if(!ui->lineEdit_projekt_id->text().isEmpty())
+    {
+        ui->checkBox_show_pos->setChecked(false);
+        ui->checkBox_einzelmengen->setChecked(true);
+        ui->checkBox_reserviert->setChecked(true);
+        ui->checkBox_verarbeitet->setChecked(true);
+
+        text_zeilenweise promat_ids;
+        text_zeilenweise artikel_id;
+        text_zeilenweise me_bestellen;      //zum Reservieren vorgemerkte Menge (mit Status Bestellen)
+        text_zeilenweise me_reserviert;     //bereits reservierte Menge
+
+        QString tabname;
+        tabname += TABNAME_PROMAT;
+        tabname += ui->lineEdit_projekt_id->text();
+
+        promat_ids      = dbeigen->get_data_tz(tabname, PARAM_PROMAT_ID);
+        artikel_id      = dbeigen->get_data_tz(tabname, PARAM_PROMAT_ARTIKEL_ID);
+        me_bestellen    = dbeigen->get_data_tz(tabname, PARAM_PROMAT_ME_ZURBEST);
+        me_reserviert   = dbeigen->get_data_tz(tabname, PARAM_PROMAT_ME_RESERVIERT);
+
+        for(uint i=1; i<=artikel_id.zeilenanzahl() ;i++)
+        {
+            int vorgemerkt = me_bestellen.zeile(i).toInt(); //vorgemerkte Menge
+            int reserviert = me_reserviert.zeile(i).toInt();//beriets reservierte Menge
+
+            int art_resme  = dbeigen->get_data_qstring(TABNAME_ARTIKEL, PARAM_ARTIKEL_RESERVIERT, \
+                                                       artikel_id.zeile(i)).toInt();
+
+            if(vorgemerkt > reserviert)
+            {
+                int zures = vorgemerkt - reserviert; //Bereits reservierte Mengen nicht erneut reservieren!
+
+                //Reservierte Menge im Artikel erhöhen:
+                int neue_menge = art_resme + zures;
+                dbeigen->data_edit(TABNAME_ARTIKEL, PARAM_ARTIKEL_RESERVIERT, \
+                                   int_to_qstring(neue_menge), artikel_id.zeile(i));
+
+                //Reservierte Menge in Tabelle promat_id erhöhen:
+                neue_menge = vorgemerkt;
+                dbeigen->data_edit(tabname, PARAM_PROMAT_ME_RESERVIERT, \
+                                   int_to_qstring(neue_menge), promat_ids.zeile(i));
+
+                {
+                    //Freie Menge berechnen == welche Stückzahl vom Atrikel ist noch nicht verplant:
+                    int lagerbestand    = dbeigen->get_data_qstring(TABNAME_ARTIKEL, PARAM_ARTIKEL_LAGERSTAND, \
+                                                                    artikel_id.zeile(i)).toInt();
+                    int in_bestellung   = dbeigen->get_data_qstring(TABNAME_ARTIKEL, PARAM_ARTIKEL_BESTELLT, \
+                                                                    artikel_id.zeile(i)).toInt();
+                    int reserviert      = dbeigen->get_data_qstring(TABNAME_ARTIKEL, PARAM_ARTIKEL_RESERVIERT, \
+                                                                    artikel_id.zeile(i)).toInt();
+                    int frei = lagerbestand + in_bestellung - reserviert;
+                    dbeigen->data_edit(TABNAME_ARTIKEL, PARAM_ARTIKEL_FREI, \
+                                       int_to_qstring(frei), artikel_id.zeile(i));
+
+                    //Bestellvorschlag ermitteln und speichern:
+                    int mindestbestand  = dbeigen->get_data_qstring(TABNAME_ARTIKEL, PARAM_ARTIKEL_LAGERST_MIN, \
+                                                                    artikel_id.zeile(i)).toInt();
+                    int ve              = dbeigen->get_data_qstring(TABNAME_ARTIKEL, PARAM_ARTIKEL_VE, \
+                                                                    artikel_id.zeile(i)).toInt();
+
+                    if( (lagerbestand + in_bestellung - mindestbestand) < reserviert  )
+                    {
+                        int x = lagerbestand + in_bestellung - mindestbestand - reserviert;
+                        int anz_ves     = -x/ve;
+                        int rest        = -x%ve;
+                        if(rest != 0)
+                        {
+                            anz_ves++;
+                        }
+                        int bestellvorschlag = anz_ves * ve;
+                        dbeigen->data_edit(TABNAME_ARTIKEL, PARAM_ARTIKEL_BESTVOR, \
+                                           int_to_qstring(bestellvorschlag), artikel_id.zeile(i));
+                    }else
+                    {
+                        dbeigen->data_edit(TABNAME_ARTIKEL, PARAM_ARTIKEL_BESTVOR, \
+                                           "0", artikel_id.zeile(i));
+                    }
+                }
+            }
+        }
+        update_table();
+    }else
+    {
+        QMessageBox mb;
+        mb.setText(tr("Bitte zuerst ein Projekt festlegen!"));
+        mb.exec();
+    }
+}
+
 //-------------------------------------private Slots:
 void Form_matlist::on_lineEdit_projekt_id_textChanged(const QString &arg1)
 {
@@ -966,6 +1117,46 @@ void Form_matlist::on_checkBox_pos_status_toggled()
     if(!ui->lineEdit_projekt_id->text().isEmpty())
     {
         update_table();
+    }
+}
+
+void Form_matlist::on_checkBox_reserviert_toggled()
+{
+    if(!ui->lineEdit_projekt_id->text().isEmpty())
+    {
+        update_table();
+    }
+}
+
+void Form_matlist::on_checkBox_einzelmengen_toggled()
+{
+    if(!ui->lineEdit_projekt_id->text().isEmpty())
+    {
+        update_table();
+    }
+}
+
+void Form_matlist::on_checkBox_verarbeitet_toggled()
+{
+    if(!ui->lineEdit_projekt_id->text().isEmpty())
+    {
+        update_table();
+    }
+}
+
+void Form_matlist::on_checkBox_show_pos_toggled(bool checked)
+{
+    if(!ui->lineEdit_projekt_id->text().isEmpty())
+    {
+        update_table();
+    }
+    if(checked == true)
+    {
+        ui->checkBox_pos_status->setEnabled(true);
+    }else
+    {
+        ui->checkBox_pos_status->setDisabled(true);
+        ui->checkBox_pos_status->setChecked(false);
     }
 }
 
@@ -1344,6 +1535,16 @@ void Form_matlist::slot_import_get_pos_id(text_zeilenweise ids)
     update_listwidget_matpos();
     slot_update_table();
 }
+
+
+
+
+
+
+
+
+
+
 
 
 

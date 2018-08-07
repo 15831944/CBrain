@@ -135,22 +135,47 @@ void Form_artikel::update_table()
             //------------------------
             cmd += TABNAME_ARTIKEL;
             cmd += ".";
-            cmd += PARAM_ARTIKEL_LAGERSTAND;
-            cmd += ", ";
-            //------------------------
-            cmd += TABNAME_ARTIKEL;
-            cmd += ".";
             cmd += PARAM_ARTIKEL_PREIS;
             cmd += ", ";
             //------------------------
             cmd += TABNAME_ARTIKEL;
             cmd += ".";
-            cmd += PARAM_ARTIKEL_LAGERORT;
+            cmd += PARAM_ARTIKEL_LAGERSTAND;
+            cmd += ", ";
+            //------------------------
+            cmd += TABNAME_ARTIKEL;
+            cmd += ".";
+            cmd += PARAM_ARTIKEL_LAGERST_MIN;
             cmd += ", ";
             //------------------------
             cmd += TABNAME_ARTIKEL;
             cmd += ".";
             cmd += PARAM_ARTIKEL_VE;
+            cmd += ", ";
+            //------------------------
+            cmd += TABNAME_ARTIKEL;
+            cmd += ".";
+            cmd += PARAM_ARTIKEL_RESERVIERT;
+            cmd += ", ";
+            //------------------------
+            cmd += TABNAME_ARTIKEL;
+            cmd += ".";
+            cmd += PARAM_ARTIKEL_FREI;
+            cmd += ", ";
+            //------------------------
+            cmd += TABNAME_ARTIKEL;
+            cmd += ".";
+            cmd += PARAM_ARTIKEL_BESTVOR;
+            cmd += ", ";
+            //------------------------
+            cmd += TABNAME_ARTIKEL;
+            cmd += ".";
+            cmd += PARAM_ARTIKEL_BESTELLT;
+            cmd += ", ";
+            //------------------------
+            cmd += TABNAME_ARTIKEL;
+            cmd += ".";
+            cmd += PARAM_ARTIKEL_LAGERORT;
             cmd += ", ";
             //------------------------
             cmd += TABNAME_ARTIKEL;
