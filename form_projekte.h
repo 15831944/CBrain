@@ -13,6 +13,7 @@
 #include "datum.h"
 #include "dialog_yes_no.h"
 #include "dialog_projekte.h"
+#include "users.h"
 
 namespace Ui {
 class Form_projekte;
@@ -28,6 +29,7 @@ public:
 
     void set_db(cbrainbatabase *new_db);
     void set_user(QString u);
+    void set_user(users *users);
     void show();
 
 public slots:
@@ -52,6 +54,7 @@ private:
 
     cbrainbatabase *dbeigen;
     QSqlQueryModel *model;
+    users *u;
     QString user;
     QString idbuffer;       //Speichert id
                             //von void slot_edit_dialog(text_zeilenweise ids);

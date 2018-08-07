@@ -41,8 +41,11 @@ private slots:
     void on_spinBox_id_valueChanged(const QString &arg1);
     void on_checkBox_modul_personal_toggled(bool checked);
     void on_checkBox_modul_matlist_toggled(bool checked);
-
     void on_checkBox_function_artfavsort_toggled(bool checked);
+
+
+
+    void on_checkBox_function_projektdel_toggled(bool checked);
 
 private:
     Ui::Dialog_user *ui;

@@ -10,6 +10,7 @@
 #include "_tabname_artikel.h"
 #include "_tabname_status.h"
 #include "_tabname_promatpos.h"
+#include "_tabname_promatposlist.h"
 #include "_tabname_personal.h"
 #include "dialog_artikel_verwenden.h"
 #include "text.h"

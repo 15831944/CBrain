@@ -21,6 +21,11 @@
 #define PARAM_ARTIKEL_ISFAVORIT     "ist_Favorit"       //Wert 14
 #define PARAM_ARTIKEL_PREIS         "Preis"             //Wert 15
 #define PARAM_ARTIKEL_FAVORDER      "Favoritenrang"     //Wert 16
+#define PARAM_ARTIKEL_LAGERST_MIN   "mind_Bestand"      //Wert 17
+#define PARAM_ARTIKEL_RESERVIERT    "reserviert"        //Wert 18
+#define PARAM_ARTIKEL_FREI          "frei"              //Wert 19
+#define PARAM_ARTIKEL_BESTVOR       "Bestellvors"       //Wert 20
+#define PARAM_ARTIKEL_BESTELLT      "bestellt"          //Wert 21
 
 
 

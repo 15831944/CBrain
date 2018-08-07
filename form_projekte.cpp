@@ -62,9 +62,24 @@ void Form_projekte::set_user(QString u)
     user = u;
 }
 
+void Form_projekte::set_user(users *users)
+{
+    u = users;
+}
+
 void Form_projekte::show()
 {
     update_table();
+    if(u != NULL)
+    {
+        if(u->function_projektdel())
+        {
+            ui->pushButton_del->setEnabled(true);
+        }else
+        {
+            ui->pushButton_del->setDisabled(true);
+        }
+    }
     setVisible(true);
 }
 
@@ -250,6 +265,9 @@ void Form_projekte::create_table_promat(QString project_id)
             cmd += " int(11)";
             cmd += ", ";
             cmd += PARAM_PROMAT_ME_ZURBEST;
+            cmd += " int(11)";
+            cmd += ", ";
+            cmd += PARAM_PROMAT_ME_RESERVIERT;
             cmd += " int(11)";
             cmd += ")";
             cmd += " ENGINE=InnoDB";

@@ -39,6 +39,7 @@ void users::set_users(QString users)
             use_modul_personal.zeile_anhaengen(zeile.zeile(9));     //Wert 9
             use_modul_matlist.zeile_anhaengen(zeile.zeile(10));     //Wert 10
             use_function_artfavsort.zeile_anhaengen(zeile.zeile(11));//Wert 11
+            use_function_projektdel.zeile_anhaengen(zeile.zeile(12));//Wert 12
         }
     }
 }
@@ -70,6 +71,8 @@ QString users::get_users()
         msg += use_modul_matlist.zeile(i);      //Wert 10
         msg += trzparam;
         msg += use_function_artfavsort.zeile(i);//Wert 11
+        msg += trzparam;
+        msg += use_function_projektdel.zeile(i);//Wert 11
 
         if(i != user_tz.zeilenanzahl()) //in der letzten Zeile keinen Zeilenvorschub
         {
@@ -96,6 +99,7 @@ void users::clear()
     use_modul_personal.clear();
     use_modul_matlist.clear();
     use_function_artfavsort.clear();
+    use_function_projektdel.clear();
 }
 
 void users::set_first_admin()
@@ -112,6 +116,7 @@ void users::set_first_admin()
     id_tz.zeilen_anhaengen("1");                //der Admin muss die id 1 in der Tabelle haben!!
     use_modul_matlist.zeilen_anhaengen("1");
     use_function_artfavsort.zeilen_anhaengen("1");
+    use_function_projektdel.zeilen_anhaengen("1");
 }
 
 bool users::login(QString user, QString pwd)
@@ -303,6 +308,22 @@ bool users::function_artfavsort()
         return false;
     }
 }
+bool users::function_projektdel()
+{
+    if(current_user != 0)
+    {
+        if(use_function_projektdel.zeile(current_user) == "1")
+        {
+            return true;
+        }else
+        {
+            return false;
+        }
+    }else
+    {
+        return false;
+    }
+}
 
 bool users::change_name(uint index, QString newname)
 {
@@ -416,6 +437,16 @@ void users::change_use_function_artfavsort(uint index, bool isalowed)
         use_function_artfavsort.zeile_ersaetzen(index, "0");
     }
 }
+void users::change_use_function_projektdel(uint index, bool isalowed)
+{
+    if(isalowed == true)
+    {
+        use_function_projektdel.zeile_ersaetzen(index, "1");
+    }else
+    {
+        use_function_projektdel.zeile_ersaetzen(index, "0");
+    }
+}
 
 void users::newuser()
 {
@@ -430,6 +461,7 @@ void users::newuser()
     use_modul_personal.zeile_anhaengen("0");
     use_modul_matlist.zeile_anhaengen("0");
     use_function_artfavsort.zeile_anhaengen("0");
+    use_function_projektdel.zeile_anhaengen("0");
 }
 
 void users::removeuser(uint index)
@@ -447,6 +479,7 @@ void users::removeuser(uint index)
         use_modul_personal.zeile_loeschen(index);
         use_modul_matlist.zeile_loeschen(index);
         use_function_artfavsort.zeile_loeschen(index);
+        use_function_projektdel.zeile_loeschen(index);
     }
 }
 

@@ -16,6 +16,7 @@
 #define PARAM_PROMAT_ME_ERFASST       "erfasst"           //Wert 4 davon mit Status erfasst
 #define PARAM_PROMAT_ME_UNKLAR        "unklar"            //Wert 5 davon mit Status unklar
 #define PARAM_PROMAT_ME_ZURBEST       "bestellen"         //Wert 6 davon mit Status bestellen
+#define PARAM_PROMAT_ME_RESERVIERT    "reserviert"        //Wert 7
 
 
 

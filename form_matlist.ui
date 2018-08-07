@@ -72,9 +72,9 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>40</y>
+     <y>100</y>
      <width>521</width>
-     <height>421</height>
+     <height>361</height>
     </rect>
    </property>
   </widget>
@@ -82,9 +82,9 @@
    <property name="geometry">
     <rect>
      <x>540</x>
-     <y>40</y>
+     <y>60</y>
      <width>311</width>
-     <height>341</height>
+     <height>321</height>
     </rect>
    </property>
   </widget>
@@ -93,7 +93,7 @@
     <rect>
      <x>540</x>
      <y>10</y>
-     <width>131</width>
+     <width>71</width>
      <height>23</height>
     </rect>
    </property>
@@ -104,9 +104,9 @@
   <widget class="QPushButton" name="pushButton_check_activ_pos">
    <property name="geometry">
     <rect>
-     <x>680</x>
+     <x>620</x>
      <y>10</y>
-     <width>161</width>
+     <width>101</width>
      <height>23</height>
     </rect>
    </property>
@@ -209,6 +209,148 @@
    </property>
    <property name="text">
     <string>edit Rumpf</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_update_table">
+   <property name="geometry">
+    <rect>
+     <x>740</x>
+     <y>10</y>
+     <width>75</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>aktualisieren</string>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="checkBox_erfasst">
+   <property name="geometry">
+    <rect>
+     <x>310</x>
+     <y>40</y>
+     <width>61</width>
+     <height>18</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>erf.</string>
+   </property>
+   <property name="checked">
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="checkBox_unklar">
+   <property name="geometry">
+    <rect>
+     <x>390</x>
+     <y>40</y>
+     <width>51</width>
+     <height>18</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>unk.</string>
+   </property>
+   <property name="checked">
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="checkBox_bestellen">
+   <property name="geometry">
+    <rect>
+     <x>460</x>
+     <y>40</y>
+     <width>71</width>
+     <height>18</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>best.</string>
+   </property>
+   <property name="checked">
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="checkBox_pos_status">
+   <property name="geometry">
+    <rect>
+     <x>250</x>
+     <y>70</y>
+     <width>91</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Pos-Status</string>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="checkBox_reserviert">
+   <property name="geometry">
+    <rect>
+     <x>90</x>
+     <y>70</y>
+     <width>71</width>
+     <height>18</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>reserv.</string>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="checkBox_einzelmengen">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>70</y>
+     <width>91</width>
+     <height>18</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Einzelmen.</string>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="checkBox_verarbeitet">
+   <property name="geometry">
+    <rect>
+     <x>170</x>
+     <y>70</y>
+     <width>71</width>
+     <height>18</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>verarb.</string>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="checkBox_show_pos">
+   <property name="geometry">
+    <rect>
+     <x>540</x>
+     <y>40</y>
+     <width>171</width>
+     <height>18</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Positionen anzeigen</string>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_reservieren">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>40</y>
+     <width>75</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Reservieren</string>
    </property>
   </widget>
  </widget>

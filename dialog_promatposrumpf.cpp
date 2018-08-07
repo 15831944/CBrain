@@ -334,8 +334,19 @@ void Dialog_promatposrumpf::bearbeiten_dialog(QString artikel_id)
     Dialog_artikel_verwenden *d = new Dialog_artikel_verwenden(this);
     d->set_db(dbeigen);
     d->set_artikel_id(artikel_id);
+
+    double menge_gesamt    = dbeigen->get_data_qstring(tabname, PARAM_PROMATPOS_MENGE, idbuffer).toDouble();
+    QString tabname_promatposlist;
+    tabname_promatposlist += TABNAME_PROMATPOSLIST;
+    tabname_promatposlist += text_mitte(tabname, "_", "_");
+    QString promatposlist_index = text_rechts(tabname, "_");
+    promatposlist_index = text_rechts(promatposlist_index, "_");
+    double menge_position =dbeigen->get_data_qstring(tabname_promatposlist, PARAM_PROMATPOSLIST_MENGE,\
+                                                     promatposlist_index).toDouble();
+    QString menge_pro_1  = double_to_qstring(menge_gesamt / menge_position);
+
     text_zeilenweise data_for_dialog;
-    data_for_dialog.zeile_anhaengen(dbeigen->get_data_qstring(tabname, PARAM_PROMATPOS_MENGE, idbuffer));
+    data_for_dialog.zeile_anhaengen(menge_pro_1);
     data_for_dialog.zeile_anhaengen(dbeigen->get_data_qstring(tabname, PARAM_PROMATPOS_STATUS_ID, idbuffer));
     data_for_dialog.zeile_anhaengen(dbeigen->get_data_qstring(tabname, PARAM_PROMATPOS_BEZIEHUNG, idbuffer));
     d->set_data(data_for_dialog);
@@ -780,6 +791,17 @@ void Dialog_promatposrumpf::slot_edit_data(text_zeilenweise data)
 
         }else
         {
+
+            double menge_pro_1 = data.zeile(2).toDouble();
+            QString tabname_promatposlist;
+            tabname_promatposlist += TABNAME_PROMATPOSLIST;
+            tabname_promatposlist += text_mitte(tabname, "_", "_");
+            QString promatposlist_index = text_rechts(tabname, "_");
+            promatposlist_index = text_rechts(promatposlist_index, "_");
+            double menge_position =dbeigen->get_data_qstring(tabname_promatposlist, PARAM_PROMATPOSLIST_MENGE,\
+                                                             promatposlist_index).toDouble();
+            double menge_gesamt = menge_pro_1 * menge_position;
+
             text_zeilenweise pa, val;
 
             pa.zeile_anhaengen(PARAM_PROMATPOS_MENGE);
@@ -788,7 +810,7 @@ void Dialog_promatposrumpf::slot_edit_data(text_zeilenweise data)
             pa.zeile_anhaengen(PARAM_PROMATPOS_BEZIEHUNG);
             pa.zeile_anhaengen(PARAM_PROMATPOS_BLOCK);
 
-            val.zeile_anhaengen(data.zeile(2));
+            val.zeile_anhaengen(double_to_qstring(menge_gesamt));
             val.zeile_anhaengen(data.zeile(3));
             val.zeile_anhaengen(current_userid);
             val.zeile_anhaengen(data.zeile(4));
