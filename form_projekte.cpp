@@ -356,7 +356,8 @@ void Form_projekte::on_pushButton_del_clicked()
     //-------------------------------------------
     Dialog_dataselection *d = new Dialog_dataselection(this);
     d->set_data(tz, ids);
-    d->setWindowTitle("Projekt loeschen");
+    d->setWindowTitle(tr("Projekt löschen"));
+    d->set_anz_returnwerte(1);
     connect(d, SIGNAL(signal_send_selection(text_zeilenweise)), \
             this, SLOT(slot_delete(text_zeilenweise))           );
     d->exec();
@@ -467,6 +468,41 @@ void Form_projekte::slot_new(text_zeilenweise data)
 
 void Form_projekte::slot_delete(text_zeilenweise ids)
 {
+    //Alles für das Projekt angelegten unter-tabellen ermitteln:
+    //Promat_id-Tabellen werden nicht gelöscht!
+    text_zeilenweise promatposlist;
+    text_zeilenweise promatpos;
+    for(uint i=1; i<=ids.zeilenanzahl() ;i++)
+    {
+        QString name;
+        name += TABNAME_PROMATPOSLIST;
+        name += ids.zeile(i);
+        promatposlist.zeile_anhaengen(name);
+    }
+    for(uint i=1; i<=ids.zeilenanzahl() ;i++)
+    {
+        text_zeilenweise tz = dbeigen->get_data_tz(promatposlist.zeile(i), PARAM_PROMATPOSLIST_ID);
+        for(int ii=1; ii<=tz.zeilenanzahl() ;ii++)
+        {
+            QString name;
+            name += TABNAME_PROMATPOS;
+            name += ids.zeile(i);
+            name += "_";
+            name += tz.zeile(ii);
+            promatpos.zeile_anhaengen(name);
+        }
+    }
+    //Alle ermittelten Tabellen löschen:
+    for(uint i=1; i<=promatpos.zeilenanzahl() ;i++)
+    {
+        dbeigen->table_del(promatpos.zeile(i));
+    }
+    for(uint i=1; i<=promatposlist.zeilenanzahl() ;i++)
+    {
+        dbeigen->table_del(promatposlist.zeile(i));
+    }
+
+    //Projekteintrag löschen
     dbeigen->data_del(TABNAME_PROJEKT, ids);
     update_table();
 }

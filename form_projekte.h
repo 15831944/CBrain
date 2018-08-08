@@ -8,6 +8,8 @@
 #include "_tabname_personal.h"
 #include "_tabname_projekt.h"
 #include "_tabname_promat.h"
+#include "_tabname_promatposlist.h"
+#include "_tabname_promatpos.h"
 #include "dialog_dataselection.h"
 #include "text.h"
 #include "datum.h"

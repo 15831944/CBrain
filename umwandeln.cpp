@@ -48,6 +48,6 @@ std::string double_to_string(double zahl)
 
 QString double_to_qstring(double zahl)
 {
-    QString msg = QString::number(zahl, 'f', 6);//6 sorgt für 6 Nachkommastellen
+    QString msg = QString::number(zahl, 'f', 4);//4 sorgt für 4 Nachkommastellen
     return msg;
 }
