@@ -15,6 +15,7 @@ MainWindow::MainWindow(QWidget *parent) :
     widget_backup.setParent(this);
     widget_personal.setParent(this);
     widget_matlist.setParent(this);
+    widget_bestellung.setParent(this);
 
     on_actionKeinModul_triggered();
 
@@ -44,6 +45,7 @@ void MainWindow::clear()
     modul_backup    = false;
     modul_personal  = false;
     modul_matlist   = false;
+    modul_bestellung= false;
 }
 
 bool MainWindow::setup()
@@ -73,6 +75,7 @@ bool MainWindow::setup()
         widget_backup.set_db(&dbeigen);         //widget Zeiger auf DB übergeben
         widget_personal.set_db(&dbeigen);       //widget Zeiger auf DB übergeben
         widget_matlist.set_db(&dbeigen);        //widget Zeiger auf DB übergeben
+        widget_bestellung.set_db(&dbeigen);     //widget Zeiger auf DB übergeben
 
         widget_artikel.set_user(&u);
         widget_projekte.set_user(&u);
@@ -158,6 +161,9 @@ void MainWindow::resizeEvent(QResizeEvent *event)
 
     widget_matlist.move(0, hoehe_menue);
     widget_matlist.setFixedSize(breite, hoehe);
+
+    widget_bestellung.move(0, hoehe_menue);
+    widget_bestellung.setFixedSize(breite, hoehe);
 
     QWidget::resizeEvent(event);
 }
@@ -261,6 +267,7 @@ void MainWindow::slot_login(QString user, QString pwd)
         widget_projekte.set_user(u.get_current_user_id());
         widget_personal.set_user(u.get_current_user());
         widget_matlist.set_user(u.get_current_user_id());
+        widget_bestellung.set_user(u.get_current_user_id());
         //Rechte für Module setzen:
         ui_rechte_modul_artikel(  u.modul_artikel()  );
         ui_rechte_modul_lieferanten(  u.modul_lieferanten()  );
@@ -268,6 +275,7 @@ void MainWindow::slot_login(QString user, QString pwd)
         ui_rechte_modul_projekte(  u.modul_projekte()  );
         ui_rechte_modul_perrsonal(  u.modul_personal()  );
         ui_rechte_modul_matlist(  u.modul_matlist()  );
+        ui_rechte_modul_bestellung(  u.modul_bestellungen()  );
     }else
     {
         ui_rechte_nobody();
@@ -329,6 +337,7 @@ void MainWindow::on_actionBenutzer_wechsen_triggered()
 
 void MainWindow::on_actionBenutzer_verwalten_triggered()
 {
+    on_actionModulPersonal_triggered();
     Dialog_user *d = new Dialog_user(this);
     connect(d, SIGNAL(signal_send_users(users)),        \
             this, SLOT(slot_get_users(users))           );
@@ -386,6 +395,10 @@ void MainWindow::on_actionModulMaterialliste_triggered()
 {
     change_modul("Materialliste");
 }
+void MainWindow::on_actionModulBestellungen_triggered()
+{
+    change_modul("Bestellungen");
+}
 
 void MainWindow::hide_all_moduls()
 {
@@ -398,6 +411,7 @@ void MainWindow::hide_all_moduls()
     modul_backup        = false;
     modul_personal      = false;
     modul_matlist       = false;
+    modul_bestellung    = false;
 
     widget_tableeditor.hide();
     widget_lieferanten.hide();
@@ -407,6 +421,7 @@ void MainWindow::hide_all_moduls()
     widget_backup.hide();
     widget_personal.hide();
     widget_matlist.hide();
+    widget_bestellung.hide();
 }
 void MainWindow::change_modul(QString modul)
 {
@@ -547,6 +562,23 @@ void MainWindow::change_modul(QString modul)
                 mb.exec();
             }
         }
+    }else if(modul == "Bestellungen")
+    {
+        if(modul_bestellung == false)
+        {
+            if(dbeigen.pingdb() == true)
+            {
+                hide_all_moduls();
+                currend_modul       = "Bestellungen";
+                modul_bestellung    = true;
+                widget_bestellung.show();
+            }else
+            {
+                QMessageBox mb;
+                mb.setText(tr("Datenbank nicht erreichbar!\nModul wurden nicht geladen."));
+                mb.exec();
+            }
+        }
     }else
     {
         if(modul_kein == false)
@@ -576,6 +608,7 @@ void MainWindow::ui_rechte_nobody()
     ui->actionModulProjekte->setDisabled(true);
     ui->actionModulPersonal->setDisabled(true);
     ui->actionModulMaterialliste->setDisabled(true);
+    ui->actionModulBestellungen->setDisabled(true);
 }
 
 void MainWindow::ui_rechte_admin()
@@ -652,6 +685,16 @@ void MainWindow::ui_rechte_modul_matlist(bool hat_rechte)
         ui->actionModulMaterialliste->setDisabled(true);
     }
 }
+void MainWindow::ui_rechte_modul_bestellung(bool hat_rechte)
+{
+    if(hat_rechte == true)
+    {
+        ui->actionModulBestellungen->setEnabled(true);
+    }else
+    {
+        ui->actionModulBestellungen->setDisabled(true);
+    }
+}
 
 //-----------------------------------------------Testfunktion:
 void MainWindow::on_actionTestfunktion_triggered()
@@ -678,6 +721,8 @@ void MainWindow::on_actionTestfunktion_triggered()
 }
 
 //-----------------------------------------------
+
+
 
 
 

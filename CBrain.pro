@@ -50,7 +50,8 @@ SOURCES += main.cpp\
     dialog_artikel_beziehung.cpp \
     dialog_artikel_fav_reihenfolge.cpp \
     dialog_artikel_verwenden.cpp \
-    artikel_mengenerfassung.cpp
+    artikel_mengenerfassung.cpp \
+    form_bestellung.cpp
 
 HEADERS  += mainwindow.h \
     defines_filenames.h \
@@ -101,7 +102,8 @@ HEADERS  += mainwindow.h \
     dialog_artikel_beziehung.h \
     dialog_artikel_fav_reihenfolge.h \
     dialog_artikel_verwenden.h \
-    artikel_mengenerfassung.h
+    artikel_mengenerfassung.h \
+    form_bestellung.h
 
 FORMS    += mainwindow.ui \
     dialog_login.ui \
@@ -130,4 +132,5 @@ FORMS    += mainwindow.ui \
     dialog_promatposrumpf.ui \
     dialog_artikel_beziehung.ui \
     dialog_artikel_fav_reihenfolge.ui \
-    dialog_artikel_verwenden.ui
+    dialog_artikel_verwenden.ui \
+    form_bestellung.ui

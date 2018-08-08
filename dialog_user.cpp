@@ -107,6 +107,14 @@ void Dialog_user::on_listWidget_names_currentRowChanged(int currentRow)
         ui->checkBox_function_projektdel->setChecked(false);
     }
 
+    if(user.get_use_modul_bestellungen_tz().zeile(currentRow+1)== "1")
+    {
+        ui->checkBox_modul_bestellungen->setChecked(true);
+    }else
+    {
+        ui->checkBox_modul_bestellungen->setChecked(false);
+    }
+
     //------------------------------------------------------------------------------------
     if(ui->listWidget_names->currentRow() == 0)//First Admin soll nicht editierbar sein!
     {
@@ -121,6 +129,7 @@ void Dialog_user::on_listWidget_names_currentRowChanged(int currentRow)
         ui->checkBox_modul_matlist->setDisabled(true);
         ui->checkBox_function_artfavsort->setDisabled(true);
         ui->checkBox_function_projektdel->setDisabled(true);
+        ui->checkBox_modul_bestellungen->setDisabled(true);
     }else
     {
         ui->lineEdit_name->setEnabled(true);
@@ -134,6 +143,7 @@ void Dialog_user::on_listWidget_names_currentRowChanged(int currentRow)
         ui->checkBox_modul_matlist->setEnabled(true);
         ui->checkBox_function_artfavsort->setEnabled(true);
         ui->checkBox_function_projektdel->setEnabled(true);
+        ui->checkBox_modul_bestellungen->setEnabled(true);
     }
 }
 
@@ -226,4 +236,8 @@ void Dialog_user::on_checkBox_function_artfavsort_toggled(bool checked)
 void Dialog_user::on_checkBox_function_projektdel_toggled(bool checked)
 {
     user.change_use_function_projektdel(ui->listWidget_names->currentRow()+1, checked);
+}
+void Dialog_user::on_checkBox_modul_bestellungen_toggled(bool checked)
+{
+    user.change_use_modul_bestellungen(ui->listWidget_names->currentRow()+1, checked);
 }

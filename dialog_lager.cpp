@@ -184,7 +184,12 @@ void Dialog_lager::on_lineEdit_artikelfilter_textChanged()
     ui->comboBox_artikel->clear();
     for(uint i=1; i<=artikel.zeilenanzahl() ;i++)
     {
-        if(text_mitte(artikel.zeile(i), " / ", " / ").toUpper().contains(ui->lineEdit_artikelfilter->text().toUpper()))
+        QString suchbegriff = ui->lineEdit_artikelfilter->text().toUpper();
+        QString artikel_nr = text_mitte(artikel.zeile(i), " / ", " / ").toUpper();
+        QString artikel_bez = text_rechts(artikel.zeile(i), " / ").toUpper();
+        artikel_bez = text_rechts(artikel_bez, " / ");
+
+        if(artikel_nr.contains(suchbegriff)  ||  artikel_bez.contains(suchbegriff))
         {
             ui->comboBox_artikel->addItem(artikel.zeile(i));
         }

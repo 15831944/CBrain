@@ -52,6 +52,7 @@
     <addaction name="actionKeinModul"/>
     <addaction name="separator"/>
     <addaction name="actionModulArtikel"/>
+    <addaction name="actionModulBestellungen"/>
     <addaction name="actionModulLager"/>
     <addaction name="actionModulLieferanten"/>
     <addaction name="actionModulMaterialliste"/>
@@ -158,6 +159,11 @@
   <action name="actionModulMaterialliste">
    <property name="text">
     <string>Materialliste</string>
+   </property>
+  </action>
+  <action name="actionModulBestellungen">
+   <property name="text">
+    <string>Bestellungen</string>
    </property>
   </action>
  </widget>

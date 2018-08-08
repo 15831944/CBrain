@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>425</width>
-    <height>448</height>
+    <height>529</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -22,7 +22,7 @@
      <x>10</x>
      <y>10</y>
      <width>131</width>
-     <height>431</height>
+     <height>511</height>
     </rect>
    </property>
   </widget>
@@ -32,14 +32,14 @@
      <x>150</x>
      <y>50</y>
      <width>265</width>
-     <height>351</height>
+     <height>441</height>
     </rect>
    </property>
    <layout class="QGridLayout" name="gridLayout">
-    <item row="7" column="0" colspan="2">
-     <widget class="QCheckBox" name="checkBox_modul_projekte">
+    <item row="5" column="0" colspan="2">
+     <widget class="QCheckBox" name="checkBox_modul_lieferanten">
       <property name="text">
-       <string>Zugang zu Modul Projekte</string>
+       <string>Zugang zu Modul Lieferanten</string>
       </property>
      </widget>
     </item>
@@ -50,8 +50,12 @@
       </property>
      </widget>
     </item>
-    <item row="0" column="1">
-     <widget class="QLineEdit" name="lineEdit_name"/>
+    <item row="0" column="0">
+     <widget class="QLabel" name="label_name">
+      <property name="text">
+       <string>Name</string>
+      </property>
+     </widget>
     </item>
     <item row="3" column="0" colspan="2">
      <widget class="QCheckBox" name="checkBox_isadmin">
@@ -60,10 +64,17 @@
       </property>
      </widget>
     </item>
-    <item row="1" column="0">
-     <widget class="QLabel" name="label">
+    <item row="7" column="0" colspan="2">
+     <widget class="QCheckBox" name="checkBox_modul_projekte">
       <property name="text">
-       <string>Passwort</string>
+       <string>Zugang zu Modul Projekte</string>
+      </property>
+     </widget>
+    </item>
+    <item row="8" column="0" colspan="2">
+     <widget class="QCheckBox" name="checkBox_modul_personal">
+      <property name="text">
+       <string>Zugang zu Modul Personal</string>
       </property>
      </widget>
     </item>
@@ -74,20 +85,6 @@
       </property>
      </widget>
     </item>
-    <item row="5" column="0" colspan="2">
-     <widget class="QCheckBox" name="checkBox_modul_lieferanten">
-      <property name="text">
-       <string>Zugang zu Modul Lieferanten</string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="0">
-     <widget class="QLabel" name="label_name">
-      <property name="text">
-       <string>Name</string>
-      </property>
-     </widget>
-    </item>
     <item row="4" column="0" colspan="2">
      <widget class="QCheckBox" name="checkBox_modul_artikel">
       <property name="text">
@@ -95,20 +92,30 @@
       </property>
      </widget>
     </item>
-    <item row="10" column="0" colspan="2">
+    <item row="1" column="1">
+     <widget class="QLineEdit" name="lineEdit_pwd"/>
+    </item>
+    <item row="11" column="0" colspan="2">
      <widget class="QCheckBox" name="checkBox_function_artfavsort">
       <property name="text">
        <string>Darf Artikel die Favoriten sind sortieren</string>
       </property>
      </widget>
     </item>
-    <item row="1" column="1">
-     <widget class="QLineEdit" name="lineEdit_pwd"/>
-    </item>
-    <item row="8" column="0" colspan="2">
-     <widget class="QCheckBox" name="checkBox_modul_personal">
+    <item row="1" column="0">
+     <widget class="QLabel" name="label">
       <property name="text">
-       <string>Zugang zu Modul Personal</string>
+       <string>Passwort</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1">
+     <widget class="QLineEdit" name="lineEdit_name"/>
+    </item>
+    <item row="12" column="0" colspan="2">
+     <widget class="QCheckBox" name="checkBox_function_projektdel">
+      <property name="text">
+       <string>Darf Projekte löschen</string>
       </property>
      </widget>
     </item>
@@ -126,10 +133,10 @@
       </property>
      </widget>
     </item>
-    <item row="11" column="0" colspan="2">
-     <widget class="QCheckBox" name="checkBox_function_projektdel">
+    <item row="10" column="0" colspan="2">
+     <widget class="QCheckBox" name="checkBox_modul_bestellungen">
       <property name="text">
-       <string>Darf Projekte löschen</string>
+       <string>Zugang zu Modul Bestellungen</string>
       </property>
      </widget>
     </item>
@@ -138,8 +145,8 @@
   <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
-     <x>147</x>
-     <y>410</y>
+     <x>150</x>
+     <y>490</y>
      <width>271</width>
      <height>29</height>
     </rect>
