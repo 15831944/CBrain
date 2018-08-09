@@ -16,7 +16,7 @@
   <widget class="QLineEdit" name="lineEdit_suche">
    <property name="geometry">
     <rect>
-     <x>462</x>
+     <x>272</x>
      <y>10</y>
      <width>201</width>
      <height>23</height>
@@ -26,7 +26,7 @@
   <widget class="QLabel" name="label_suche">
    <property name="geometry">
     <rect>
-     <x>370</x>
+     <x>180</x>
      <y>10</y>
      <width>91</width>
      <height>20</height>
@@ -41,8 +41,8 @@
     <rect>
      <x>10</x>
      <y>40</y>
-     <width>651</width>
-     <height>251</height>
+     <width>461</width>
+     <height>511</height>
     </rect>
    </property>
    <property name="dragEnabled">
@@ -50,6 +50,52 @@
    </property>
    <property name="alternatingRowColors">
     <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QListWidget" name="listWidget_vorschlag">
+   <property name="geometry">
+    <rect>
+     <x>485</x>
+     <y>90</y>
+     <width>291</width>
+     <height>461</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="lineEdit_suche_vorschlag">
+   <property name="geometry">
+    <rect>
+     <x>490</x>
+     <y>40</y>
+     <width>281</width>
+     <height>20</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_bestellvorschlag">
+   <property name="geometry">
+    <rect>
+     <x>530</x>
+     <y>10</y>
+     <width>231</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Bestellvorschläge</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="comboBox_vorschlag_lieferant">
+   <property name="geometry">
+    <rect>
+     <x>490</x>
+     <y>60</y>
+     <width>281</width>
+     <height>22</height>
+    </rect>
    </property>
   </widget>
  </widget>
