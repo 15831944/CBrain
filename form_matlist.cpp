@@ -280,7 +280,7 @@ void Form_matlist::create_table_promatpos(QString bez, QString menge)
             cmd += " int(11) unsigned";
             cmd += ", ";
             cmd += PARAM_PROMATPOS_MENGE;
-            cmd += " float";
+            cmd += " double";
             cmd += ", ";
             cmd += PARAM_PROMATPOS_STATUS_ID;
             cmd += " int(11) unsigned";
@@ -562,68 +562,68 @@ void Form_matlist::update_table()
                 //------------------------
             }
             //------------------------
-            if(!ui->lineEdit_filter->text().isEmpty() || statusfilter_is_aktiv == true)
+            cmd += " WHERE ";
+            cmd += promat_tabname;
+            cmd += ".";
+            cmd += PARAM_PROMAT_ME_GESAMTBEDARF;
+            cmd += " > 0";
+
+            if(!ui->lineEdit_filter->text().isEmpty())
             {
-                cmd += " WHERE ";
-                if(!ui->lineEdit_filter->text().isEmpty())
+                cmd += " AND ";
+                cmd += "(";
+                cmd += TABNAME_ARTIKEL;
+                cmd += ".";
+                cmd += PARAM_ARTIKEL_NR;
+                cmd += " LIKE \'%";
+                cmd += ui->lineEdit_filter->text();
+                cmd += "%\'";
+                cmd += " OR ";
+                cmd += TABNAME_ARTIKEL;
+                cmd += ".";
+                cmd += PARAM_ARTIKEL_BEZ;
+                cmd += " LIKE \'%";
+                cmd += ui->lineEdit_filter->text();
+                cmd += "%\'";
+                cmd += ")";
+            }
+            if(statusfilter_is_aktiv == true)
+            {
+                cmd += " AND ";
+                cmd += "(";
+                if(ui->checkBox_erfasst->isChecked())
                 {
-                    cmd += "(";
-                    cmd += TABNAME_ARTIKEL;
+                    cmd += promat_tabname;
                     cmd += ".";
-                    cmd += PARAM_ARTIKEL_NR;
-                    cmd += " LIKE \'%";
-                    cmd += ui->lineEdit_filter->text();
-                    cmd += "%\'";
-                    cmd += " OR ";
-                    cmd += TABNAME_ARTIKEL;
-                    cmd += ".";
-                    cmd += PARAM_ARTIKEL_BEZ;
-                    cmd += " LIKE \'%";
-                    cmd += ui->lineEdit_filter->text();
-                    cmd += "%\'";
-                    cmd += ")";
+                    cmd += PARAM_PROMAT_ME_ERFASST;
+                    cmd += " > ";
+                    cmd += "0";
                 }
-                if(!ui->lineEdit_filter->text().isEmpty() && statusfilter_is_aktiv == true)
+                if(ui->checkBox_unklar->isChecked())
                 {
-                    cmd += " AND ";
-                }
-                if(statusfilter_is_aktiv == true)
-                {
-                    cmd += "(";
                     if(ui->checkBox_erfasst->isChecked())
                     {
-                        cmd += promat_tabname;
-                        cmd += ".";
-                        cmd += PARAM_PROMAT_ME_ERFASST;
-                        cmd += " > ";
-                        cmd += "0";
+                        cmd += " OR ";
                     }
-                    if(ui->checkBox_unklar->isChecked())
-                    {
-                        if(ui->checkBox_erfasst->isChecked())
-                        {
-                            cmd += " OR ";
-                        }
-                        cmd += promat_tabname;
-                        cmd += ".";
-                        cmd += PARAM_PROMAT_ME_UNKLAR;
-                        cmd += " > ";
-                        cmd += "0";
-                    }
-                    if(ui->checkBox_bestellen->isChecked())
-                    {
-                        if(ui->checkBox_unklar->isChecked() || ui->checkBox_erfasst->isChecked())
-                        {
-                            cmd += " OR ";
-                        }
-                        cmd += promat_tabname;
-                        cmd += ".";
-                        cmd += PARAM_PROMAT_ME_ZURBEST;
-                        cmd += " > ";
-                        cmd += "0";
-                    }
-                    cmd += ")";
+                    cmd += promat_tabname;
+                    cmd += ".";
+                    cmd += PARAM_PROMAT_ME_UNKLAR;
+                    cmd += " > ";
+                    cmd += "0";
                 }
+                if(ui->checkBox_bestellen->isChecked())
+                {
+                    if(ui->checkBox_unklar->isChecked() || ui->checkBox_erfasst->isChecked())
+                    {
+                        cmd += " OR ";
+                    }
+                    cmd += promat_tabname;
+                    cmd += ".";
+                    cmd += PARAM_PROMAT_ME_ZURBEST;
+                    cmd += " > ";
+                    cmd += "0";
+                }
+                cmd += ")";
             }
             //------------------------
             if(q.exec(cmd))
@@ -667,7 +667,23 @@ void Form_matlist::update_promatpos_mengen(QString pro_id, QString pos_id, doubl
     for(uint i=1; i<=ids.zeilenanzahl() ;i++)
     {
         double artikel_menge_vor = mengen.zeile(i).toDouble();
-        double artikel_menge_nach = artikel_menge_vor / pos_me_vor * pos_me_nach;
+        double artikel_menge_nach;
+        if(artikel_menge_vor > 0  &&  pos_me_vor > 0)
+        {
+            artikel_menge_nach = artikel_menge_vor / pos_me_vor * pos_me_nach;
+        }else
+        {
+            QMessageBox mb;
+            mb.setText(tr("Division durch 0 nicht erlaubt!"));
+            mb.exec();
+            return; //Diese Stelle darf niemals erreicht werden, dah sonst die Mengen nicht mehr stimmen!!!
+            //Die Positionen dürfen nicht mit einer Menge von 0 zugelassen werden übers GUI!!
+            //Wenn die Positionsmeng auf 0 gesertzt wird werden auch alle Artikelmengem auf 0 gesetzt
+            //und dann ist nicht mehr bekannt, wie viel von den Artikeln pro 1x die pos gebraucht wird
+            //da in der Position stehs nur die gesamtmenge gespeichert ist
+            //und die einzelmenge bei bedaft (Beim Artikel editieren dialog) aus
+            //"gesamtmenge geteilt durch pos_menge" berechnet wird
+        }
         mengen.zeile_ersaetzen(i, double_to_qstring(artikel_menge_nach));
     }
 
@@ -1015,41 +1031,64 @@ void Form_matlist::on_pushButton_reservieren_clicked()
                 dbeigen->data_edit(tabname, PARAM_PROMAT_ME_RESERVIERT, \
                                    int_to_qstring(neue_menge), promat_ids.zeile(i));
 
+            }else if(vorgemerkt < reserviert)
+            {
+                //art_resme == reservierte Menge im Artikel
+                int zustor = reserviert - vorgemerkt;
+                if(art_resme >= zustor)
                 {
-                    //Freie Menge berechnen == welche Stückzahl vom Atrikel ist noch nicht verplant:
-                    int lagerbestand    = dbeigen->get_data_qstring(TABNAME_ARTIKEL, PARAM_ARTIKEL_LAGERSTAND, \
-                                                                    artikel_id.zeile(i)).toInt();
-                    int in_bestellung   = dbeigen->get_data_qstring(TABNAME_ARTIKEL, PARAM_ARTIKEL_BESTELLT, \
-                                                                    artikel_id.zeile(i)).toInt();
-                    int reserviert      = dbeigen->get_data_qstring(TABNAME_ARTIKEL, PARAM_ARTIKEL_RESERVIERT, \
-                                                                    artikel_id.zeile(i)).toInt();
-                    int frei = lagerbestand + in_bestellung - reserviert;
-                    dbeigen->data_edit(TABNAME_ARTIKEL, PARAM_ARTIKEL_FREI, \
-                                       int_to_qstring(frei), artikel_id.zeile(i));
+                    //restervierung stornieren:
+                    int neue_res_me_promat = vorgemerkt;
+                    int neue_res_me_artikel = art_resme - zustor;
+                    dbeigen->data_edit(TABNAME_ARTIKEL, PARAM_ARTIKEL_RESERVIERT, \
+                                       int_to_qstring(neue_res_me_artikel), artikel_id.zeile(i));
+                    dbeigen->data_edit(tabname, PARAM_PROMAT_ME_RESERVIERT, \
+                                       int_to_qstring(neue_res_me_promat), promat_ids.zeile(i));
+                }else
+                {
+                    //Teilmenge der restervierung stornieren:
+                    int neue_res_me_promat =  vorgemerkt + zustor - art_resme;
+                    int neue_res_me_artikel = 0;
+                    dbeigen->data_edit(TABNAME_ARTIKEL, PARAM_ARTIKEL_RESERVIERT, \
+                                       int_to_qstring(neue_res_me_artikel), artikel_id.zeile(i));
+                    dbeigen->data_edit(tabname, PARAM_PROMAT_ME_RESERVIERT, \
+                                       int_to_qstring(neue_res_me_promat), promat_ids.zeile(i));
+                }
+            }
+            {
+                //Freie Menge berechnen == welche Stückzahl vom Atrikel ist noch nicht verplant:
+                int lagerbestand    = dbeigen->get_data_qstring(TABNAME_ARTIKEL, PARAM_ARTIKEL_LAGERSTAND, \
+                                                                artikel_id.zeile(i)).toInt();
+                int in_bestellung   = dbeigen->get_data_qstring(TABNAME_ARTIKEL, PARAM_ARTIKEL_BESTELLT, \
+                                                                artikel_id.zeile(i)).toInt();
+                int reserviert      = dbeigen->get_data_qstring(TABNAME_ARTIKEL, PARAM_ARTIKEL_RESERVIERT, \
+                                                                artikel_id.zeile(i)).toInt();
+                int frei = lagerbestand + in_bestellung - reserviert;
+                dbeigen->data_edit(TABNAME_ARTIKEL, PARAM_ARTIKEL_FREI, \
+                                   int_to_qstring(frei), artikel_id.zeile(i));
 
-                    //Bestellvorschlag ermitteln und speichern:
-                    int mindestbestand  = dbeigen->get_data_qstring(TABNAME_ARTIKEL, PARAM_ARTIKEL_LAGERST_MIN, \
-                                                                    artikel_id.zeile(i)).toInt();
-                    int ve              = dbeigen->get_data_qstring(TABNAME_ARTIKEL, PARAM_ARTIKEL_VE, \
-                                                                    artikel_id.zeile(i)).toInt();
+                //Bestellvorschlag ermitteln und speichern:
+                int mindestbestand  = dbeigen->get_data_qstring(TABNAME_ARTIKEL, PARAM_ARTIKEL_LAGERST_MIN, \
+                                                                artikel_id.zeile(i)).toInt();
+                int ve              = dbeigen->get_data_qstring(TABNAME_ARTIKEL, PARAM_ARTIKEL_VE, \
+                                                                artikel_id.zeile(i)).toInt();
 
-                    if( (lagerbestand + in_bestellung - mindestbestand) < reserviert  )
+                if( (lagerbestand + in_bestellung - mindestbestand) < reserviert  )
+                {
+                    int x = lagerbestand + in_bestellung - mindestbestand - reserviert;
+                    int anz_ves     = -x/ve;
+                    int rest        = -x%ve;
+                    if(rest != 0)
                     {
-                        int x = lagerbestand + in_bestellung - mindestbestand - reserviert;
-                        int anz_ves     = -x/ve;
-                        int rest        = -x%ve;
-                        if(rest != 0)
-                        {
-                            anz_ves++;
-                        }
-                        int bestellvorschlag = anz_ves * ve;
-                        dbeigen->data_edit(TABNAME_ARTIKEL, PARAM_ARTIKEL_BESTVOR, \
-                                           int_to_qstring(bestellvorschlag), artikel_id.zeile(i));
-                    }else
-                    {
-                        dbeigen->data_edit(TABNAME_ARTIKEL, PARAM_ARTIKEL_BESTVOR, \
-                                           "0", artikel_id.zeile(i));
+                        anz_ves++;
                     }
+                    int bestellvorschlag = anz_ves * ve;
+                    dbeigen->data_edit(TABNAME_ARTIKEL, PARAM_ARTIKEL_BESTVOR, \
+                                       int_to_qstring(bestellvorschlag), artikel_id.zeile(i));
+                }else
+                {
+                    dbeigen->data_edit(TABNAME_ARTIKEL, PARAM_ARTIKEL_BESTVOR, \
+                                       "0", artikel_id.zeile(i));
                 }
             }
         }
@@ -1438,6 +1477,9 @@ void Form_matlist::slot_update_table()
                            menge_bestellen.zeile(i), index);
     }
 
+    /*  Artikel die einmal erfasst wurden dürfen nicht wieder aus der Liste genommen werden,
+     * weil es sonst zu falschen Werten in den Funktionen beim Reservieren bzw Stornieren und
+     * beim Ändern der Menge einer Position (Menge 0 zu Menge x) kommt!
     //Zeilen mit Artikeln löschen bei denen alle Mengenangaben 0 sind
     {
         text_zeilenweise ids = dbeigen->get_data_tz(promat_id_tabname, PARAM_PROMAT_ID);
@@ -1454,6 +1496,7 @@ void Form_matlist::slot_update_table()
             }
         }
     }
+    */
 
     update_table();
 }

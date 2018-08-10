@@ -47,6 +47,8 @@ private slots:
 
     void on_checkBox_function_projektdel_toggled(bool checked);
 
+    void on_checkBox_modul_bestellungen_toggled(bool checked);
+
 private:
     Ui::Dialog_user *ui;
 

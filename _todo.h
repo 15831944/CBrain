@@ -25,7 +25,6 @@
 
 -->Im-Export-Dialog
 
--->beim Löschen eines Projektes müssen auch alle promatpos-Tabellen mit gelöscht werden
 
 
 

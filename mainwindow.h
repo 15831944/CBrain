@@ -21,6 +21,7 @@
 #include "form_backup.h"
 #include "form_personal.h"
 #include "form_matlist.h"
+#include "form_bestellung.h"
 
 #include "defines_filenames.h"
 #include "users.h"
@@ -69,6 +70,7 @@ private slots:
     void on_actionModulProjekte_triggered();
     void on_actionModulPersonal_triggered();
     void on_actionModulMaterialliste_triggered();
+    void on_actionModulBestellungen_triggered();
 
 private:
     Ui::MainWindow *ui;
@@ -91,7 +93,8 @@ private:
     bool modul_lager;           //widget_lager ist offen
     bool modul_projekte;        //widget_lager ist offen
     bool modul_personal;        //widget_personal ist offen
-    bool modul_matlist;        //widget_matlist ist offen
+    bool modul_matlist;         //widget_matlist ist offen
+    bool modul_bestellung;      //widget_bestellung ist offen
 
 
     //eigene Widgets:
@@ -103,6 +106,7 @@ private:
     Form_backup         widget_backup;
     Form_personal       widget_personal;
     Form_matlist        widget_matlist;
+    Form_bestellung     widget_bestellung;
 
 
     //Funktionen:
@@ -119,6 +123,7 @@ private:
     void ui_rechte_modul_projekte(bool hat_rechte);
     void ui_rechte_modul_perrsonal(bool hat_rechte);
     void ui_rechte_modul_matlist(bool hat_rechte);
+    void ui_rechte_modul_bestellung(bool hat_rechte);
 
     void change_modul(QString modul);
     void hide_all_moduls();

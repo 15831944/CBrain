@@ -33,6 +33,7 @@ public:
     bool modul_matlist();
     bool function_artfavsort();
     bool function_projektdel();
+    bool modul_bestellungen();
 
     inline text_zeilenweise get_names_tz()
     {
@@ -82,6 +83,10 @@ public:
     {
         return use_function_projektdel;
     }
+    inline text_zeilenweise get_use_modul_bestellungen_tz()
+    {
+        return use_modul_bestellungen;
+    }
 
     bool change_name(uint index, QString newname);
     void change_pwd(uint index, QString newpwd);
@@ -95,6 +100,7 @@ public:
     void change_use_modul_matlist(uint index, bool isalowed);
     void change_use_function_artfavsort(uint index, bool isalowed);
     void change_use_function_projektdel(uint index, bool isalowed);
+    void change_use_modul_bestellungen(uint index, bool isalowed);
 
 private:
     QString trzparam;               //Trennzeichen der einzelnen Parameter eines Nutzers
@@ -112,6 +118,7 @@ private:
     text_zeilenweise use_modul_matlist;
     text_zeilenweise use_function_artfavsort;
     text_zeilenweise use_function_projektdel;
+    text_zeilenweise use_modul_bestellungen;
 
 
 
