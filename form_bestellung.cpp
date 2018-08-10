@@ -124,363 +124,370 @@ void Form_bestellung::show()
 
 void Form_bestellung::update_table()
 {
-    QString ab_datum, bis_datum;
-    datum da;
-    QDate qda;
-    qda = ui->dateEdit_ab->date();
-    ab_datum = da.get_datum_y_m_d(&qda);
-    qda = ui->dateEdit_bis->date();
-    bis_datum = da.get_datum_y_m_d(&qda);
-    //-------------------------------------------
+    if(dbeigen != NULL)
     {
-        QSqlDatabase db;
-
-        db = QSqlDatabase::database("dbglobal");
-        db.setHostName(dbeigen->get_host());
-        db.setDatabaseName(dbeigen->get_dbname());
-        db.setUserName(dbeigen->get_user());
-        db.setPassword(dbeigen->get_pwd());
-
-        if(db.open())
+        QString ab_datum, bis_datum;
+        datum da;
+        QDate qda;
+        qda = ui->dateEdit_ab->date();
+        ab_datum = da.get_datum_y_m_d(&qda);
+        qda = ui->dateEdit_bis->date();
+        bis_datum = da.get_datum_y_m_d(&qda);
+        //-------------------------------------------
         {
-            QSqlQuery q(db);
-            QString cmd;
-            cmd += "SELECT ";
-            //------------------------
-            cmd += TABNAME_BESTELLUNG;
-            cmd += ".";
-            cmd += PARAM_BESTELLUNG_ID;
-            cmd += " AS ";
-            cmd += "ID";
-            cmd += ", ";
-            //------------------------
-            cmd += TABNAME_ARTIKEL;
-            cmd += ".";
-            cmd += PARAM_ARTIKEL_NR;
-            cmd += ", ";
-            //------------------------
-            cmd += TABNAME_ARTIKEL;
-            cmd += ".";
-            cmd += PARAM_ARTIKEL_BEZ;
-            cmd += ", ";
-            //------------------------
-            cmd += TABNAME_LIEFERANT;
-            cmd += ".";
-            cmd += PARAM_LIEFERANT_NAME;
-            cmd += " AS ";
-            cmd += "Lieferant";
-            cmd += ", ";
-            //------------------------
-            cmd += TABNAME_BESTELLUNG;
-            cmd += ".";
-            cmd += PARAM_BESTELLUNG_ME_BEST;
-            cmd += " AS ";
-            cmd += "bestellte_Menge";
-            cmd += ", ";
-            //------------------------
-            cmd += TABNAME_BESTELLUNG;
-            cmd += ".";
-            cmd += PARAM_BESTELLUNG_ME_GELIEFERT;
-            cmd += " AS ";
-            cmd += "geliferte_Menge";
-            cmd += ", ";
-            //------------------------
-            cmd += TABNAME_PERSONAL;
-            cmd += ".";
-            cmd += PARAM_PERSONAL_NACHNAME;
-            cmd += " AS ";
-            cmd += "Ersteller";
-            cmd += ", ";
-            //------------------------
-            cmd += TABNAME_BESTELLUNG;
-            cmd += ".";
-            cmd += PARAM_BESTELLUNG_DATERST;
-            cmd += ", ";
-            //------------------------
-            cmd += TABNAME_BESTELLUNG;
-            cmd += ".";
-            cmd += PARAM_BESTELLUNG_DATLIEF;
-            //cmd += ", ";
-            //------------------------
-            cmd += " FROM ";
-            cmd += TABNAME_BESTELLUNG;
-            //------------------------
-            cmd += " LEFT JOIN ";
-            cmd += TABNAME_ARTIKEL;
-            cmd += " ON (";
-            cmd += TABNAME_BESTELLUNG;
-            cmd += ".";
-            cmd += PARAM_BESTELLUNG_ARTIKELID;
-            cmd += " = ";
-            cmd += TABNAME_ARTIKEL;
-            cmd += ".";
-            cmd += PARAM_ARTIKEL_ID;
-            cmd += ")";
-            //------------------------
-            cmd += " LEFT JOIN ";
-            cmd += TABNAME_LIEFERANT;
-            cmd += " ON (";
-            cmd += TABNAME_ARTIKEL;
-            cmd += ".";
-            cmd += PARAM_ARTIKEL_LIEFERANT;
-            cmd += " = ";
-            cmd += TABNAME_LIEFERANT;
-            cmd += ".";
-            cmd += PARAM_LIEFERANT_ID;
-            cmd += ")";
-            //------------------------
-            cmd += " LEFT JOIN ";
-            cmd += TABNAME_PERSONAL;
-            cmd += " ON (";
-            cmd += TABNAME_BESTELLUNG;
-            cmd += ".";
-            cmd += PARAM_BESTELLUNG_ERSTELLER;
-            cmd += " = ";
-            cmd += TABNAME_PERSONAL;
-            cmd += ".";
-            cmd += PARAM_PERSONAL_ID;
-            cmd += ")";
-            //------------------------
-            //------------------------
-            cmd += " WHERE ";
-            cmd += "(";
-            cmd += TABNAME_BESTELLUNG;
-            cmd += ".";
-            cmd += PARAM_BESTELLUNG_DATERST;
-            cmd += " >= ";
-            cmd += "\'";
-            cmd += ab_datum;
-            cmd += "\'";
-            cmd += ")";
-            cmd += " AND ";
-            cmd += "(";
-            cmd += TABNAME_BESTELLUNG;
-            cmd += ".";
-            cmd += PARAM_BESTELLUNG_DATERST;
-            cmd += " <= ";
-            cmd += "\'";
-            cmd += bis_datum;
-            cmd += "\'";
-            cmd += ")";
+            QSqlDatabase db;
 
-            if(!ui->lineEdit_suche->text().isEmpty())
+            db = QSqlDatabase::database("dbglobal");
+            db.setHostName(dbeigen->get_host());
+            db.setDatabaseName(dbeigen->get_dbname());
+            db.setUserName(dbeigen->get_user());
+            db.setPassword(dbeigen->get_pwd());
+
+            if(db.open())
             {
+                QSqlQuery q(db);
+                QString cmd;
+                cmd += "SELECT ";
+                //------------------------
+                cmd += TABNAME_BESTELLUNG;
+                cmd += ".";
+                cmd += PARAM_BESTELLUNG_ID;
+                cmd += " AS ";
+                cmd += "ID";
+                cmd += ", ";
+                //------------------------
+                cmd += TABNAME_ARTIKEL;
+                cmd += ".";
+                cmd += PARAM_ARTIKEL_NR;
+                cmd += ", ";
+                //------------------------
+                cmd += TABNAME_ARTIKEL;
+                cmd += ".";
+                cmd += PARAM_ARTIKEL_BEZ;
+                cmd += ", ";
+                //------------------------
+                cmd += TABNAME_LIEFERANT;
+                cmd += ".";
+                cmd += PARAM_LIEFERANT_NAME;
+                cmd += " AS ";
+                cmd += "Lieferant";
+                cmd += ", ";
+                //------------------------
+                cmd += TABNAME_BESTELLUNG;
+                cmd += ".";
+                cmd += PARAM_BESTELLUNG_ME_BEST;
+                cmd += " AS ";
+                cmd += "bestellte_Menge";
+                cmd += ", ";
+                //------------------------
+                cmd += TABNAME_BESTELLUNG;
+                cmd += ".";
+                cmd += PARAM_BESTELLUNG_ME_GELIEFERT;
+                cmd += " AS ";
+                cmd += "geliferte_Menge";
+                cmd += ", ";
+                //------------------------
+                cmd += TABNAME_PERSONAL;
+                cmd += ".";
+                cmd += PARAM_PERSONAL_NACHNAME;
+                cmd += " AS ";
+                cmd += "Ersteller";
+                cmd += ", ";
+                //------------------------
+                cmd += TABNAME_BESTELLUNG;
+                cmd += ".";
+                cmd += PARAM_BESTELLUNG_DATERST;
+                cmd += ", ";
+                //------------------------
+                cmd += TABNAME_BESTELLUNG;
+                cmd += ".";
+                cmd += PARAM_BESTELLUNG_DATLIEF;
+                //cmd += ", ";
+                //------------------------
+                cmd += " FROM ";
+                cmd += TABNAME_BESTELLUNG;
+                //------------------------
+                cmd += " LEFT JOIN ";
+                cmd += TABNAME_ARTIKEL;
+                cmd += " ON (";
+                cmd += TABNAME_BESTELLUNG;
+                cmd += ".";
+                cmd += PARAM_BESTELLUNG_ARTIKELID;
+                cmd += " = ";
+                cmd += TABNAME_ARTIKEL;
+                cmd += ".";
+                cmd += PARAM_ARTIKEL_ID;
+                cmd += ")";
+                //------------------------
+                cmd += " LEFT JOIN ";
+                cmd += TABNAME_LIEFERANT;
+                cmd += " ON (";
+                cmd += TABNAME_ARTIKEL;
+                cmd += ".";
+                cmd += PARAM_ARTIKEL_LIEFERANT;
+                cmd += " = ";
+                cmd += TABNAME_LIEFERANT;
+                cmd += ".";
+                cmd += PARAM_LIEFERANT_ID;
+                cmd += ")";
+                //------------------------
+                cmd += " LEFT JOIN ";
+                cmd += TABNAME_PERSONAL;
+                cmd += " ON (";
+                cmd += TABNAME_BESTELLUNG;
+                cmd += ".";
+                cmd += PARAM_BESTELLUNG_ERSTELLER;
+                cmd += " = ";
+                cmd += TABNAME_PERSONAL;
+                cmd += ".";
+                cmd += PARAM_PERSONAL_ID;
+                cmd += ")";
+                //------------------------
+                //------------------------
+
+                cmd += " WHERE ";
+                cmd += "(";
+                cmd += TABNAME_BESTELLUNG;
+                cmd += ".";
+                cmd += PARAM_BESTELLUNG_DATERST;
+                cmd += " >= ";
+                cmd += "\'";
+                cmd += ab_datum;
+                cmd += "\'";
+                cmd += ")";
                 cmd += " AND ";
                 cmd += "(";
-                cmd += PARAM_ARTIKEL_NR;
-                cmd += " LIKE \'%";
-                cmd += ui->lineEdit_suche->text();
-                cmd += "%\'";
-                cmd += " OR ";
-                cmd += PARAM_ARTIKEL_BEZ;
-                cmd += " LIKE \'%";
-                cmd += ui->lineEdit_suche->text();
-                cmd += "%\'";
+                cmd += TABNAME_BESTELLUNG;
+                cmd += ".";
+                cmd += PARAM_BESTELLUNG_DATERST;
+                cmd += " <= ";
+                cmd += "\'";
+                cmd += bis_datum;
+                cmd += "\'";
                 cmd += ")";
-            }
-            //------------------------
-            cmd += " GROUP BY ";
-            cmd += TABNAME_BESTELLUNG;
-            cmd += ".";
-            cmd += PARAM_BESTELLUNG_ID;
-            //------------------------
-            cmd += " ORDER BY ";            //Sortiert nach:
-            cmd += TABNAME_BESTELLUNG;
-            cmd += ".";
-            cmd += PARAM_BESTELLUNG_ID;
-            cmd += " DESC";
-            //------------------------
 
-            if(q.exec(cmd))
-            {
-                model->setQuery(q);
-                ui->tableView->setModel(model);
+                if(!ui->lineEdit_suche->text().isEmpty())
+                {
+                    cmd += " AND ";
+                    cmd += "(";
+                    cmd += PARAM_ARTIKEL_NR;
+                    cmd += " LIKE \'%";
+                    cmd += ui->lineEdit_suche->text();
+                    cmd += "%\'";
+                    cmd += " OR ";
+                    cmd += PARAM_ARTIKEL_BEZ;
+                    cmd += " LIKE \'%";
+                    cmd += ui->lineEdit_suche->text();
+                    cmd += "%\'";
+                    cmd += ")";
+                }
+                //------------------------
+                cmd += " GROUP BY ";
+                cmd += TABNAME_BESTELLUNG;
+                cmd += ".";
+                cmd += PARAM_BESTELLUNG_ID;
+                //------------------------
+                cmd += " ORDER BY ";            //Sortiert nach:
+                cmd += TABNAME_BESTELLUNG;
+                cmd += ".";
+                cmd += PARAM_BESTELLUNG_ID;
+                cmd += " DESC";
+                //------------------------
 
-                QString msg;
-                msg += int_to_qstring(model->rowCount());
-                msg += " Bestellungen:";
-                ui->label_suche->setText(msg);
+                if(q.exec(cmd))
+                {
+                    model->setQuery(q);
+                    ui->tableView->setModel(model);
+
+                    QString msg;
+                    msg += int_to_qstring(model->rowCount());
+                    msg += " Bestellungen:";
+                    ui->label_suche->setText(msg);
+
+                }else
+                {
+                    QMessageBox mb;
+                    mb.setText("Fehler:\n" + q.lastError().text());
+                    mb.exec();
+                }
+                db.close();
 
             }else
             {
                 QMessageBox mb;
-                mb.setText("Fehler:\n" + q.lastError().text());
+                mb.setText(tr("Fehler bei Datenbankverbindung!"));
                 mb.exec();
             }
-            db.close();
-
-        }else
-        {
-            QMessageBox mb;
-            mb.setText(tr("Fehler bei Datenbankverbindung!"));
-            mb.exec();
         }
+        //-------------------------------------------
+        update_table_lieferverzug();
     }
-    //-------------------------------------------
-    update_table_lieferverzug();
 }
 
 void Form_bestellung::update_table_lieferverzug()
 {
-    //-------------------------------------------
+    if(dbeigen != NULL)
     {
-        QSqlDatabase db;
-
-        db = QSqlDatabase::database("dbglobal");
-        db.setHostName(dbeigen->get_host());
-        db.setDatabaseName(dbeigen->get_dbname());
-        db.setUserName(dbeigen->get_user());
-        db.setPassword(dbeigen->get_pwd());
-
-        if(db.open())
+        //-------------------------------------------
         {
-            QSqlQuery q(db);
-            QString cmd;
-            cmd += "SELECT ";
-            //------------------------
-            cmd += TABNAME_BESTELLUNG;
-            cmd += ".";
-            cmd += PARAM_BESTELLUNG_ID;
-            cmd += " AS ";
-            cmd += "ID";
-            cmd += ", ";
-            //------------------------
-            cmd += TABNAME_ARTIKEL;
-            cmd += ".";
-            cmd += PARAM_ARTIKEL_NR;
-            cmd += ", ";
-            //------------------------
-            cmd += TABNAME_ARTIKEL;
-            cmd += ".";
-            cmd += PARAM_ARTIKEL_BEZ;
-            cmd += ", ";
-            //------------------------
-            cmd += TABNAME_LIEFERANT;
-            cmd += ".";
-            cmd += PARAM_LIEFERANT_NAME;
-            cmd += " AS ";
-            cmd += "Lieferant";
-            cmd += ", ";
-            //------------------------
-            cmd += TABNAME_BESTELLUNG;
-            cmd += ".";
-            cmd += PARAM_BESTELLUNG_ME_BEST;
-            cmd += " AS ";
-            cmd += "bestellte_Menge";
-            cmd += ", ";
-            //------------------------
-            cmd += TABNAME_BESTELLUNG;
-            cmd += ".";
-            cmd += PARAM_BESTELLUNG_ME_GELIEFERT;
-            cmd += " AS ";
-            cmd += "geliferte_Menge";
-            cmd += ", ";
-            //------------------------
-            cmd += TABNAME_PERSONAL;
-            cmd += ".";
-            cmd += PARAM_PERSONAL_NACHNAME;
-            cmd += " AS ";
-            cmd += "Ersteller";
-            cmd += ", ";
-            //------------------------
-            cmd += TABNAME_BESTELLUNG;
-            cmd += ".";
-            cmd += PARAM_BESTELLUNG_DATERST;
-            cmd += ", ";
-            //------------------------
-            cmd += TABNAME_BESTELLUNG;
-            cmd += ".";
-            cmd += PARAM_BESTELLUNG_DATLIEF;
-            //cmd += ", ";
-            //------------------------
-            cmd += " FROM ";
-            cmd += TABNAME_BESTELLUNG;
-            //------------------------
-            cmd += " LEFT JOIN ";
-            cmd += TABNAME_ARTIKEL;
-            cmd += " ON (";
-            cmd += TABNAME_BESTELLUNG;
-            cmd += ".";
-            cmd += PARAM_BESTELLUNG_ARTIKELID;
-            cmd += " = ";
-            cmd += TABNAME_ARTIKEL;
-            cmd += ".";
-            cmd += PARAM_ARTIKEL_ID;
-            cmd += ")";
-            //------------------------
-            cmd += " LEFT JOIN ";
-            cmd += TABNAME_LIEFERANT;
-            cmd += " ON (";
-            cmd += TABNAME_ARTIKEL;
-            cmd += ".";
-            cmd += PARAM_ARTIKEL_LIEFERANT;
-            cmd += " = ";
-            cmd += TABNAME_LIEFERANT;
-            cmd += ".";
-            cmd += PARAM_LIEFERANT_ID;
-            cmd += ")";
-            //------------------------
-            cmd += " LEFT JOIN ";
-            cmd += TABNAME_PERSONAL;
-            cmd += " ON (";
-            cmd += TABNAME_BESTELLUNG;
-            cmd += ".";
-            cmd += PARAM_BESTELLUNG_ERSTELLER;
-            cmd += " = ";
-            cmd += TABNAME_PERSONAL;
-            cmd += ".";
-            cmd += PARAM_PERSONAL_ID;
-            cmd += ")";
-            //------------------------
-            //------------------------
-            cmd += " WHERE ";
-            cmd += "(";
-            cmd += PARAM_BESTELLUNG_DATLIEF;
-            cmd += " < ";
-            cmd += "NOW() ";
-            cmd += ")";
-            cmd += " AND ";
-            cmd += "(";
-            cmd += TABNAME_BESTELLUNG;
-            cmd += ".";
-            cmd += PARAM_BESTELLUNG_ME_BEST;
-            cmd += " > ";
-            cmd += TABNAME_BESTELLUNG;
-            cmd += ".";
-            cmd += PARAM_BESTELLUNG_ME_GELIEFERT;
-            cmd += ")";
-            //------------------------
-            cmd += " GROUP BY ";
-            cmd += TABNAME_BESTELLUNG;
-            cmd += ".";
-            cmd += PARAM_BESTELLUNG_ID;
-            //------------------------
-            cmd += " ORDER BY ";            //Sortiert nach:
-            cmd += TABNAME_BESTELLUNG;
-            cmd += ".";
-            cmd += PARAM_BESTELLUNG_ID;
-            cmd += " DESC";
-            //------------------------
+            QSqlDatabase db;
 
-            if(q.exec(cmd))
+            db = QSqlDatabase::database("dbglobal");
+            db.setHostName(dbeigen->get_host());
+            db.setDatabaseName(dbeigen->get_dbname());
+            db.setUserName(dbeigen->get_user());
+            db.setPassword(dbeigen->get_pwd());
+
+            if(db.open())
             {
-                model_lieferverzug->setQuery(q);
-                ui->tableView_lieferverzug->setModel(model_lieferverzug);
+                QSqlQuery q(db);
+                QString cmd;
+                cmd += "SELECT ";
+                //------------------------
+                cmd += TABNAME_BESTELLUNG;
+                cmd += ".";
+                cmd += PARAM_BESTELLUNG_ID;
+                cmd += " AS ";
+                cmd += "ID";
+                cmd += ", ";
+                //------------------------
+                cmd += TABNAME_ARTIKEL;
+                cmd += ".";
+                cmd += PARAM_ARTIKEL_NR;
+                cmd += ", ";
+                //------------------------
+                cmd += TABNAME_ARTIKEL;
+                cmd += ".";
+                cmd += PARAM_ARTIKEL_BEZ;
+                cmd += ", ";
+                //------------------------
+                cmd += TABNAME_LIEFERANT;
+                cmd += ".";
+                cmd += PARAM_LIEFERANT_NAME;
+                cmd += " AS ";
+                cmd += "Lieferant";
+                cmd += ", ";
+                //------------------------
+                cmd += TABNAME_BESTELLUNG;
+                cmd += ".";
+                cmd += PARAM_BESTELLUNG_ME_BEST;
+                cmd += " AS ";
+                cmd += "bestellte_Menge";
+                cmd += ", ";
+                //------------------------
+                cmd += TABNAME_BESTELLUNG;
+                cmd += ".";
+                cmd += PARAM_BESTELLUNG_ME_GELIEFERT;
+                cmd += " AS ";
+                cmd += "geliferte_Menge";
+                cmd += ", ";
+                //------------------------
+                cmd += TABNAME_PERSONAL;
+                cmd += ".";
+                cmd += PARAM_PERSONAL_NACHNAME;
+                cmd += " AS ";
+                cmd += "Ersteller";
+                cmd += ", ";
+                //------------------------
+                cmd += TABNAME_BESTELLUNG;
+                cmd += ".";
+                cmd += PARAM_BESTELLUNG_DATERST;
+                cmd += ", ";
+                //------------------------
+                cmd += TABNAME_BESTELLUNG;
+                cmd += ".";
+                cmd += PARAM_BESTELLUNG_DATLIEF;
+                //cmd += ", ";
+                //------------------------
+                cmd += " FROM ";
+                cmd += TABNAME_BESTELLUNG;
+                //------------------------
+                cmd += " LEFT JOIN ";
+                cmd += TABNAME_ARTIKEL;
+                cmd += " ON (";
+                cmd += TABNAME_BESTELLUNG;
+                cmd += ".";
+                cmd += PARAM_BESTELLUNG_ARTIKELID;
+                cmd += " = ";
+                cmd += TABNAME_ARTIKEL;
+                cmd += ".";
+                cmd += PARAM_ARTIKEL_ID;
+                cmd += ")";
+                //------------------------
+                cmd += " LEFT JOIN ";
+                cmd += TABNAME_LIEFERANT;
+                cmd += " ON (";
+                cmd += TABNAME_ARTIKEL;
+                cmd += ".";
+                cmd += PARAM_ARTIKEL_LIEFERANT;
+                cmd += " = ";
+                cmd += TABNAME_LIEFERANT;
+                cmd += ".";
+                cmd += PARAM_LIEFERANT_ID;
+                cmd += ")";
+                //------------------------
+                cmd += " LEFT JOIN ";
+                cmd += TABNAME_PERSONAL;
+                cmd += " ON (";
+                cmd += TABNAME_BESTELLUNG;
+                cmd += ".";
+                cmd += PARAM_BESTELLUNG_ERSTELLER;
+                cmd += " = ";
+                cmd += TABNAME_PERSONAL;
+                cmd += ".";
+                cmd += PARAM_PERSONAL_ID;
+                cmd += ")";
+                //------------------------
+                //------------------------
+                cmd += " WHERE ";
+                cmd += "(";
+                cmd += PARAM_BESTELLUNG_DATLIEF;
+                cmd += " < ";
+                cmd += "NOW() ";
+                cmd += ")";
+                cmd += " AND ";
+                cmd += "(";
+                cmd += TABNAME_BESTELLUNG;
+                cmd += ".";
+                cmd += PARAM_BESTELLUNG_ME_BEST;
+                cmd += " > ";
+                cmd += TABNAME_BESTELLUNG;
+                cmd += ".";
+                cmd += PARAM_BESTELLUNG_ME_GELIEFERT;
+                cmd += ")";
+                //------------------------
+                cmd += " GROUP BY ";
+                cmd += TABNAME_BESTELLUNG;
+                cmd += ".";
+                cmd += PARAM_BESTELLUNG_ID;
+                //------------------------
+                cmd += " ORDER BY ";            //Sortiert nach:
+                cmd += TABNAME_BESTELLUNG;
+                cmd += ".";
+                cmd += PARAM_BESTELLUNG_ID;
+                cmd += " DESC";
+                //------------------------
+
+                if(q.exec(cmd))
+                {
+                    model_lieferverzug->setQuery(q);
+                    ui->tableView_lieferverzug->setModel(model_lieferverzug);
+                }else
+                {
+                    QMessageBox mb;
+                    mb.setText("Fehler:\n" + q.lastError().text());
+                    mb.exec();
+                }
+                db.close();
             }else
             {
                 QMessageBox mb;
-                mb.setText("Fehler:\n" + q.lastError().text());
+                mb.setText(tr("Fehler bei Datenbankverbindung!"));
                 mb.exec();
             }
-            db.close();
-        }else
-        {
-            QMessageBox mb;
-            mb.setText(tr("Fehler bei Datenbankverbindung!"));
-            mb.exec();
         }
+        //-------------------------------------------
     }
-    //-------------------------------------------
 }
 
 void Form_bestellung::update_bestellvor()
