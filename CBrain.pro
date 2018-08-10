@@ -51,7 +51,9 @@ SOURCES += main.cpp\
     dialog_artikel_fav_reihenfolge.cpp \
     dialog_artikel_verwenden.cpp \
     artikel_mengenerfassung.cpp \
-    form_bestellung.cpp
+    form_bestellung.cpp \
+    dialog_bestellung.cpp \
+    dialog_datum_input.cpp
 
 HEADERS  += mainwindow.h \
     defines_filenames.h \
@@ -103,7 +105,10 @@ HEADERS  += mainwindow.h \
     dialog_artikel_fav_reihenfolge.h \
     dialog_artikel_verwenden.h \
     artikel_mengenerfassung.h \
-    form_bestellung.h
+    form_bestellung.h \
+    _tabname_bestellung.h \
+    dialog_bestellung.h \
+    dialog_datum_input.h
 
 FORMS    += mainwindow.ui \
     dialog_login.ui \
@@ -133,4 +138,6 @@ FORMS    += mainwindow.ui \
     dialog_artikel_beziehung.ui \
     dialog_artikel_fav_reihenfolge.ui \
     dialog_artikel_verwenden.ui \
-    form_bestellung.ui
+    form_bestellung.ui \
+    dialog_bestellung.ui \
+    dialog_datum_input.ui

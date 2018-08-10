@@ -68,9 +68,7 @@ private slots:
     void on_checkBox_reserviert_toggled();
     void on_checkBox_einzelmengen_toggled();
     void on_checkBox_verarbeitet_toggled();
-
     void on_checkBox_show_pos_toggled(bool checked);
-
     void on_pushButton_reservieren_clicked();
 
 private:

@@ -876,9 +876,17 @@ bool cbrainbatabase::data_edit(QString tablename, QString param, \
         cmd += tablename;
         cmd += " SET ";
         cmd += param;
-        cmd += " = \'";
-        cmd += value;
-        cmd += "\' WHERE ID = \'";
+        cmd += " = ";
+        if(value.isEmpty())
+        {
+            cmd += "NULL";
+        }else
+        {
+            cmd += "\'";
+            cmd += value;
+            cmd += "\'";
+        }
+        cmd += " WHERE ID = \'";
         cmd += id;
         cmd += "\'";
 
