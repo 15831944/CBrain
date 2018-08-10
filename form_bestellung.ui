@@ -16,9 +16,9 @@
   <widget class="QLineEdit" name="lineEdit_suche">
    <property name="geometry">
     <rect>
-     <x>272</x>
+     <x>372</x>
      <y>10</y>
-     <width>201</width>
+     <width>101</width>
      <height>23</height>
     </rect>
    </property>
@@ -26,14 +26,17 @@
   <widget class="QLabel" name="label_suche">
    <property name="geometry">
     <rect>
-     <x>180</x>
+     <x>260</x>
      <y>10</y>
-     <width>91</width>
+     <width>111</width>
      <height>20</height>
     </rect>
    </property>
    <property name="text">
-    <string>xxx Lieferanten:</string>
+    <string>xxx Bestellungen:</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
    </property>
   </widget>
   <widget class="QTableView" name="tableView">
@@ -42,7 +45,7 @@
      <x>10</x>
      <y>40</y>
      <width>461</width>
-     <height>511</height>
+     <height>311</height>
     </rect>
    </property>
    <property name="dragEnabled">
@@ -58,8 +61,14 @@
      <x>485</x>
      <y>90</y>
      <width>291</width>
-     <height>461</height>
+     <height>421</height>
     </rect>
+   </property>
+   <property name="isWrapping" stdset="0">
+    <bool>true</bool>
+   </property>
+   <property name="wordWrap">
+    <bool>true</bool>
    </property>
   </widget>
   <widget class="QLineEdit" name="lineEdit_suche_vorschlag">
@@ -94,6 +103,88 @@
      <x>490</x>
      <y>60</y>
      <width>281</width>
+     <height>22</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_bestellen">
+   <property name="geometry">
+    <rect>
+     <x>490</x>
+     <y>520</y>
+     <width>75</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Bestellen</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_bestellung_stornieren">
+   <property name="geometry">
+    <rect>
+     <x>590</x>
+     <y>520</y>
+     <width>121</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Best stornieren</string>
+   </property>
+  </widget>
+  <widget class="QTableView" name="tableView_lieferverzug">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>381</y>
+     <width>461</width>
+     <height>171</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_lieferverzug">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>360</y>
+     <width>181</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>rückständige Lieferungen:</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_change_LT">
+   <property name="geometry">
+    <rect>
+     <x>360</x>
+     <y>350</y>
+     <width>111</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Liefertermin ändern</string>
+   </property>
+  </widget>
+  <widget class="QDateEdit" name="dateEdit_ab">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>110</width>
+     <height>22</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QDateEdit" name="dateEdit_bis">
+   <property name="geometry">
+    <rect>
+     <x>130</x>
+     <y>10</y>
+     <width>110</width>
      <height>22</height>
     </rect>
    </property>

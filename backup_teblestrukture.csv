@@ -25,6 +25,18 @@ Bestellvors	int(11)	YES	---	---	---
 bestellt	int(11)	YES	---	---	---	
 <ENDE_Tabelle>
 <BEGIN_Tabelle>
+table_bestellung
+Field	Type	Null	Key	Default	Extra
+id	int(11) unsigned	NO	PRI	---	auto_increment	
+Artikel_id	int(11) unsigned	YES	---	---	---	
+Menge	int(11)	YES	---	---	---	
+Erfassung	date	YES	---	---	---	
+Ersteller	int(10) unsigned	YES	---	11	---	
+vor_Lieferterm	date	YES	---	---	---	
+geliefert	int(10) unsigned	YES	---	---	---	
+Kommentar	varchar(40)	YES	---	---	---	
+<ENDE_Tabelle>
+<BEGIN_Tabelle>
 table_lager
 Field	Type	Null	Key	Default	Extra
 id	int(11) unsigned	NO	PRI	---	auto_increment	
