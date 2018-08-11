@@ -59,6 +59,19 @@
     </rect>
    </property>
   </widget>
+  <widget class="QPushButton" name="pushButton_backup_all">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>80</y>
+     <width>221</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Komplettbackup starten</string>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>

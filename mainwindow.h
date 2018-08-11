@@ -85,29 +85,17 @@ private:
     //Flags:
     bool isvalid;               //Anwendungsumgebung korrekt (Inifiles + Ordner...)
     QString currend_modul;      //Speichert den Namen des Moduls für WindowTitle
-    bool modul_kein;            //kein widget ist offen
-    bool modul_tabedit;         //widget_tableeditor ist offen
-    bool modul_backup;          //widget_backup ist offen
-    bool modul_artikel;         //widget_artikel ist offen
-    bool modul_lieferanten;     //widget_lieferanten ist offen
-    bool modul_lager;           //widget_lager ist offen
-    bool modul_projekte;        //widget_lager ist offen
-    bool modul_personal;        //widget_personal ist offen
-    bool modul_matlist;         //widget_matlist ist offen
-    bool modul_bestellung;      //widget_bestellung ist offen
-
 
     //eigene Widgets:
-    Form_tableeditor    widget_tableeditor;
-    Form_artikel        widget_artikel;
-    Form_lieferanten    widget_lieferanten;
-    Form_lager          widget_lager;
-    Form_projekte       widget_projekte;
-    Form_backup         widget_backup;
-    Form_personal       widget_personal;
-    Form_matlist        widget_matlist;
-    Form_bestellung     widget_bestellung;
-
+    Form_tableeditor    *widget_tableeditor;
+    Form_artikel        *widget_artikel;
+    Form_lieferanten    *widget_lieferanten;
+    Form_lager          *widget_lager;
+    Form_projekte       *widget_projekte;
+    Form_backup         *widget_backup;
+    Form_personal       *widget_personal;
+    Form_matlist        *widget_matlist;
+    Form_bestellung     *widget_bestellung;
 
     //Funktionen:
     void clear();
@@ -126,7 +114,6 @@ private:
     void ui_rechte_modul_bestellung(bool hat_rechte);
 
     void change_modul(QString modul);
-    void hide_all_moduls();
     void change_windowtitle();
 
 };

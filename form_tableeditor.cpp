@@ -153,111 +153,120 @@ void Form_tableeditor::set_db(cbrainbatabase *new_db)
 {    
     clear();
     dbeigen = new_db;
-
     update_tablnames();
 }
 
 void Form_tableeditor::on_listWidget_tables_currentRowChanged()
 {
-    //-------------------------------------------
-    ui->listWidget_tablehead->clear();
-    text_zeilenweise params = dbeigen->get_param_tz(ui->listWidget_tables->currentItem()->text());
-
-    for(uint i=1; i<=params.zeilenanzahl() ;i++)
+    if(dbeigen != NULL)
     {
-        ui->listWidget_tablehead->addItem(params.zeile(i));
-    }
-    //-------------------------------------------
-    {
-        QSqlDatabase db;
+        //-------------------------------------------
+        ui->listWidget_tablehead->clear();
+        text_zeilenweise params = dbeigen->get_param_tz(ui->listWidget_tables->currentItem()->text());
 
-        db = QSqlDatabase::database("dbglobal");
-        db.setHostName(dbeigen->get_host());
-        db.setDatabaseName(dbeigen->get_dbname());
-        db.setUserName(dbeigen->get_user());
-        db.setPassword(dbeigen->get_pwd());
-
-        if(db.open())
+        for(uint i=1; i<=params.zeilenanzahl() ;i++)
         {
-            QSqlQuery q(db);
-            QString cmd;
-            cmd += "SELECT * FROM ";
-            cmd += ui->listWidget_tables->currentItem()->text();
+            ui->listWidget_tablehead->addItem(params.zeile(i));
+        }
+        //-------------------------------------------
+        {
+            QSqlDatabase db;
 
-            if(q.exec(cmd))
+            db = QSqlDatabase::database("dbglobal");
+            db.setHostName(dbeigen->get_host());
+            db.setDatabaseName(dbeigen->get_dbname());
+            db.setUserName(dbeigen->get_user());
+            db.setPassword(dbeigen->get_pwd());
+
+            if(db.open())
             {
-                model->setQuery(q);
-                ui->tableView->setModel(model);
+                QSqlQuery q(db);
+                QString cmd;
+                cmd += "SELECT * FROM ";
+                cmd += ui->listWidget_tables->currentItem()->text();
+
+                if(q.exec(cmd))
+                {
+                    model->setQuery(q);
+                    ui->tableView->setModel(model);
+                }else
+                {
+                    QMessageBox mb;
+                    mb.setText("Fehler:\n" + q.lastError().text());
+                    mb.exec();
+                }
+                db.close();
+
             }else
             {
                 QMessageBox mb;
-                mb.setText("Fehler:\n" + q.lastError().text());
+                mb.setText(tr("Fehler bei Datenbankverbindung!"));
                 mb.exec();
             }
-            db.close();
-
-        }else
-        {
-            QMessageBox mb;
-            mb.setText(tr("Fehler bei Datenbankverbindung!"));
-            mb.exec();
         }
+        //-------------------------------------------
     }
-    //-------------------------------------------
 }
 
 void Form_tableeditor::on_listWidget_tablehead_currentRowChanged(int currentRow)
 {
-    text_zeilenweise types = dbeigen->get_param_type_tz(ui->listWidget_tables->currentItem()->text());
-    if(currentRow != -1)//ist -1 wenn noch nichts gewählt wurde
+    if(dbeigen != NULL)
     {
-         ui->label_typ->setText(types.zeile(currentRow+1));
-    }else
-    {
-        ui->label_typ->setText("...");
-    }
-
-    text_zeilenweise pri = dbeigen->get_param_primkey_tz(ui->listWidget_tables->currentItem()->text());
-    if(currentRow != -1)//ist -1 wenn noch nichts gewählt wurde
-    {
-        if(pri.zeile(currentRow+1).contains("PRI"))
+        text_zeilenweise types = dbeigen->get_param_type_tz(ui->listWidget_tables->currentItem()->text());
+        if(currentRow != -1)//ist -1 wenn noch nichts gewählt wurde
         {
-            ui->label_pri->setText("ja");
+             ui->label_typ->setText(types.zeile(currentRow+1));
         }else
         {
-            ui->label_pri->setText("nein");
+            ui->label_typ->setText("...");
         }
-    }else
-    {
-        ui->label_pri->setText("...");
-    }
 
-    text_zeilenweise extra = dbeigen->get_param_extra_tz(ui->listWidget_tables->currentItem()->text());
-    if(currentRow != -1)//ist -1 wenn noch nichts gewählt wurde
-    {
-         ui->label_extra->setText(extra.zeile(currentRow+1));
-    }else
-    {
-        ui->label_extra->setText("...");
+        text_zeilenweise pri = dbeigen->get_param_primkey_tz(ui->listWidget_tables->currentItem()->text());
+        if(currentRow != -1)//ist -1 wenn noch nichts gewählt wurde
+        {
+            if(pri.zeile(currentRow+1).contains("PRI"))
+            {
+                ui->label_pri->setText("ja");
+            }else
+            {
+                ui->label_pri->setText("nein");
+            }
+        }else
+        {
+            ui->label_pri->setText("...");
+        }
+
+        text_zeilenweise extra = dbeigen->get_param_extra_tz(ui->listWidget_tables->currentItem()->text());
+        if(currentRow != -1)//ist -1 wenn noch nichts gewählt wurde
+        {
+             ui->label_extra->setText(extra.zeile(currentRow+1));
+        }else
+        {
+            ui->label_extra->setText("...");
+        }
     }
 }
 
 void Form_tableeditor::update_tablnames()
 {
-    ui->listWidget_tables->clear();
-    text_zeilenweise tables = dbeigen->get_tables_tz();
-
-    for(uint i=1; i<=tables.zeilenanzahl() ;i++)
+    if(dbeigen != NULL)
     {
-        QString name = tables.zeile(i);
-        if(ui->lineEdit_table_seach->text().isEmpty())
+        ui->listWidget_tables->clear();
+        text_zeilenweise tables = dbeigen->get_tables_tz();
+
+        for(uint i=1; i<=tables.zeilenanzahl() ;i++)
         {
-            ui->listWidget_tables->addItem(name);
-        }else
-        {
-            if(name.toUpper().contains(  ui->lineEdit_table_seach->text().toUpper()  ))
+            QString name = tables.zeile(i);
+            if(ui->lineEdit_table_seach->text().isEmpty())
             {
                 ui->listWidget_tables->addItem(name);
+            }else
+            {
+                QString suche = ui->lineEdit_table_seach->text();
+                if(name.toUpper().contains(suche.toUpper()))
+                {
+                    ui->listWidget_tables->addItem(name);
+                }
             }
         }
     }
@@ -490,10 +499,13 @@ void Form_tableeditor::slot_rename_table(QString tablename_new)
 
 void Form_tableeditor::slot_new_table(QString tablename)
 {
-    if(dbeigen->table_new(tablename) == true)
+    if(dbeigen != NULL)
     {
-        ui->listWidget_tables->addItem(tablename);
-        ui->listWidget_tables->sortItems();
+        if(dbeigen->table_new(tablename) == true)
+        {
+            ui->listWidget_tables->addItem(tablename);
+            ui->listWidget_tables->sortItems();
+        }
     }
 }
 

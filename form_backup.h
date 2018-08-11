@@ -39,6 +39,8 @@ private slots:
     void on_lineEdit_backupto_editingFinished();
     void on_lineEdit_restorefrom_editingFinished();
 
+    void on_pushButton_backup_all_clicked();
+
 private:
     Ui::Form_backup *ui;
 

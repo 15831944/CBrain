@@ -14,29 +14,44 @@ Form_backup::~Form_backup()
 }
 
 void Form_backup::resizeEvent(QResizeEvent *event)
-{
-    //int hoehe = this->geometry().height();
-    int breite = this->geometry().width();
-
-    ui->pushButton_backup->move(1,1);
-    ui->pushButton_restore->move(1, 3 + ui->pushButton_backup->height());
-
-    ui->lineEdit_backupto->move(2+ ui->pushButton_backup->width(),1);
-    ui->lineEdit_restorefrom->move(2+ ui->pushButton_backup->width() , 3 + ui->pushButton_backup->height() );
-
-    ui->lineEdit_backupto->setFixedHeight(ui->pushButton_backup->height());
-    ui->lineEdit_restorefrom->setFixedHeight(ui->pushButton_backup->height());
-
-    int tmpb = breite - (1+ui->pushButton_backup->width()-1-1);
-    if(tmpb < 1)
+{/*
+    if(!this->isHidden())
     {
-        tmpb = 1;
-    }
-    ui->lineEdit_backupto->setFixedWidth(tmpb);
-    ui->lineEdit_restorefrom->setFixedWidth(tmpb);
+        int breite = this->width();
+        int hbtn = ui->pushButton_backup->height();
+        int bbtn = 220;
+
+        ui->pushButton_backup->setFixedWidth(bbtn);
+        ui->pushButton_backup_all->setFixedWidth(bbtn);
+        ui->pushButton_restore->setFixedWidth(bbtn);
+
+        ui->pushButton_backup->move(1,\
+                                    1);
+        ui->pushButton_restore->move(1, \
+                                     1 + hbtn + 1);
+        ui->pushButton_backup_all->move(1, \
+                                        1 + (hbtn + 1)*2);
+
+        ui->lineEdit_backupto->setFixedHeight(hbtn);
+        ui->lineEdit_restorefrom->setFixedHeight(hbtn);
+
+        ui->lineEdit_backupto->move(1 + bbtn + 1,\
+                                    1);
+        ui->lineEdit_restorefrom->move(1 + bbtn + 1,\
+                                       1 + hbtn + 1 );
 
 
-    QWidget::resizeEvent(event);
+
+        int tmpb = breite - (1 + bbtn + 1 + 1);
+        if(tmpb < 1)
+        {
+            tmpb = 1;
+        }
+        ui->lineEdit_backupto->setFixedWidth(tmpb);
+        ui->lineEdit_restorefrom->setFixedWidth(tmpb);
+
+        QWidget::resizeEvent(event);
+    }*/
 }
 
 void Form_backup::set_db(cbrainbatabase *new_db)
@@ -402,4 +417,7 @@ void Form_backup::on_lineEdit_restorefrom_editingFinished()
     emit signal_save_ini();
 }
 
+void Form_backup::on_pushButton_backup_all_clicked()
+{
 
+}

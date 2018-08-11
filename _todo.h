@@ -23,6 +23,12 @@
     ->restore data from csv-file
     ->wahrscheinlich Hilfe von Reno Kohmann
 
+
+-->BUGFIX  --> Absturz bei Aufruf Modul Bestellungen
+    ->Zeiger-Fehler?
+
+-->Modul Backup anpassen an Änderungen in MainWindow
+
 -->Im-Export-Dialog
 
 
