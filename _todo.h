@@ -19,7 +19,6 @@
    ->evtl einfach nicht zulassen, dass user_B abbrechen kann (disable btn cancel)
 
 -->modul_backup
-    ->restore data from csv-file
     ->wahrscheinlich Hilfe von Reno Kohmann
 
 -->Im-Export-Dialog
