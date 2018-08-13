@@ -394,7 +394,9 @@ void MainWindow::change_modul(QString modul)
         widget_projekte = NULL;
     }
     if(widget_backup != NULL)
-    {
+    {        
+        disconnect(widget_backup, SIGNAL(signal_save_ini()),\
+                this, SLOT(slot_write_inifile()));
         delete widget_backup;
         widget_backup = NULL;
     }

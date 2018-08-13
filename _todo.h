@@ -19,15 +19,8 @@
    ->evtl einfach nicht zulassen, dass user_B abbrechen kann (disable btn cancel)
 
 -->modul_backup
-    ->Backup data to csv-file
     ->restore data from csv-file
     ->wahrscheinlich Hilfe von Reno Kohmann
-
-
--->BUGFIX  --> Absturz bei Aufruf Modul Bestellungen
-    ->Zeiger-Fehler?
-
--->Modul Backup anpassen an Änderungen in MainWindow
 
 -->Im-Export-Dialog
 

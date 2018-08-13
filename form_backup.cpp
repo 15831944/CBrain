@@ -207,8 +207,6 @@ void Form_backup::on_pushButton_restore_clicked()
                     }
                 }
 
-
-
                 //Param erfassen:
                 text_zeilenweise param;
                 text_zeilenweise param_type;
@@ -405,7 +403,7 @@ void Form_backup::on_pushButton_restore_clicked()
                 }
             }else if(zeile.contains("<ENDE_Tabelle>"))
             {
-                current_table = -1;
+                current_table = "";
             }
         }
         QApplication::restoreOverrideCursor();
@@ -557,7 +555,15 @@ void Form_backup::on_pushButton_backup_all_clicked()
             text_zeilenweise zeile_tz = dbeigen->get_data_zeile_tz(tabname, ids.zeile(ii));
             for(uint iii=1; iii<=zeile_tz.zeilenanzahl() ;iii++)
             {
-                inhalt += zeile_tz.zeile(iii);
+                QString value = zeile_tz.zeile(iii);
+                if(!value.isEmpty())
+                {
+                    value.replace("\t", "    ");
+                    inhalt += value;
+                }else
+                {
+                    inhalt += "0";
+                }
                 if(iii != zeile_tz.zeilenanzahl())
                 {
                     inhalt += ezpar;
@@ -601,12 +607,346 @@ void Form_backup::on_pushButton_backup_all_clicked()
 
 void Form_backup::on_pushButton_restore_all_clicked()
 {
-
+    Dialog_yes_no *d = new Dialog_yes_no(this);
+    d->setWindowTitle("Backup einspielen");
+    d->setup("Wollen Sie alle Daten in der aktuellen Datenbank löschen und dafür die Daten aus einem Backup einlesen?");
+    connect(d, SIGNAL(signal_yes()),        \
+            this, SLOT(slot_restore_all())  );
+    connect(d, SIGNAL(signal_no()),        \
+            this, SLOT(slot_restore_all_cancel())  );
+    d->exec();
+    delete d;
 }
 
+void Form_backup::slot_restore_all()
+{
+    int anz_fehler = 0;
+    //Verzeichniss mit dem Backup wählen:
+    QString tmpdir = QFileDialog::getExistingDirectory(this, tr("BackupOrdner"));
+    if(!tmpdir.isEmpty())
+    {
+        QApplication::setOverrideCursor((Qt::WaitCursor));
+        QDir backupdir(tmpdir);
+        text_zeilenweise dateien;
+        dateien.set_text(backupdir.entryList());
+        dateien.zeilen_loeschen(1,2); //"." und ".."
 
+        bool isvallid = false;
+        for(uint i=1; i<=dateien.zeilenanzahl() ;i++)
+        {
+            if(dateien.zeile(i)  == FILENAME_TABSTRKT)
+            {
+                isvallid = true;
+                break;
+            }
+        }
+        if(isvallid == true)
+        {
+            //vorhandene Tabellen löschen:
+            text_zeilenweise oldtables = dbeigen->get_tables_tz();
+            for(uint i=1; i<=oldtables.zeilenanzahl() ;i++)
+            {
+                dbeigen->table_del(oldtables.zeile(i));
+            }
+            //neue Tabellen anlegen:
+            QFile file(tmpdir + QDir::separator() + FILENAME_TABSTRKT);
+            if(file.open(QIODevice::ReadOnly | QIODevice::Text))
+            {
+                text_zeilenweise filetext;
+                filetext.set_text(file.readAll());
+                for(uint i=1; i<=filetext.zeilenanzahl() ;i++)
+                {
+                    QString zeile = filetext.zeile(i);
+                    if(zeile.contains("<BEGIN_Tabelle>"))
+                    {
+                        i++;
+                        zeile = filetext.zeile(i);
+                        QString tablename_csv = zeile;
+                        tablename_csv.replace("\t","");
 
+                        text_zeilenweise param;
+                        text_zeilenweise param_type;
+                        text_zeilenweise param_notnull;
+                        text_zeilenweise param_primkey;
+                        text_zeilenweise param_default;
+                        text_zeilenweise param_extra;
 
+                        i = i+2;
+                        zeile = filetext.zeile(i);
+                        for( ; i<=filetext.zeilenanzahl() ;i++)
+                        {
+                            zeile = filetext.zeile(i);
+                            if(zeile.contains("<ENDE_Tabelle>"))
+                            {
+                                break;
+                            }
+                            text_zeilenweise zeile_tz;
+                            zeile_tz.set_trennzeichen('\t');
+                            zeile_tz.set_text(zeile);
+
+                            param.zeile_anhaengen(zeile_tz.zeile(1));
+                            param_type.zeile_anhaengen(zeile_tz.zeile(2));
+                            param_notnull.zeile_anhaengen(zeile_tz.zeile(3));
+                            param_primkey.zeile_anhaengen(zeile_tz.zeile(4));
+                            param_default.zeile_anhaengen(zeile_tz.zeile(5));
+                            param_extra.zeile_anhaengen(zeile_tz.zeile(6));
+                        }
+
+                        //Tabelle anlegen
+                        //-------------------------------------
+                        QSqlDatabase db;
+
+                        db = QSqlDatabase::database("dbglobal");
+                        db.setHostName(dbeigen->get_host());
+                        db.setDatabaseName(dbeigen->get_dbname());
+                        db.setUserName(dbeigen->get_user());
+                        db.setPassword(dbeigen->get_pwd());
+
+                        if(db.open())
+                        {
+                            QSqlQuery q(db);
+                            QString cmd;
+                            cmd += "CREATE TABLE ";
+                            cmd += tablename_csv;
+                            cmd += "(";
+                            // not null
+                            for(uint ii=1; ii<=param.zeilenanzahl() ;ii++)
+                            {
+                                QString tmp;
+                                tmp = param.zeile(ii);
+                                cmd += param.zeile(ii);
+
+                                tmp = param_type.zeile(ii);
+                                if(tmp != "---")
+                                {
+                                    cmd += " ";
+                                    cmd += param_type.zeile(ii);
+                                }
+                                tmp = param_notnull.zeile(ii);
+                                if(tmp == "NO")
+                                {
+                                    cmd += " ";
+                                    cmd += "NOT NULL";
+                                }
+                                tmp = param_extra.zeile(ii);
+                                if(tmp != "---")
+                                {
+                                    cmd += " ";
+                                    cmd += param_extra.zeile(ii);
+                                }
+                                tmp = param_primkey.zeile(ii);
+                                if(tmp != "---")
+                                {
+                                    cmd += " ";
+                                    cmd += "primary key";
+                                }
+                                tmp = param_default.zeile(ii);
+                                if(tmp != "---")
+                                {
+                                    cmd += " DEFAULT \'";
+                                    cmd += param_default.zeile(ii);
+                                    cmd += "\'";
+                                }
+
+                                if(ii != param.zeilenanzahl())
+                                {
+                                    cmd += ", ";
+                                }
+                            }
+                            cmd += ") ENGINE=InnoDB";
+
+                            if(!q.exec(cmd))
+                            {
+                                QMessageBox mb;
+                                mb.setText("Fehler:\n" + q.lastError().text());
+                                mb.exec();
+                            }
+                            db.close();
+
+                        }else
+                        {
+                            QMessageBox mb;
+                            mb.setText(tr("Fehler bei Datenbankverbindung!"));
+                            mb.exec();
+                            return;
+                        }
+                        //-------------------------------------
+                    }
+                }
+
+                //Daten in neue Tabellen schreiben:
+                for(uint i=1; i<=filetext.zeilenanzahl() ;i++)
+                {
+                    QString zeile = filetext.zeile(i);
+                    if(zeile.contains("<BEGIN_Tabelle>"))
+                    {
+                        i++;
+                        zeile = filetext.zeile(i);
+                        QString tablename_csv = zeile;
+                        tablename_csv.replace("\t","");
+                        text_zeilenweise param;
+                        text_zeilenweise param_type;
+                        i = i+2;
+                        zeile = filetext.zeile(i);
+                        for( ; i<=filetext.zeilenanzahl() ;i++)
+                        {
+                            zeile = filetext.zeile(i);
+                            if(zeile.contains("<ENDE_Tabelle>"))
+                            {
+                                break;
+                            }
+                            text_zeilenweise zeile_tz;
+                            zeile_tz.set_trennzeichen('\t');
+                            zeile_tz.set_text(zeile);
+
+                            param.zeile_anhaengen(zeile_tz.zeile(1));
+                            param_type.zeile_anhaengen(zeile_tz.zeile(2));
+                        }
+
+                        //Daten aus Datei einlesen:
+                        QFile file_table(tmpdir + QDir::separator() + tablename_csv + ".csv");
+                        if(file_table.open(QIODevice::ReadOnly | QIODevice::Text))
+                        {
+                            text_zeilenweise file_tabletext;
+                            file_tabletext.set_text(file_table.readAll());
+                            //Daten eintragen:
+                            //-------------------------------------
+                            QSqlDatabase db;
+
+                            db = QSqlDatabase::database("dbglobal");
+                            db.setHostName(dbeigen->get_host());
+                            db.setDatabaseName(dbeigen->get_dbname());
+                            db.setUserName(dbeigen->get_user());
+                            db.setPassword(dbeigen->get_pwd());
+
+                            if(db.open())
+                            {
+                                for(uint ii=1; ii<=file_tabletext.zeilenanzahl() ;ii++)
+                                {
+                                    text_zeilenweise zeilenwerte;
+                                    zeilenwerte.set_trennzeichen('\t');
+                                    zeilenwerte.set_text(file_tabletext.zeile(ii));
+
+                                    QSqlQuery q(db);
+                                    QString cmd;
+                                    cmd += "INSERT INTO ";
+                                    cmd += tablename_csv;
+                                    cmd += "(";
+                                    for(uint iii=1; iii<=param.zeilenanzahl() ;iii++)
+                                    {
+                                        cmd += param.zeile(iii);
+                                        if(iii!=param.zeilenanzahl())
+                                        {
+                                            cmd += ", ";
+                                        }
+                                    }
+                                    cmd += ") VALUES (";
+                                    for(uint iii=1; iii<=param.zeilenanzahl() ;iii++)
+                                    {
+                                        QString wert = zeilenwerte.zeile(iii);
+                                        if(param_type.zeile(iii) == "date"  &&  wert == "0")
+                                        {
+                                            cmd += "NULL";
+                                        }else
+                                        {
+                                            cmd += "\'";
+                                            cmd += wert;
+                                            cmd += "\'";
+                                        }
+                                        if(iii!=zeilenwerte.zeilenanzahl())
+                                        {
+                                            cmd += ", ";
+                                        }
+                                    }
+                                    cmd += ")";
+
+                                    if(!q.exec(cmd))
+                                    {
+                                        QMessageBox mb;
+                                        mb.setText("Fehler:\n" + q.lastError().text());
+                                        mb.exec();
+                                    }
+                                }
+                                db.close();
+                            }else
+                            {
+                                QMessageBox mb;
+                                mb.setText(tr("Fehler bei Datenbankverbindung!"));
+                                mb.exec();
+                                return;
+                            }
+                            //-------------------------------------
+                        }else
+                        {
+                            QString msg;
+                            msg += "Daten von";
+                            msg += tablename_csv;
+                            msg += "konnten nicht eingelesen werden!";
+                            QMessageBox mb;
+                            mb.setText(tr(msg.toStdString().c_str()));
+                            mb.exec();
+                            anz_fehler++;
+                        }
+                    }
+                }
+            }else
+            {
+                QApplication::restoreOverrideCursor();
+                QString msg;
+                msg += "Die Datei \"";
+                msg += FILENAME_TABSTRKT;
+                msg += "\" konnte nicht gelesen werden!";
+                QMessageBox mb;
+                mb.setText(tr(msg.toStdString().c_str()));
+                mb.exec();
+                slot_restore_all_cancel();
+                return;
+            }
+
+        }else
+        {
+            QApplication::restoreOverrideCursor();
+            QString msg;
+            msg += "Im Ordner \"";
+            msg += tmpdir;
+            msg += "\" wurde die Datei \"";
+            msg += FILENAME_TABSTRKT;
+            msg += "\" nicht gefunden!";
+            QMessageBox mb;
+            mb.setText(tr(msg.toStdString().c_str()));
+            mb.exec();
+            slot_restore_all_cancel();
+            return;
+        }
+        QApplication::restoreOverrideCursor();
+    }else
+    {
+        slot_restore_all_cancel();
+    }
+    if(anz_fehler == 0)
+    {
+        QMessageBox mb;
+        mb.setText(tr("Backup wurde erfolgreich eingespielt."));
+        mb.exec();
+    }else
+    {
+        QString msg;
+        msg += "Backup wurde eingespielt.\n";
+        msg += "Dabei traten ";
+        msg += int_to_qstring(anz_fehler);
+        msg += " Fehler auf";
+        QMessageBox mb;
+        mb.setText(tr(msg.toStdString().c_str()));
+        mb.exec();
+    }
+}
+
+void Form_backup::slot_restore_all_cancel()
+{
+    QMessageBox mb;
+    mb.setText(tr("Backup wurde nicht eingelesen. Datanbank blieb unverändert."));
+    mb.exec();
+}
 
 
 

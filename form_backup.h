@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QFile>
+#include <QFileDialog>
 
 #include "cbrainbatabase.h"
 #include "_tabname_promatpos.h"
@@ -11,6 +12,7 @@
 #include "inifile.h"
 #include "text.h"
 #include "datum.h"
+#include "dialog_yes_no.h"
 
 #define FILENAME_TABSTRKT "backup_tablestrukture.csv"
 
@@ -36,14 +38,16 @@ signals:
 protected:
     void resizeEvent(QResizeEvent *event);
 
+public slots:
+    void slot_restore_all();
+    void slot_restore_all_cancel();
+
 private slots:
     void on_pushButton_backup_clicked();
     void on_pushButton_restore_clicked();
     void on_lineEdit_backupto_editingFinished();
     void on_lineEdit_restorefrom_editingFinished();
-
     void on_pushButton_backup_all_clicked();
-
     void on_pushButton_restore_all_clicked();
 
 private:
