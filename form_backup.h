@@ -12,6 +12,8 @@
 #include "text.h"
 #include "datum.h"
 
+#define FILENAME_TABSTRKT "backup_tablestrukture.csv"
+
 namespace Ui {
 class Form_backup;
 }
@@ -41,6 +43,8 @@ private slots:
     void on_lineEdit_restorefrom_editingFinished();
 
     void on_pushButton_backup_all_clicked();
+
+    void on_pushButton_restore_all_clicked();
 
 private:
     Ui::Form_backup *ui;

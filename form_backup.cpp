@@ -24,6 +24,11 @@ void Form_backup::resizeEvent(QResizeEvent *event)
         ui->pushButton_backup->setFixedWidth(bbtn);
         ui->pushButton_backup_all->setFixedWidth(bbtn);
         ui->pushButton_restore->setFixedWidth(bbtn);
+        ui->pushButton_restore_all->setFixedWidth(bbtn);
+
+        ui->pushButton_backup_all->setFixedHeight(hbtn);
+        ui->pushButton_restore->setFixedHeight(hbtn);
+        ui->pushButton_restore_all->setFixedHeight(hbtn);
 
         ui->pushButton_backup->move(1,\
                                     1);
@@ -31,6 +36,8 @@ void Form_backup::resizeEvent(QResizeEvent *event)
                                      1 + hbtn + 1);
         ui->pushButton_backup_all->move(1, \
                                         1 + (hbtn + 1)*2);
+        ui->pushButton_restore_all->move(1, \
+                                         1 + (hbtn + 1)*3);
 
         ui->lineEdit_backupto->setFixedHeight(hbtn);
         ui->lineEdit_restorefrom->setFixedHeight(hbtn);
@@ -145,7 +152,7 @@ void Form_backup::on_pushButton_backup_clicked()
     QString filename;
     filename =  ui->lineEdit_backupto->text();
     filename += QDir::separator();
-    filename += "backup_teblestrukture.csv";
+    filename += FILENAME_TABSTRKT;
     QFile file(filename);
 
     if(file.open(QIODevice::WriteOnly | QIODevice::Text))
@@ -165,7 +172,7 @@ void Form_backup::on_pushButton_backup_clicked()
 }
 
 void Form_backup::on_pushButton_restore_clicked()
-{
+{    
     QString filename;
     filename =  ui->lineEdit_restorefrom->text();
     QFile file(filename);
@@ -174,6 +181,7 @@ void Form_backup::on_pushButton_restore_clicked()
 
     if(file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
+        QApplication::setOverrideCursor((Qt::WaitCursor));
         filetext.set_text(file.readAll());
         //Tabellenstruktur aus der db auslesen:
         text_zeilenweise tables_db = dbeigen->get_tables_tz();
@@ -400,6 +408,10 @@ void Form_backup::on_pushButton_restore_clicked()
                 current_table = -1;
             }
         }
+        QApplication::restoreOverrideCursor();
+        QMessageBox mb;
+        mb.setText(tr("Restore ist fertig"));
+        mb.exec();
     }else
     {
         QString msg;
@@ -411,6 +423,7 @@ void Form_backup::on_pushButton_restore_clicked()
         mb.setText(tr(msg.toStdString().c_str()));
         mb.exec();
     }
+
 }
 
 void Form_backup::on_lineEdit_backupto_editingFinished()
@@ -516,7 +529,7 @@ void Form_backup::on_pushButton_backup_all_clicked()
     filename += QDir::separator();
     QDir ordner;
     ordner.mkpath(backupdir);
-    filename += "backup_teblestrukture.csv";
+    filename += FILENAME_TABSTRKT;
     QFile file(filename);
 
     if(file.open(QIODevice::WriteOnly | QIODevice::Text))
@@ -526,7 +539,7 @@ void Form_backup::on_pushButton_backup_all_clicked()
     }else
     {
         QMessageBox mb;
-        mb.setText(tr("Backup fehlgeschlagen!\nDatei \"backup_teblestrukture.csv\" konnte nicht geschrieben werden."));
+        mb.setText(tr("Backup fehlgeschlagen!\nDatei mit Tabellenstruktur konnte nicht geschrieben werden."));
         mb.exec();
         return;
     }
@@ -585,3 +598,35 @@ void Form_backup::on_pushButton_backup_all_clicked()
     mb.exec();
     //----------------------------------------------------------
 }
+
+void Form_backup::on_pushButton_restore_all_clicked()
+{
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
