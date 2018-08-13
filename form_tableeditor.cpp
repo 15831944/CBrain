@@ -7,6 +7,7 @@ Form_tableeditor::Form_tableeditor(QWidget *parent) :
     ui(new Ui::Form_tableeditor)
 {
     ui->setupUi(this);
+    dbeigen = NULL;
     model = new QSqlQueryModel();
 }
 

@@ -6,6 +6,7 @@ Form_artikel::Form_artikel(QWidget *parent) :
     ui(new Ui::Form_artikel)
 {
     ui->setupUi(this);
+    dbeigen = NULL;
     this->model = new QSqlQueryModel();
 }
 
@@ -104,6 +105,7 @@ void Form_artikel::show()
 void Form_artikel::update_table()
 {
     //-------------------------------------------
+    if(dbeigen != NULL)
     {
         QSqlDatabase db;
 

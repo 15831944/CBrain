@@ -16,9 +16,6 @@ MainWindow::MainWindow(QWidget *parent) :
     widget_personal     = NULL;
     widget_matlist      = NULL;
     widget_bestellung   = NULL;
-/*
-    connect(&widget_backup, SIGNAL(signal_save_ini()),\
-            this, SLOT(slot_write_inifile()));*/
 
     this->setWindowState(Qt::WindowMaximized);
 }
@@ -53,8 +50,6 @@ bool MainWindow::setup()
         dbglobal.setUserName(dbeigen.get_user());
         dbglobal.setPassword(dbeigen.get_pwd());
         dbglobal = QSqlDatabase::addDatabase(dbeigen.get_driver(), "dbglobal");
-/*
-        widget_backup.set_ini(&ini);*/
     }
     return isvalid;
 }
@@ -472,6 +467,13 @@ void MainWindow::change_modul(QString modul)
             }else if(modul == "Backup")
             {
                 currend_modul = "Backup";
+                widget_backup = new Form_backup(this);
+                widget_backup->setGeometry(posx, posy, b, h);
+                widget_backup->set_db(&dbeigen);
+                widget_backup->set_ini(&ini);
+                connect(widget_backup, SIGNAL(signal_save_ini()),\
+                        this, SLOT(slot_write_inifile()));
+                widget_backup->show();
             }else if(modul == "Personal")
             {
                 currend_modul = "Personal";
@@ -492,10 +494,10 @@ void MainWindow::change_modul(QString modul)
             {
                 currend_modul       = "Bestellungen";
                 widget_bestellung = new Form_bestellung(this);
-                //widget_bestellung->setGeometry(posx, posy, b, h);
-                //widget_bestellung->set_user(u.get_current_user_id());
-                //widget_bestellung->set_db(&dbeigen);
-                //widget_bestellung->show();
+                widget_bestellung->setGeometry(posx, posy, b, h);
+                widget_bestellung->set_user(u.get_current_user_id());
+                widget_bestellung->set_db(&dbeigen);
+                widget_bestellung->show();
             }else
             {
                 currend_modul = "kein Modul geladen";

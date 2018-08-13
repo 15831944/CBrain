@@ -6,6 +6,7 @@ Form_lager::Form_lager(QWidget *parent) :
     ui(new Ui::Form_lager)
 {
     ui->setupUi(this);
+    dbeigen = NULL;
     this->model = new QSqlQueryModel();
     this->model_artikel = new QSqlQueryModel();
 }
@@ -75,6 +76,7 @@ void Form_lager::show()
 void Form_lager::update_table()
 {
     //-------------------------------------------
+    if(dbeigen != NULL)
     {
         QSqlDatabase db;
 

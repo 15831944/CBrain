@@ -105,6 +105,7 @@ public:
     QString get_data_qstring(QString tablennameA, QString tabA_param_with_id_of_B, QString tabA_id, \
                              QString tablenameB, QString tabB_param_for_return);
     text_zeilenweise get_data_tz(QString tablename, QString param);
+    text_zeilenweise get_data_zeile_tz(QString tablename, QString id);
     QString get_highest_id(QString tablename);
     QString get_data_id_QString(QString tablename, QString param, QString value);
     text_zeilenweise get_data_id_tz(QString tablename, QString param, QString value);

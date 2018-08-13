@@ -10,6 +10,7 @@
 #include "_tabname_promatposlist.h"
 #include "inifile.h"
 #include "text.h"
+#include "datum.h"
 
 namespace Ui {
 class Form_backup;

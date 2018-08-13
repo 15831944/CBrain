@@ -6,6 +6,7 @@ Form_personal::Form_personal(QWidget *parent) :
     ui(new Ui::Form_personal)
 {
     ui->setupUi(this);
+    dbeigen = NULL;
     this->model = new QSqlQueryModel();
 }
 
@@ -71,6 +72,7 @@ void Form_personal::show()
 void Form_personal::update_table()
 {
     //-------------------------------------------
+    if(dbeigen != NULL)
     {
         QSqlDatabase db;
 

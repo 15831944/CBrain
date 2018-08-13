@@ -14,8 +14,8 @@ Form_backup::~Form_backup()
 }
 
 void Form_backup::resizeEvent(QResizeEvent *event)
-{/*
-    if(!this->isHidden())
+{
+    if(dbeigen != NULL)
     {
         int breite = this->width();
         int hbtn = ui->pushButton_backup->height();
@@ -51,7 +51,7 @@ void Form_backup::resizeEvent(QResizeEvent *event)
         ui->lineEdit_restorefrom->setFixedWidth(tmpb);
 
         QWidget::resizeEvent(event);
-    }*/
+    }
 }
 
 void Form_backup::set_db(cbrainbatabase *new_db)
@@ -66,9 +66,17 @@ void Form_backup::set_ini(inifile *in)
 
 void Form_backup::show()
 {
-    ui->lineEdit_backupto->setText(ini->get_modul_backup_to());
-    ui->lineEdit_restorefrom->setText(ini->get_modul_backup_from());
-    setVisible(true);
+    if(dbeigen != NULL)
+    {
+        ui->lineEdit_backupto->setText(ini->get_modul_backup_to());
+        ui->lineEdit_restorefrom->setText(ini->get_modul_backup_from());
+        setVisible(true);
+    }else
+    {
+        QMessageBox mb;
+        mb.setText(tr("dbeigen == NULL!"));
+        mb.exec();
+    }
 }
 
 void Form_backup::on_pushButton_backup_clicked()
@@ -419,5 +427,161 @@ void Form_backup::on_lineEdit_restorefrom_editingFinished()
 
 void Form_backup::on_pushButton_backup_all_clicked()
 {
+    //----------------------------------------------------------
+    //Ordner für Backup anlegen:
+    QString backupdir = ini->get_rootdir();
+    backupdir += QDir::separator();
+    backupdir += "backup_manuell";
+    backupdir += QDir::separator();
 
+    int y,m,d;
+    QDate today = QDate::currentDate();
+    today.getDate(&y, &m, &d);
+    backupdir += int_to_qstring(y);
+    backupdir += "_";
+    backupdir += int_to_qstring(m);
+    backupdir += "_";
+    backupdir += int_to_qstring(d);
+
+    backupdir += "__";
+
+    QTime jetzt = QTime::currentTime();
+    int stunde, minute, sekunde;
+    stunde = jetzt.hour();
+    minute = jetzt.minute();
+    sekunde = jetzt.second();
+    backupdir += int_to_qstring(stunde);
+    backupdir += "_";
+    backupdir += int_to_qstring(minute);
+    backupdir += "_";
+    backupdir += int_to_qstring(sekunde);
+    //----------------------------------------------------------
+    QString ezpar = "\t";
+    text_zeilenweise tables;
+    tables = dbeigen->get_tables_tz();
+    QApplication::setOverrideCursor((Qt::WaitCursor));
+    //----------------------------------------------------------
+    //----------------------------------------------------------
+    //Komplette tabellenstruktur sichern:
+    QString tabstrukt;
+    for(uint i=1; i<= tables.zeilenanzahl() ;i++)
+    {
+        text_zeilenweise param = dbeigen->get_param_tz(tables.zeile(i));
+        text_zeilenweise param_type = dbeigen->get_param_type_tz(tables.zeile(i));
+        text_zeilenweise param_primkey = dbeigen->get_param_primkey_tz(tables.zeile(i));
+        text_zeilenweise param_extra = dbeigen->get_param_extra_tz(tables.zeile(i));
+        text_zeilenweise param_notnull = dbeigen->get_param_notnull_tz(tables.zeile(i));
+        text_zeilenweise param_default = dbeigen->get_param_default_tz(tables.zeile(i));
+
+        tabstrukt += "<BEGIN_Tabelle>";
+        tabstrukt += "\n";
+        tabstrukt += tables.zeile(i);
+        tabstrukt += "\n";
+
+        tabstrukt += "Field"; //Spaltenname
+        tabstrukt += ezpar;
+        tabstrukt += "Type";
+        tabstrukt += ezpar;
+        tabstrukt += "Null";  //Not Null
+        tabstrukt += ezpar;
+        tabstrukt += "Key";   //Is Primary Key
+        tabstrukt += ezpar;
+        tabstrukt += "Default"; //Default value
+        tabstrukt += ezpar;
+        tabstrukt += "Extra";
+        tabstrukt += "\n";
+
+        for(uint ii=1; ii<=param.zeilenanzahl() ;ii++)
+        {
+            tabstrukt += param.zeile(ii);
+            tabstrukt += ezpar;
+            tabstrukt += param_type.zeile(ii);
+            tabstrukt += ezpar;
+            tabstrukt += param_notnull.zeile(ii);
+            tabstrukt += ezpar;
+            tabstrukt += param_primkey.zeile(ii);
+            tabstrukt += ezpar;
+            tabstrukt += param_default.zeile(ii);
+            tabstrukt += ezpar;;
+            tabstrukt += param_extra.zeile(ii);
+            tabstrukt += ezpar;
+            tabstrukt += "\n";
+        }
+
+        tabstrukt += "<ENDE_Tabelle>";
+        tabstrukt += "\n";
+    }
+    QString filename;
+    filename =  backupdir;
+    filename += QDir::separator();
+    QDir ordner;
+    ordner.mkpath(backupdir);
+    filename += "backup_teblestrukture.csv";
+    QFile file(filename);
+
+    if(file.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+        file.write(tabstrukt.toUtf8());
+        file.close();
+    }else
+    {
+        QMessageBox mb;
+        mb.setText(tr("Backup fehlgeschlagen!\nDatei \"backup_teblestrukture.csv\" konnte nicht geschrieben werden."));
+        mb.exec();
+        return;
+    }
+    //----------------------------------------------------------
+
+    //----------------------------------------------------------
+    //Alle Daten sichern:
+    for(uint i=1; i<= tables.zeilenanzahl() ;i++)
+    {
+        QString tabname = tables.zeile(i);
+        text_zeilenweise ids = dbeigen->get_data_tz(tabname, "id");
+        QString inhalt;
+        for(uint ii=1; ii<=ids.zeilenanzahl() ;ii++)
+        {
+            text_zeilenweise zeile_tz = dbeigen->get_data_zeile_tz(tabname, ids.zeile(ii));
+            for(uint iii=1; iii<=zeile_tz.zeilenanzahl() ;iii++)
+            {
+                inhalt += zeile_tz.zeile(iii);
+                if(iii != zeile_tz.zeilenanzahl())
+                {
+                    inhalt += ezpar;
+                }
+            }
+            if(ii != ids.zeilenanzahl())
+            {
+                inhalt += "\n";
+            }
+        }
+        filename  =  backupdir;
+        filename += QDir::separator();
+        filename += tabname;
+        filename += ".csv";
+        QFile file(filename);
+
+        if(file.open(QIODevice::WriteOnly | QIODevice::Text))
+        {
+            file.write(inhalt.toUtf8());
+            file.close();
+        }else
+        {
+            QString msg;
+            msg += "Backup fehlgeschlagen!\nDatei \"";
+            msg += tabname;
+            msg += ".csv";
+            msg += "\" konnte nicht geschrieben werden.";
+            QMessageBox mb;
+            mb.setText(msg);
+            mb.exec();
+            return;
+        }
+    }
+    //----------------------------------------------------------
+    QApplication::restoreOverrideCursor();
+    QMessageBox mb;
+    mb.setText(tr("Backup erfolgreich abgeschlossen."));
+    mb.exec();
+    //----------------------------------------------------------
 }
