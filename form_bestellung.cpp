@@ -66,8 +66,13 @@ void Form_bestellung::resizeEvent(QResizeEvent *event)
     ui->label_lieferverzug->setFixedHeight(h_btn);
     ui->label_lieferverzug->move(1,\
                                  ui->tableView_lieferverzug->pos().y() - h_btn - 1);
+
+    //links Buttons mittig:
     ui->pushButton_change_LT->move(b_li - ui->pushButton_change_LT->width(),\
                                    ui->label_lieferverzug->pos().y());
+    ui->pushButton_change_kommentar->move(b_li - ui->pushButton_change_LT->width() \
+                                          -1 - ui->pushButton_change_kommentar->width(),\
+                                          ui->label_lieferverzug->pos().y());
 
     //rechts Label über Suchleiste:
     ui->label_bestellvorschlag->setFixedWidth(b_re);
@@ -185,7 +190,7 @@ void Form_bestellung::update_table()
                 cmd += ".";
                 cmd += PARAM_BESTELLUNG_ME_GELIEFERT;
                 cmd += " AS ";
-                cmd += "geliferte_Menge";
+                cmd += "gelieferte_Menge";
                 cmd += ", ";
                 //------------------------
                 cmd += TABNAME_PERSONAL;
@@ -203,6 +208,11 @@ void Form_bestellung::update_table()
                 cmd += TABNAME_BESTELLUNG;
                 cmd += ".";
                 cmd += PARAM_BESTELLUNG_DATLIEF;
+                cmd += ", ";
+                //------------------------
+                cmd += TABNAME_BESTELLUNG;
+                cmd += ".";
+                cmd += PARAM_BESTELLUNG_KOMMENT;
                 //cmd += ", ";
                 //------------------------
                 cmd += " FROM ";
@@ -380,7 +390,7 @@ void Form_bestellung::update_table_lieferverzug()
                 cmd += ".";
                 cmd += PARAM_BESTELLUNG_ME_GELIEFERT;
                 cmd += " AS ";
-                cmd += "geliferte_Menge";
+                cmd += "gelieferte_Menge";
                 cmd += ", ";
                 //------------------------
                 cmd += TABNAME_PERSONAL;
@@ -398,6 +408,11 @@ void Form_bestellung::update_table_lieferverzug()
                 cmd += TABNAME_BESTELLUNG;
                 cmd += ".";
                 cmd += PARAM_BESTELLUNG_DATLIEF;
+                cmd += ", ";
+                //------------------------
+                cmd += TABNAME_BESTELLUNG;
+                cmd += ".";
+                cmd += PARAM_BESTELLUNG_KOMMENT;
                 //cmd += ", ";
                 //------------------------
                 cmd += " FROM ";
@@ -850,6 +865,16 @@ void Form_bestellung::on_pushButton_change_LT_clicked()
     delete d;
 }
 
+void Form_bestellung::on_pushButton_change_kommentar_clicked()
+{
+    Dialog_text_input *d = new Dialog_text_input(this);
+    d->setup("Kommentar ändern", "Bitte geben Sie die ID-Nummer der betreffenden Bestellung ein:");
+    connect(d, SIGNAL(signal_userinput(QString)),           \
+            this, SLOT(slot_change_komment_1(QString)) );
+    d->exec();
+    delete d;
+}
+
 //------------------------------------private slots:
 void Form_bestellung::on_lineEdit_suche_textChanged(const QString &arg1)
 {
@@ -1072,7 +1097,49 @@ void Form_bestellung::slot_change_LT(QDate *da)
     update_table();
 }
 
+void Form_bestellung::slot_change_komment_1(QString bestell_id)
+{
+    //Prüfen, ob es eine Bestellung mit dieser ID gibt:
+    text_zeilenweise bestell_ids = dbeigen->get_data_tz(TABNAME_BESTELLUNG, PARAM_BESTELLUNG_ID);
+    bool existiert = false;
+    for(uint i=1; i<=bestell_ids.zeilenanzahl() ;i++)
+    {
+        if(bestell_ids.zeile(i) == bestell_id)
+        {
+            existiert = true;
+            break;
+        }
+    }
+    if(existiert == true)
+    {
+        idbuffer = bestell_id;
+        QString kommentar_alt;
+        kommentar_alt = dbeigen->get_data_qstring(TABNAME_BESTELLUNG, PARAM_BESTELLUNG_KOMMENT, idbuffer);
+
+        Dialog_text_input *d = new Dialog_text_input(this);
+        d->setWindowTitle("Kommentar");
+        d->set_infotext(tr("Bitte hier den neuen Kommentar eingeben:"));
+        d->set_default_input(kommentar_alt);
+        connect(d, SIGNAL(signal_userinput(QString)),       \
+                this, SLOT(slot_change_komment_2(QString))  );
+        d->exec();
+        delete d;
+    }else
+    {
+        QMessageBox mb;
+        mb.setText(tr("Eine Bestellung mit dieser ID existiert nicht!"));
+        mb.exec();
+    }
+}
+
+void Form_bestellung::slot_change_komment_2(QString kommsntar_neu)
+{
+    dbeigen->data_edit(TABNAME_BESTELLUNG, PARAM_BESTELLUNG_KOMMENT, kommsntar_neu, idbuffer);
+    update_table();
+}
 //------------------------------------
+
+
 
 
 

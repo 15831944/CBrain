@@ -36,6 +36,8 @@ public slots:
     void slot_bestellung_stornieren(QString bestell_id);
     void slot_change_LT(QString bestell_id);
     void slot_change_LT(QDate *da);
+    void slot_change_komment_1(QString bestell_id);
+    void slot_change_komment_2(QString kommsntar_neu);
 
 protected:
     void resizeEvent(QResizeEvent *event);
@@ -48,8 +50,8 @@ private slots:
     void on_pushButton_bestellung_stornieren_clicked();
     void on_pushButton_change_LT_clicked();
     void on_dateEdit_ab_userDateChanged(const QDate &date);
-
     void on_dateEdit_bis_userDateChanged(const QDate &date);
+    void on_pushButton_change_kommentar_clicked();
 
 private:
     Ui::Form_bestellung *ui;
