@@ -23,8 +23,6 @@
 
 -->Im-Export-Dialog
 
--->modul_Lager Warenein+ausgang-dialog
-    ->Filter für lieferanten
 
 
 

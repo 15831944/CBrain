@@ -10,6 +10,7 @@
 #include "_tabname_artikel.h"
 #include "_tabname_lieferant.h"
 #include "_tabname_projekt.h"
+#include "_tabname_lieferant.h"
 #include "text.h"
 #include "dialog_printbox.h"
 
@@ -45,6 +46,7 @@ private slots:
     void on_lineEdit_artikelfilter_textChanged();
     void on_lineEdit_komfilter_textChanged(const QString &arg1);
     void on_pushButton_print_clicked();
+    void on_lineEdit_lieferantenfilter_textChanged(const QString &arg1);
 
 private:
     Ui::Dialog_lager *ui;
@@ -52,11 +54,19 @@ private:
     cbrainbatabase *dbeigen;
     QString current_id;
 
-    text_zeilenweise artikel;
-    text_zeilenweise projekte;
-    text_zeilenweise lieferanten;
+    text_zeilenweise artikel_id,        artikel_id_gefiltert;
+    text_zeilenweise artikel_nr,        artikel_nr_gefiltert;
+    text_zeilenweise artikel_bez,       artikel_bez_gefiltert;
+    text_zeilenweise artikel_lie_id,    artikel_lie_id_gefiltert;//Lieferant
 
-    void clear();
+    text_zeilenweise lie_id,            lie_id_gefiltert;
+    text_zeilenweise lie_name,          lie_name_gefiltert;
+
+    text_zeilenweise projekt_id,        projekt_id_gefiltert;
+    text_zeilenweise projekt_name,      projekt_name_gefiltert;
+
+    //text_zeilenweise lieferanten;
+
     void update_artikel();
     QString printmsg;
     QString vorgang;

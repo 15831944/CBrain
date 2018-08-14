@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>397</width>
-    <height>380</height>
+    <height>411</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,7 +20,7 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>340</y>
+     <y>380</y>
      <width>381</width>
      <height>29</height>
     </rect>
@@ -55,28 +55,82 @@
      <x>11</x>
      <y>11</y>
      <width>381</width>
-     <height>321</height>
+     <height>361</height>
     </rect>
    </property>
    <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="1">
-     <widget class="QLineEdit" name="lineEdit_artikelfilter"/>
+    <item row="5" column="1">
+     <widget class="QLineEdit" name="lineEdit_komfilter"/>
     </item>
     <item row="0" column="0">
+     <widget class="QLabel" name="label_4">
+      <property name="text">
+       <string>Lieferanten-Filter</string>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="0">
+     <widget class="QLabel" name="label_komfilter">
+      <property name="text">
+       <string>Kommissions-Filter</string>
+      </property>
+     </widget>
+    </item>
+    <item row="7" column="0">
+     <widget class="QLabel" name="label_lieferschein">
+      <property name="text">
+       <string>Lieferschein</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="0">
+     <widget class="QLabel" name="label_2">
+      <property name="text">
+       <string>Artikel</string>
+      </property>
+     </widget>
+    </item>
+    <item row="7" column="1">
+     <widget class="QLineEdit" name="lineEdit_lieferschein"/>
+    </item>
+    <item row="6" column="0">
+     <widget class="QLabel" name="label_kom">
+      <property name="text">
+       <string>Kommission</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="0">
      <widget class="QLabel" name="label">
       <property name="text">
        <string>Artikel-Filter</string>
       </property>
      </widget>
     </item>
-    <item row="2" column="0">
+    <item row="4" column="0">
      <widget class="QLabel" name="label_3">
       <property name="text">
        <string>Menge</string>
       </property>
      </widget>
     </item>
-    <item row="2" column="1">
+    <item row="3" column="1">
+     <widget class="QComboBox" name="comboBox_artikel"/>
+    </item>
+    <item row="6" column="1">
+     <widget class="QComboBox" name="comboBox_kom"/>
+    </item>
+    <item row="8" column="0">
+     <widget class="QLabel" name="label_komment">
+      <property name="text">
+       <string>Kommentar</string>
+      </property>
+     </widget>
+    </item>
+    <item row="8" column="1">
+     <widget class="QLineEdit" name="lineEdit_komment"/>
+    </item>
+    <item row="4" column="1">
      <widget class="QSpinBox" name="spinBox_menge">
       <property name="minimum">
        <number>1</number>
@@ -89,60 +143,28 @@
       </property>
      </widget>
     </item>
+    <item row="2" column="1">
+     <widget class="QLineEdit" name="lineEdit_artikelfilter"/>
+    </item>
     <item row="1" column="0">
-     <widget class="QLabel" name="label_2">
+     <widget class="QLabel" name="label_5">
       <property name="text">
-       <string>Artikel</string>
+       <string>Lieferant</string>
       </property>
      </widget>
     </item>
-    <item row="3" column="1">
-     <widget class="QLineEdit" name="lineEdit_komfilter"/>
+    <item row="0" column="1">
+     <widget class="QLineEdit" name="lineEdit_lieferantenfilter"/>
     </item>
     <item row="1" column="1">
-     <widget class="QComboBox" name="comboBox_artikel"/>
-    </item>
-    <item row="4" column="1">
-     <widget class="QComboBox" name="comboBox_kom"/>
-    </item>
-    <item row="4" column="0">
-     <widget class="QLabel" name="label_kom">
-      <property name="text">
-       <string>Kommission</string>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="0">
-     <widget class="QLabel" name="label_komfilter">
-      <property name="text">
-       <string>Kommissions-Filter</string>
-      </property>
-     </widget>
-    </item>
-    <item row="6" column="1">
-     <widget class="QLineEdit" name="lineEdit_komment"/>
-    </item>
-    <item row="6" column="0">
-     <widget class="QLabel" name="label_komment">
-      <property name="text">
-       <string>Kommentar</string>
-      </property>
-     </widget>
-    </item>
-    <item row="5" column="0">
-     <widget class="QLabel" name="label_lieferschein">
-      <property name="text">
-       <string>Lieferschein</string>
-      </property>
-     </widget>
-    </item>
-    <item row="5" column="1">
-     <widget class="QLineEdit" name="lineEdit_lieferschein"/>
+     <widget class="QComboBox" name="comboBox_lieferanten"/>
     </item>
    </layout>
   </widget>
  </widget>
  <tabstops>
+  <tabstop>lineEdit_lieferantenfilter</tabstop>
+  <tabstop>comboBox_lieferanten</tabstop>
   <tabstop>lineEdit_artikelfilter</tabstop>
   <tabstop>comboBox_artikel</tabstop>
   <tabstop>spinBox_menge</tabstop>
