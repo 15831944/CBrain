@@ -6,6 +6,7 @@ Form_artikel::Form_artikel(QWidget *parent) :
     ui(new Ui::Form_artikel)
 {
     ui->setupUi(this);
+    dbeigen = NULL;
     this->model = new QSqlQueryModel();
 }
 
@@ -17,54 +18,57 @@ Form_artikel::~Form_artikel()
 
 void Form_artikel::resizeEvent(QResizeEvent *event)
 {
-    int hoehe = this->geometry().height();
-    int breite = this->geometry().width();
+    if(!this->isHidden())
+    {
+        int hoehe = this->geometry().height();
+        int breite = this->geometry().width();
 
-    //links Buttons 1. Reihe:
-    ui->pushButton_new->move(1,1);
-    ui->pushButton_new->setFixedWidth(breite/9);
+        //links Buttons 1. Reihe:
+        ui->pushButton_new->move(1,1);
+        ui->pushButton_new->setFixedWidth(breite/9);
 
-    ui->pushButton_del->move(1 + ui->pushButton_new->geometry().width() + 1\
-                             ,1);
-    ui->pushButton_del->setFixedWidth(ui->pushButton_new->geometry().width());
+        ui->pushButton_del->move(1 + ui->pushButton_new->geometry().width() + 1\
+                                 ,1);
+        ui->pushButton_del->setFixedWidth(ui->pushButton_new->geometry().width());
 
-    ui->pushButton_edit->move(1 + (ui->pushButton_new->geometry().width() + 1)*2\
-                             ,1);
-    ui->pushButton_edit->setFixedWidth(ui->pushButton_new->geometry().width());
-    ui->pushButton_dupli->move(1 + (ui->pushButton_new->geometry().width() + 1)*3\
-                             ,1);
-    ui->pushButton_dupli->setFixedWidth(ui->pushButton_new->geometry().width());
+        ui->pushButton_edit->move(1 + (ui->pushButton_new->geometry().width() + 1)*2\
+                                 ,1);
+        ui->pushButton_edit->setFixedWidth(ui->pushButton_new->geometry().width());
+        ui->pushButton_dupli->move(1 + (ui->pushButton_new->geometry().width() + 1)*3\
+                                 ,1);
+        ui->pushButton_dupli->setFixedWidth(ui->pushButton_new->geometry().width());
 
-    //links Buttons 1. Reihe:
-    ui->pushButton_fav_order->setFixedWidth(breite/9*2);
-    ui->pushButton_fav_order->move(1,\
-                                   1 + ui->pushButton_new->geometry().height() + 1);
+        //links Buttons 1. Reihe:
+        ui->pushButton_fav_order->setFixedWidth(breite/9*2);
+        ui->pushButton_fav_order->move(1,\
+                                       1 + ui->pushButton_new->geometry().height() + 1);
 
-    //rechts Suchleiste:
-    ui->lineEdit_suche->setFixedHeight(ui->pushButton_new->geometry().height());
-    ui->lineEdit_suche->setFixedWidth(breite/3);
-    ui->lineEdit_suche->move(breite - 1 - ui->lineEdit_suche->geometry().width()\
-                             ,1);
+        //rechts Suchleiste:
+        ui->lineEdit_suche->setFixedHeight(ui->pushButton_new->geometry().height());
+        ui->lineEdit_suche->setFixedWidth(breite/3);
+        ui->lineEdit_suche->move(breite - 1 - ui->lineEdit_suche->geometry().width()\
+                                 ,1);
 
-    ui->label_suche->setFixedHeight(ui->pushButton_new->geometry().height());
-    ui->label_suche->move(breite - 1 -ui->lineEdit_suche->geometry().width() - 1\
-                          - ui->label_suche->geometry().width()\
-                          ,1);
+        ui->label_suche->setFixedHeight(ui->pushButton_new->geometry().height());
+        ui->label_suche->move(breite - 1 -ui->lineEdit_suche->geometry().width() - 1\
+                              - ui->label_suche->geometry().width()\
+                              ,1);
 
-    //rechts checkbox nur Favoriten:
-    ui->checkBox_only_favorit->setFixedWidth(ui->lineEdit_suche->width());
-    ui->checkBox_only_favorit->setFixedHeight(ui->pushButton_new->height());
-    ui->checkBox_only_favorit->move(ui->lineEdit_suche->pos().x(),\
-                                    1 + ui->pushButton_new->geometry().height() + 1);
+        //rechts checkbox nur Favoriten:
+        ui->checkBox_only_favorit->setFixedWidth(ui->lineEdit_suche->width());
+        ui->checkBox_only_favorit->setFixedHeight(ui->pushButton_new->height());
+        ui->checkBox_only_favorit->move(ui->lineEdit_suche->pos().x(),\
+                                        1 + ui->pushButton_new->geometry().height() + 1);
 
 
-    //Tabelle:
-    ui->tableView->move(1,\
-                        1 + (ui->pushButton_new->geometry().height() + 1)*2);
-    ui->tableView->setFixedWidth(breite -2);
-    ui->tableView->setFixedHeight(hoehe - ui->tableView->pos().ry() -1);
+        //Tabelle:
+        ui->tableView->move(1,\
+                            1 + (ui->pushButton_new->geometry().height() + 1)*2);
+        ui->tableView->setFixedWidth(breite -2);
+        ui->tableView->setFixedHeight(hoehe - ui->tableView->pos().ry() -1);
 
-    QWidget::resizeEvent(event);
+        QWidget::resizeEvent(event);
+    }
 }
 
 void Form_artikel::set_db(cbrainbatabase *new_db)
@@ -101,6 +105,7 @@ void Form_artikel::show()
 void Form_artikel::update_table()
 {
     //-------------------------------------------
+    if(dbeigen != NULL)
     {
         QSqlDatabase db;
 

@@ -30,6 +30,11 @@ void Dialog_text_input::setup(QString new_window_title, QString new_labeltext)
     ui->label->setText(new_labeltext);
 }
 
+void Dialog_text_input::set_infotext(QString new_labeltext)
+{
+    ui->label->setText(new_labeltext);
+}
+
 void Dialog_text_input::on_pushButton_ok_clicked()
 {
     this->close();

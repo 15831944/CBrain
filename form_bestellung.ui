@@ -189,6 +189,19 @@
     </rect>
    </property>
   </widget>
+  <widget class="QPushButton" name="pushButton_change_kommentar">
+   <property name="geometry">
+    <rect>
+     <x>240</x>
+     <y>350</y>
+     <width>111</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Kommentar ändern</string>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>

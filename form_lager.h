@@ -11,6 +11,7 @@
 #include "_tabname_lager.h"
 #include "_tabname_vorgang.h"
 #include "_tabname_promat.h"
+#include "_tabname_bestellung.h"
 #include "datum.h"
 #include "dialog_lager.h"
 #include "umwandeln.h"

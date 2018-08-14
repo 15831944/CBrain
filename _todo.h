@@ -19,13 +19,13 @@
    ->evtl einfach nicht zulassen, dass user_B abbrechen kann (disable btn cancel)
 
 -->modul_backup
-    ->Backup data to csv-file
-    ->restore data from csv-file
     ->wahrscheinlich Hilfe von Reno Kohmann
 
 -->Im-Export-Dialog
 
-
+-->modul_lager
+    ->Buschung von Waren-Ein- und Ausgang strornierbar machen (Falsche Buchungen korrigieren)
+    ->Inventurfunktion zum korrigieren des Lagerbestandes
 
 
 

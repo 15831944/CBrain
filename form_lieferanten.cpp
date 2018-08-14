@@ -6,6 +6,7 @@ Form_lieferanten::Form_lieferanten(QWidget *parent) :
     ui(new Ui::Form_lieferanten)
 {
     ui->setupUi(this);
+    dbeigen = NULL;
     this->model = new QSqlQueryModel();
 }
 
@@ -71,6 +72,7 @@ void Form_lieferanten::show()
 void Form_lieferanten::update_table()
 {
     //-------------------------------------------
+    if(dbeigen != NULL)
     {
         QSqlDatabase db;
 

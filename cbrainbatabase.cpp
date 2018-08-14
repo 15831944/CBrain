@@ -1063,6 +1063,55 @@ text_zeilenweise cbrainbatabase::get_data_tz(QString tablename, QString param)
     return tz;
 }
 
+text_zeilenweise cbrainbatabase::get_data_zeile_tz(QString tablename, QString id)
+{
+    text_zeilenweise tz;
+    QSqlDatabase db;
+
+    db = QSqlDatabase::database("dbglobal");
+    db.setHostName(host);
+    db.setDatabaseName(dbname);
+    db.setUserName(user);
+    db.setPassword(pwd);
+
+    if(db.open())
+    {
+        QSqlQuery q(db);
+        QString cmd;
+        cmd += "SELECT *";
+        cmd += " FROM ";
+        cmd += tablename;
+        cmd += " WHERE ";
+        cmd += "id=";
+        cmd += id;
+
+        if(q.exec(cmd))
+        {
+            while(q.next())
+            {
+                QSqlRecord rec = q.record();
+                for(int i=0; i<rec.count() ;i++)
+                {
+                    tz.zeile_anhaengen(rec.value(i).toString());
+                }
+            }
+        }else
+        {
+            QMessageBox mb;
+            mb.setText("Fehler:\n" + q.lastError().text());
+            mb.exec();
+        }
+        db.close();
+
+    }else
+    {
+        QMessageBox mb;
+        mb.setText("Fehler bei Datenbankverbindung!");
+        mb.exec();
+    }
+    return tz;
+}
+
 QString cbrainbatabase::get_highest_id(QString tablename)
 {
     text_zeilenweise tz = get_data_tz(tablename, "id");//Achtung id muss auch immer "id" heißen damit es keine Probleme gibt!

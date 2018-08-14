@@ -7,20 +7,15 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     clear();
-    widget_tableeditor.setParent(this);
-    widget_artikel.setParent(this);
-    widget_lieferanten.setParent(this);
-    widget_lager.setParent(this);
-    widget_projekte.setParent(this);
-    widget_backup.setParent(this);
-    widget_personal.setParent(this);
-    widget_matlist.setParent(this);
-    widget_bestellung.setParent(this);
-
-    on_actionKeinModul_triggered();
-
-    connect(&widget_backup, SIGNAL(signal_save_ini()),\
-            this, SLOT(slot_write_inifile()));
+    widget_tableeditor  = NULL;
+    widget_artikel      = NULL;
+    widget_lieferanten  = NULL;
+    widget_lager        = NULL;
+    widget_projekte     = NULL;
+    widget_backup       = NULL;
+    widget_personal     = NULL;
+    widget_matlist      = NULL;
+    widget_bestellung   = NULL;
 
     this->setWindowState(Qt::WindowMaximized);
 }
@@ -35,17 +30,6 @@ void MainWindow::clear()
     isvalid = true;
     ini.clear();
     ui_rechte_nobody();
-    modul_kein      = false;
-    modul_tabedit   = false;
-    modul_artikel   = false;
-    modul_lieferanten = false;
-    modul_lager     = false;
-    modul_backup    = false;
-    modul_projekte  = false;
-    modul_backup    = false;
-    modul_personal  = false;
-    modul_matlist   = false;
-    modul_bestellung= false;
 }
 
 bool MainWindow::setup()
@@ -66,21 +50,6 @@ bool MainWindow::setup()
         dbglobal.setUserName(dbeigen.get_user());
         dbglobal.setPassword(dbeigen.get_pwd());
         dbglobal = QSqlDatabase::addDatabase(dbeigen.get_driver(), "dbglobal");
-
-        widget_tableeditor.set_db(&dbeigen);    //widget Zeiger auf DB übergeben
-        widget_artikel.set_db(&dbeigen);        //widget Zeiger auf DB übergeben
-        widget_lieferanten.set_db(&dbeigen);    //widget Zeiger auf DB übergeben
-        widget_lager.set_db(&dbeigen);          //widget Zeiger auf DB übergeben
-        widget_projekte.set_db(&dbeigen);       //widget Zeiger auf DB übergeben
-        widget_backup.set_db(&dbeigen);         //widget Zeiger auf DB übergeben
-        widget_personal.set_db(&dbeigen);       //widget Zeiger auf DB übergeben
-        widget_matlist.set_db(&dbeigen);        //widget Zeiger auf DB übergeben
-        widget_bestellung.set_db(&dbeigen);     //widget Zeiger auf DB übergeben
-
-        widget_artikel.set_user(&u);
-        widget_projekte.set_user(&u);
-
-        widget_backup.set_ini(&ini);
     }
     return isvalid;
 }
@@ -132,38 +101,39 @@ void MainWindow::on_actionInfo_triggered()
 
 void MainWindow::resizeEvent(QResizeEvent *event)
 {
-    int hoehe_menue =   ui->menuBar->geometry().height() +      \
-                        ui->mainToolBar->geometry().height()    ;
-    QRect rect_main =  this->geometry();
-    int hoehe = rect_main.height()-hoehe_menue;
-    int breite = rect_main.width();
+    int posx = 1;
+    int posy = ui->menuBar->height() + ui->mainToolBar->height();
+    int b = this->width();
+    int h = this->height()-posy;
 
-    widget_tableeditor.move(0, hoehe_menue);
-    widget_tableeditor.setFixedSize(breite, hoehe);
-
-    widget_artikel.move(0, hoehe_menue);
-    widget_artikel.setFixedSize(breite, hoehe);
-
-    widget_lieferanten.move(0, hoehe_menue);
-    widget_lieferanten.setFixedSize(breite, hoehe);
-
-    widget_lager.move(0, hoehe_menue);
-    widget_lager.setFixedSize(breite, hoehe);
-
-    widget_projekte.move(0, hoehe_menue);
-    widget_projekte.setFixedSize(breite, hoehe);
-
-    widget_backup.move(0, hoehe_menue);
-    widget_backup.setFixedSize(breite, hoehe);
-
-    widget_personal.move(0, hoehe_menue);
-    widget_personal.setFixedSize(breite, hoehe);
-
-    widget_matlist.move(0, hoehe_menue);
-    widget_matlist.setFixedSize(breite, hoehe);
-
-    widget_bestellung.move(0, hoehe_menue);
-    widget_bestellung.setFixedSize(breite, hoehe);
+    if(widget_tableeditor != NULL)
+    {
+        widget_tableeditor->setGeometry(posx,posy, b, h);
+    }else if(widget_artikel != NULL)
+    {
+        widget_artikel->setGeometry(posx,posy, b, h);
+    }else if(widget_lieferanten != NULL)
+    {
+        widget_lieferanten->setGeometry(posx,posy, b, h);
+    }else if(widget_lager != NULL)
+    {
+        widget_lager->setGeometry(posx,posy, b, h);
+    }else if(widget_projekte != NULL)
+    {
+        widget_projekte->setGeometry(posx,posy, b, h);
+    }else if(widget_backup != NULL)
+    {
+        widget_backup->setGeometry(posx,posy, b, h);
+    }else if(widget_personal != NULL)
+    {
+        widget_personal->setGeometry(posx,posy, b, h);
+    }else if(widget_matlist != NULL)
+    {
+        widget_matlist->setGeometry(posx,posy, b, h);
+    }else if(widget_bestellung != NULL)
+    {
+        widget_bestellung->setGeometry(posx,posy, b, h);
+    }
 
     QWidget::resizeEvent(event);
 }
@@ -261,26 +231,22 @@ void MainWindow::slot_login(QString user, QString pwd)
             ui_rechte_nobody();
         }
         change_windowtitle();
-        widget_artikel.set_user(u.get_current_user_id());
-        widget_lieferanten.set_user(u.get_current_user_id());
-        widget_lager.set_user(u.get_current_user_id());
-        widget_projekte.set_user(u.get_current_user_id());
-        widget_personal.set_user(u.get_current_user());
-        widget_matlist.set_user(u.get_current_user_id());
-        widget_bestellung.set_user(u.get_current_user_id());
+
         //Rechte für Module setzen:
-        ui_rechte_modul_artikel(  u.modul_artikel()  );
-        ui_rechte_modul_lieferanten(  u.modul_lieferanten()  );
-        ui_rechte_modul_lager(  u.modul_lager()  );
-        ui_rechte_modul_projekte(  u.modul_projekte()  );
-        ui_rechte_modul_perrsonal(  u.modul_personal()  );
-        ui_rechte_modul_matlist(  u.modul_matlist()  );
-        ui_rechte_modul_bestellung(  u.modul_bestellungen()  );
+        ui_rechte_modul_artikel     (  u.modul_artikel()        );
+        ui_rechte_modul_lieferanten (  u.modul_lieferanten()    );
+        ui_rechte_modul_lager       (  u.modul_lager()          );
+        ui_rechte_modul_projekte    (  u.modul_projekte()       );
+        ui_rechte_modul_perrsonal   (  u.modul_personal()       );
+        ui_rechte_modul_matlist     (  u.modul_matlist()        );
+        ui_rechte_modul_bestellung  (  u.modul_bestellungen()   );
     }else
     {
         ui_rechte_nobody();
         change_windowtitle();
     }
+
+    on_actionKeinModul_triggered();
 }
 
 void MainWindow::change_windowtitle()
@@ -400,191 +366,149 @@ void MainWindow::on_actionModulBestellungen_triggered()
     change_modul("Bestellungen");
 }
 
-void MainWindow::hide_all_moduls()
-{
-    modul_kein          = false;
-    modul_tabedit       = false;
-    modul_artikel       = false;
-    modul_lieferanten   = false;
-    modul_lager         = false;
-    modul_projekte      = false;
-    modul_backup        = false;
-    modul_personal      = false;
-    modul_matlist       = false;
-    modul_bestellung    = false;
-
-    widget_tableeditor.hide();
-    widget_lieferanten.hide();
-    widget_lager.hide();
-    widget_artikel.hide();
-    widget_projekte.hide();
-    widget_backup.hide();
-    widget_personal.hide();
-    widget_matlist.hide();
-    widget_bestellung.hide();
-}
 void MainWindow::change_modul(QString modul)
-{
-    if(modul == "Tableeditor")
+{    
+    if(widget_tableeditor != NULL)
     {
-        if(modul_tabedit == false)
+        delete widget_tableeditor;
+        widget_tableeditor = NULL;
+    }
+    if(widget_artikel != NULL)
+    {
+        delete widget_artikel;
+        widget_artikel = NULL;
+    }
+    if(widget_lieferanten != NULL)
+    {
+        delete widget_lieferanten;
+        widget_lieferanten = NULL;
+    }
+    if(widget_lager != NULL)
+    {
+        delete widget_lager;
+        widget_lager = NULL;
+    }
+    if(widget_projekte != NULL)
+    {
+        delete widget_projekte;
+        widget_projekte = NULL;
+    }
+    if(widget_backup != NULL)
+    {        
+        disconnect(widget_backup, SIGNAL(signal_save_ini()),\
+                this, SLOT(slot_write_inifile()));
+        delete widget_backup;
+        widget_backup = NULL;
+    }
+    if(widget_personal != NULL)
+    {
+        delete widget_personal;
+        widget_personal = NULL;
+    }
+    if(widget_matlist != NULL)
+    {
+        delete widget_matlist;
+        widget_matlist = NULL;
+    }
+    if(widget_bestellung != NULL)
+    {
+        delete widget_bestellung;
+        widget_bestellung = NULL;
+    }
+
+    if(modul != "kein")
+    {
+        if(dbeigen.pingdb() == true)
         {
-            if(dbeigen.pingdb() == true)
+            int posx = 1;
+            int posy = ui->menuBar->height() + ui->mainToolBar->height();
+            int b = this->width();
+            int h = this->height()-posy;
+
+            if(modul == "Tableeditor")
             {
-                hide_all_moduls();
                 currend_modul = "Tabelleneditor";
-                widget_tableeditor.update_tablnames();
-                modul_tabedit       = true;
-                widget_tableeditor.show();
-            }else
+                widget_tableeditor = new Form_tableeditor(this);
+                widget_tableeditor->setGeometry(posx, posy, b, h);
+                widget_tableeditor->set_db(&dbeigen);
+                widget_tableeditor->show();
+            }else if(modul == "Artikel")
             {
-                QMessageBox mb;
-                mb.setText(tr("Datenbank nicht erreichbar!\nModul wurden nicht geladen."));
-                mb.exec();
-            }
-        }
-    }else if(modul == "Artikel")
-    {
-        if(modul_artikel == false)
-        {
-            if(dbeigen.pingdb() == true)
-            {
-                hide_all_moduls();
                 currend_modul = "Artikel";
-                modul_artikel       = true;
-                widget_artikel.show();
-            }else
+                widget_artikel = new Form_artikel(this);
+                widget_artikel->setGeometry(posx, posy, b, h);
+                widget_artikel->set_user(u.get_current_user_id());
+                widget_artikel->set_user(&u);
+                widget_artikel->set_db(&dbeigen);
+                widget_artikel->show();
+            }else if(modul == "Lieferanten")
             {
-                QMessageBox mb;
-                mb.setText(tr("Datenbank nicht erreichbar!\nModul wurden nicht geladen."));
-                mb.exec();
-            }
-        }
-    }else if(modul == "Lieferanten")
-    {
-        if(modul_lieferanten == false)
-        {
-            if(dbeigen.pingdb() == true)
-            {
-                hide_all_moduls();
                 currend_modul = "Lieferanten";
-                modul_lieferanten   = true;
-                widget_lieferanten.show();
-            }else
+                widget_lieferanten = new Form_lieferanten(this);
+                widget_lieferanten->setGeometry(posx, posy, b, h);
+                widget_lieferanten->set_user(u.get_current_user_id());
+                widget_lieferanten->set_db(&dbeigen);
+                widget_lieferanten->show();
+            }else if(modul == "Lager")
             {
-                QMessageBox mb;
-                mb.setText(tr("Datenbank nicht erreichbar!\nModul wurden nicht geladen."));
-                mb.exec();
-            }
-        }
-    }else if(modul == "Lager")
-    {
-        if(modul_lager == false)
-        {
-            if(dbeigen.pingdb() == true)
-            {
-                hide_all_moduls();
                 currend_modul = "Lager";
-                modul_lager         = true;
-                widget_lager.show();
-            }else
+                widget_lager = new Form_lager(this);
+                widget_lager->setGeometry(posx, posy, b, h);
+                widget_lager->set_user(u.get_current_user_id());
+                widget_lager->set_db(&dbeigen);
+                widget_lager->show();
+            }else if(modul == "Projekte")
             {
-                QMessageBox mb;
-                mb.setText(tr("Datenbank nicht erreichbar!\nModul wurden nicht geladen."));
-                mb.exec();
-            }
-        }
-    }else if(modul == "Projekte")
-    {
-        if(modul_projekte == false)
-        {
-            if(dbeigen.pingdb() == true)
-            {
-                hide_all_moduls();
                 currend_modul = "Projekte";
-                modul_projekte      = true;
-                widget_projekte.show();
-            }else
+                widget_projekte = new Form_projekte(this);
+                widget_projekte->setGeometry(posx, posy, b, h);
+                widget_projekte->set_user(u.get_current_user_id());
+                widget_projekte->set_user(&u);
+                widget_projekte->set_db(&dbeigen);
+                widget_projekte->show();
+            }else if(modul == "Backup")
             {
-                QMessageBox mb;
-                mb.setText(tr("Datenbank nicht erreichbar!\nModul wurden nicht geladen."));
-                mb.exec();
-            }
-        }
-    }else if(modul == "Backup")
-    {
-        if(modul_backup == false)
-        {
-            if(dbeigen.pingdb() == true)
-            {
-                hide_all_moduls();
                 currend_modul = "Backup";
-                modul_backup        = true;
-                widget_backup.show();
-            }else
+                widget_backup = new Form_backup(this);
+                widget_backup->setGeometry(posx, posy, b, h);
+                widget_backup->set_db(&dbeigen);
+                widget_backup->set_ini(&ini);
+                connect(widget_backup, SIGNAL(signal_save_ini()),\
+                        this, SLOT(slot_write_inifile()));
+                widget_backup->show();
+            }else if(modul == "Personal")
             {
-                QMessageBox mb;
-                mb.setText(tr("Datenbank nicht erreichbar!\nModul wurden nicht geladen."));
-                mb.exec();
-            }
-        }
-    }else if(modul == "Personal")
-    {
-        if(modul_personal == false)
-        {
-            if(dbeigen.pingdb() == true)
-            {
-                hide_all_moduls();
                 currend_modul = "Personal";
-                modul_personal      = true;
-                widget_personal.show();
-            }else
+                widget_personal = new Form_personal(this);
+                widget_personal->setGeometry(posx, posy, b, h);
+                widget_personal->set_user(u.get_current_user_id());
+                widget_personal->set_db(&dbeigen);
+                widget_personal->show();
+            }else if(modul == "Materialliste")
             {
-                QMessageBox mb;
-                mb.setText(tr("Datenbank nicht erreichbar!\nModul wurden nicht geladen."));
-                mb.exec();
-            }
-        }
-    }else if(modul == "Materialliste")
-    {
-        if(modul_matlist == false)
-        {
-            if(dbeigen.pingdb() == true)
-            {
-                hide_all_moduls();
                 currend_modul = "Materialliste";
-                modul_matlist      = true;
-                widget_matlist.show();
-            }else
+                widget_matlist = new Form_matlist(this);
+                widget_matlist->setGeometry(posx, posy, b, h);
+                widget_matlist->set_user(u.get_current_user_id());
+                widget_matlist->set_db(&dbeigen);
+                widget_matlist->show();
+            }else if(modul == "Bestellungen")
             {
-                QMessageBox mb;
-                mb.setText(tr("Datenbank nicht erreichbar!\nModul wurden nicht geladen."));
-                mb.exec();
-            }
-        }
-    }else if(modul == "Bestellungen")
-    {
-        if(modul_bestellung == false)
-        {
-            if(dbeigen.pingdb() == true)
-            {
-                hide_all_moduls();
                 currend_modul       = "Bestellungen";
-                modul_bestellung    = true;
-                widget_bestellung.show();
+                widget_bestellung = new Form_bestellung(this);
+                widget_bestellung->setGeometry(posx, posy, b, h);
+                widget_bestellung->set_user(u.get_current_user_id());
+                widget_bestellung->set_db(&dbeigen);
+                widget_bestellung->show();
             }else
             {
-                QMessageBox mb;
-                mb.setText(tr("Datenbank nicht erreichbar!\nModul wurden nicht geladen."));
-                mb.exec();
+                currend_modul = "kein Modul geladen";
             }
-        }
-    }else
-    {
-        if(modul_kein == false)
+        }else
         {
-            hide_all_moduls();
-            currend_modul = "kein Modul geladen";
+            QMessageBox mb;
+            mb.setText(tr("Datenbank nicht erreichbar!\nModul wurden nicht geladen."));
+            mb.exec();
         }
     }
     change_windowtitle();

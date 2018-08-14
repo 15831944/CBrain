@@ -6,6 +6,7 @@ Form_matlist::Form_matlist(QWidget *parent) :
     ui(new Ui::Form_matlist)
 {
     ui->setupUi(this);
+    dbeigen = NULL;
     ui->lineEdit_projekt->setText("Projekt?");
     this->model = new QSqlQueryModel();
 }
@@ -174,7 +175,7 @@ void Form_matlist::create_table_promatposlist()
 {
     //Tabelle die die Materialpositionen erfasst
 
-    if(!ui->lineEdit_projekt_id->text().isEmpty())
+    if(!ui->lineEdit_projekt_id->text().isEmpty() && dbeigen != NULL)
     {
         QSqlDatabase db;
 
@@ -696,19 +697,22 @@ void Form_matlist::update_promatpos_mengen(QString pro_id, QString pos_id, doubl
 //-------------------------------------Buttons:
 void Form_matlist::on_pushButton_projektauswahl_clicked()
 {
-    text_zeilenweise projekte, ids;
-    projekte = dbeigen->get_data_tz(TABNAME_PROJEKT, PARAM_PROJEKT_NAME);
-    ids = dbeigen->get_data_tz(TABNAME_PROJEKT, PARAM_PROJEKT_ID);
+    if(dbeigen != NULL)
+    {
+        text_zeilenweise projekte, ids;
+        projekte = dbeigen->get_data_tz(TABNAME_PROJEKT, PARAM_PROJEKT_NAME);
+        ids = dbeigen->get_data_tz(TABNAME_PROJEKT, PARAM_PROJEKT_ID);
 
-    Dialog_dataselection *d = new Dialog_dataselection(this);
-    d->set_data(projekte, ids);
-    d->setWindowTitle("Projektauswahl");
-    d->set_anz_returnwerte(1);
-    connect(d, SIGNAL(signal_send_selection(text_zeilenweise)), \
-            this, SLOT(slot_set_project(text_zeilenweise))      );
-    d->exec();
+        Dialog_dataselection *d = new Dialog_dataselection(this);
+        d->set_data(projekte, ids);
+        d->setWindowTitle("Projektauswahl");
+        d->set_anz_returnwerte(1);
+        connect(d, SIGNAL(signal_send_selection(text_zeilenweise)), \
+                this, SLOT(slot_set_project(text_zeilenweise))      );
+        d->exec();
 
-    delete d;
+        delete d;
+    }
 }
 
 void Form_matlist::on_pushButton_pos_new_clicked()

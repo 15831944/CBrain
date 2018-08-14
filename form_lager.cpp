@@ -6,6 +6,7 @@ Form_lager::Form_lager(QWidget *parent) :
     ui(new Ui::Form_lager)
 {
     ui->setupUi(this);
+    dbeigen = NULL;
     this->model = new QSqlQueryModel();
     this->model_artikel = new QSqlQueryModel();
 }
@@ -75,6 +76,7 @@ void Form_lager::show()
 void Form_lager::update_table()
 {
     //-------------------------------------------
+    if(dbeigen != NULL)
     {
         QSqlDatabase db;
 
@@ -298,6 +300,13 @@ void Form_lager::update_table()
             cmd += PARAM_ARTIKEL_LAGERSTAND;
             cmd += " AS ";
             cmd += "Lagerstand";
+            cmd += ", ";
+            //------------------------
+            cmd += TABNAME_ARTIKEL;
+            cmd += ".";
+            cmd += PARAM_ARTIKEL_BESTELLT;
+            cmd += " AS ";
+            cmd += "Bestellt";
             //cmd += ", ";
             //------------------------
             cmd += " FROM ";
@@ -370,8 +379,6 @@ void Form_lager::on_pushButton_in_clicked()
             this, SLOT(slot_in(text_zeilenweise))          );
     d->exec();
     delete d;
-
-
 }
 
 void Form_lager::on_pushButton_out_clicked()
@@ -425,14 +432,118 @@ void Form_lager::slot_in(text_zeilenweise data)
     values.zeile_anhaengen(kommentar);
     values.zeile_anhaengen(lieschein);
 
-    //Aktuelle Lagermenge des Artikeln abfragen:
+    //Aktuelle Lagermenge des Artikeln abfragen und ändern:
     QString menge_vorher = dbeigen->get_data_qstring(TABNAME_ARTIKEL, PARAM_ARTIKEL_LAGERSTAND, artikelid);
     int menge_akt = menge_vorher.toInt() + menge.toInt();
-
     dbeigen->data_edit(TABNAME_ARTIKEL, PARAM_ARTIKEL_LAGERSTAND, int_to_qstring(menge_akt), artikelid);
 
+    //Bestellte Menge des Artikeln abfragen und ändern:
+    int in_bestellung = dbeigen->get_data_qstring(TABNAME_ARTIKEL, PARAM_ARTIKEL_BESTELLT, artikelid).toInt();
+    if(in_bestellung < menge.toInt())
+    {
+        QMessageBox mb;
+        mb.setText(tr("Achtung!\nBestellte Menge < gelieferte Menge!\n"));
+        mb.exec();
+    }
+    menge_akt = in_bestellung - menge.toInt();
+    dbeigen->data_edit(TABNAME_ARTIKEL, PARAM_ARTIKEL_BESTELLT, int_to_qstring(menge_akt), artikelid);
+
+    //Menge in Bestellung als geliefert austragen:
+    text_zeilenweise best_ids, best_bestellt, best_geliefert;
+    //------------------------------------------------
+    {
+        QSqlDatabase db;
+        db = QSqlDatabase::database("dbglobal");
+        db.setHostName(dbeigen->get_host());
+        db.setDatabaseName(dbeigen->get_dbname());
+        db.setUserName(dbeigen->get_user());
+        db.setPassword(dbeigen->get_pwd());
+
+        if(db.open())
+        {
+            QSqlQuery q(db);
+            QString cmd;
+            cmd += "SELECT ";
+            cmd += PARAM_BESTELLUNG_ID;
+            cmd += ", ";
+            cmd += PARAM_BESTELLUNG_ME_BEST;
+            cmd += ", ";
+            cmd += PARAM_BESTELLUNG_ME_GELIEFERT;
+            cmd += " FROM ";
+            cmd += TABNAME_BESTELLUNG;
+            cmd += " WHERE ";
+            cmd += "(";
+            cmd += PARAM_BESTELLUNG_ARTIKELID;
+            cmd += " = ";
+            cmd += artikelid;
+            cmd += ")";
+            cmd += " AND ";
+            cmd += "(";
+            cmd += PARAM_BESTELLUNG_ME_BEST;
+            cmd += " != ";
+            cmd += PARAM_BESTELLUNG_ME_GELIEFERT;
+            cmd += ")";
+
+            if(q.exec(cmd))
+            {
+                while(q.next())
+                {
+                    best_ids.zeile_anhaengen(q.value(0).toString());
+                    best_bestellt.zeile_anhaengen(q.value(1).toString());
+                    best_geliefert.zeile_anhaengen(q.value(2).toString());
+                }
+            }else
+            {
+                QMessageBox mb;
+                mb.setText("Fehler:\n" + q.lastError().text());
+                mb.exec();
+            }
+            db.close();
+
+        }else
+        {
+            QMessageBox mb;
+            mb.setText("Fehler bei Datenbankverbindung!");
+            mb.exec();
+        }
+    }
+    //------------------------------------------------
+    int restmenge = menge.toInt();
+    for(uint i=1; i<=best_ids.zeilenanzahl() ;i++)
+    {
+        int dif = best_bestellt.zeile(i).toInt() - best_geliefert.zeile(i).toInt();
+        if(dif >= restmenge)
+        {
+            menge_akt = best_geliefert.zeile(i).toInt() + restmenge;
+            dbeigen->data_edit(TABNAME_BESTELLUNG, PARAM_BESTELLUNG_ME_GELIEFERT, \
+                               int_to_qstring(menge_akt), best_ids.zeile(i));
+            restmenge = 0;
+        }else
+        {
+            dbeigen->data_edit(TABNAME_BESTELLUNG, PARAM_BESTELLUNG_ME_GELIEFERT, \
+                               best_bestellt.zeile(i), best_ids.zeile(i));
+            restmenge = restmenge - dif;
+        }
+        if(restmenge == 0)
+        {
+            break;
+        }
+    }
+    if(restmenge > 0)//Wenn mehr geliefert als insgesamt bestellt wurde
+    {
+        QString id = best_ids.zeile(best_ids.zeilenanzahl());
+        menge_akt =dbeigen->get_data_qstring(TABNAME_BESTELLUNG, PARAM_BESTELLUNG_ME_GELIEFERT, id).toInt();
+        menge_akt += restmenge;
+        dbeigen->data_edit(TABNAME_BESTELLUNG, PARAM_BESTELLUNG_ME_GELIEFERT, \
+                           int_to_qstring(menge_akt), id);
+    }
+    //------------------------------------------------
     dbeigen->data_new(TABNAME_LAGER, param, values);
     update_table();
+
+    QMessageBox mb;
+    mb.setText(tr("Buchung erfolgreich durchgeführt."));
+    mb.exec();
 }
 
 void Form_lager::slot_out(text_zeilenweise data)
@@ -509,7 +620,22 @@ void Form_lager::slot_out(text_zeilenweise data)
             dbeigen->data_new(promat_name, pa, val);
         }
 
-
+        //reservierte menge min artikel-tabelle verringern:
+        int restervierte_menge = dbeigen->get_data_qstring(TABNAME_ARTIKEL, PARAM_ARTIKEL_RESERVIERT, artikelid).toInt();
+        if(restervierte_menge >= menge.toInt())
+        {
+            restervierte_menge = restervierte_menge - menge.toInt();
+            dbeigen->data_edit(TABNAME_ARTIKEL, PARAM_ARTIKEL_RESERVIERT, \
+                               int_to_qstring(restervierte_menge), artikelid);
+        }else
+        {
+            restervierte_menge = 0;
+            dbeigen->data_edit(TABNAME_ARTIKEL, PARAM_ARTIKEL_RESERVIERT, \
+                               int_to_qstring(restervierte_menge), artikelid);
+        }
+        QMessageBox mb;
+        mb.setText(tr("Buchung erfolgreich durchgeführt."));
+        mb.exec();
     }else
     {
         QString msg;

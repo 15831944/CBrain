@@ -6,6 +6,7 @@ Form_projekte::Form_projekte(QWidget *parent) :
     ui(new Ui::Form_projekte)
 {
     ui->setupUi(this);
+    dbeigen = NULL;
     this->model = new QSqlQueryModel();
 }
 
@@ -86,6 +87,7 @@ void Form_projekte::show()
 void Form_projekte::update_table()
 {
     //-------------------------------------------
+    if(dbeigen != NULL)
     {
         QSqlDatabase db;
 
@@ -482,7 +484,7 @@ void Form_projekte::slot_delete(text_zeilenweise ids)
     for(uint i=1; i<=ids.zeilenanzahl() ;i++)
     {
         text_zeilenweise tz = dbeigen->get_data_tz(promatposlist.zeile(i), PARAM_PROMATPOSLIST_ID);
-        for(int ii=1; ii<=tz.zeilenanzahl() ;ii++)
+        for(uint ii=1; ii<=tz.zeilenanzahl() ;ii++)
         {
             QString name;
             name += TABNAME_PROMATPOS;
