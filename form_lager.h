@@ -35,6 +35,7 @@ public:
 public slots:
     void slot_in(text_zeilenweise data);
     void slot_out(text_zeilenweise data);
+    void slot_inagain(text_zeilenweise data);
 
 protected:
     void resizeEvent(QResizeEvent *event);
@@ -43,6 +44,10 @@ private slots:
     void on_lineEdit_suche_textChanged();
     void on_pushButton_in_clicked();
     void on_pushButton_out_clicked();
+
+    void on_pushButton_inagain_clicked();
+
+    void on_pushButton_korrektur_clicked();
 
 private:
     Ui::Form_lager *ui;

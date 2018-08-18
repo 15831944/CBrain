@@ -22,16 +22,32 @@ void Form_lager::resizeEvent(QResizeEvent *event)
 {
     int hoehe = this->geometry().height();
     int breite = this->geometry().width();
+    int hbtn = ui->pushButton_in->height();
+    int bbtn = breite/5;
 
-    //Buttons:
-    ui->pushButton_in->move(1,1);
-    ui->pushButton_in->setFixedWidth(breite/5);
+    //Buttons Zeile 1:
+    ui->pushButton_in->setFixedWidth(bbtn);
+    ui->pushButton_in->move(1,\
+                            1);
+    ui->pushButton_out->setFixedWidth(bbtn);
+    ui->pushButton_out->move(1 + bbtn + 1,\
+                             1);
 
-    ui->pushButton_out->move(1 + ui->pushButton_in->geometry().width() + 1\
-                             ,1);
-    ui->pushButton_out->setFixedWidth(ui->pushButton_in->geometry().width());
+    //Buttons Zeile 2:
+    ui->pushButton_inagain->setFixedWidth(bbtn);
+    ui->pushButton_inagain->move(1,\
+                                 1 + hbtn + 1);
+    ui->pushButton_korrektur->setFixedWidth(bbtn);
+    ui->pushButton_korrektur->move(1 + bbtn + 1,\
+                                   1 + hbtn + 1);
 
-    //Suchleiste:
+    //links Tabelle Lager:
+    ui->tableView->move(1,\
+                        1 + (hbtn + 1)*2);
+    ui->tableView->setFixedWidth( (breite-2)/3*2 );
+    ui->tableView->setFixedHeight(hoehe - ui->tableView->pos().ry() -1);
+
+    //rechts Suchleiste:
     ui->lineEdit_suche->setFixedHeight(ui->pushButton_in->geometry().height());
     ui->lineEdit_suche->setFixedWidth(breite/3);
     ui->lineEdit_suche->move(breite - 1 - ui->lineEdit_suche->geometry().width()\
@@ -40,15 +56,9 @@ void Form_lager::resizeEvent(QResizeEvent *event)
     ui->label_suche->setFixedHeight(ui->pushButton_in->geometry().height());
     ui->label_suche->move(breite - 1 -ui->lineEdit_suche->geometry().width() - 1\
                           - ui->label_suche->geometry().width()\
-                          ,1);
+                          ,1);    
 
-    //Tabelle Lager:
-    ui->tableView->move(1,\
-                        1 + ui->pushButton_in->geometry().height() + 1);
-    ui->tableView->setFixedWidth( (breite-2)/3*2 );
-    ui->tableView->setFixedHeight(hoehe - ui->tableView->pos().ry() -1);
-
-    //Tabelle Artikel:
+    //rechts Tabelle Artikel:
     ui->tableView_artikel->move(1 + ui->tableView->geometry().width() + 1,\
                                 1 + ui->pushButton_in->geometry().height() + 1);
     ui->tableView_artikel->setFixedWidth( (breite-2)/3 );
@@ -396,6 +406,28 @@ void Form_lager::on_pushButton_out_clicked()
     delete d;
 }
 
+void Form_lager::on_pushButton_inagain_clicked()
+{
+    Dialog_lager *d = new Dialog_lager(this);
+    d->set_db(dbeigen);
+    d->setup();
+    d->setWindowTitle("Wieder-Einlagerung buchen");
+    d->set_vorgang("Wieder-Einlagerung");
+    d->set_kommission_enabled(true);
+    d->set_lieferschein_enabled(false);
+    connect(d, SIGNAL(signal_send_data(text_zeilenweise)),  \
+            this, SLOT(slot_inagain(text_zeilenweise))          );
+    d->exec();
+    delete d;
+}
+
+void Form_lager::on_pushButton_korrektur_clicked()
+{
+    QMessageBox mb;
+    mb.setText(tr("Diese Funktion ist leider noch nicht fertig!"));
+    mb.exec();
+}
+
 //------------------------------------slots:
 void Form_lager::slot_in(text_zeilenweise data)
 {
@@ -444,9 +476,13 @@ void Form_lager::slot_in(text_zeilenweise data)
         QMessageBox mb;
         mb.setText(tr("Achtung!\nBestellte Menge < gelieferte Menge!\n"));
         mb.exec();
+        dbeigen->data_edit(TABNAME_ARTIKEL, PARAM_ARTIKEL_BESTELLT, "0", artikelid);
+    }else
+    {
+        menge_akt = in_bestellung - menge.toInt();
+        dbeigen->data_edit(TABNAME_ARTIKEL, PARAM_ARTIKEL_BESTELLT, int_to_qstring(menge_akt), artikelid);
     }
-    menge_akt = in_bestellung - menge.toInt();
-    dbeigen->data_edit(TABNAME_ARTIKEL, PARAM_ARTIKEL_BESTELLT, int_to_qstring(menge_akt), artikelid);
+
 
     //Menge in Bestellung als geliefert austragen:
     text_zeilenweise best_ids, best_bestellt, best_geliefert;
@@ -652,7 +688,94 @@ void Form_lager::slot_out(text_zeilenweise data)
     }
 }
 
+void Form_lager::slot_inagain(text_zeilenweise data)
+{
+    text_zeilenweise param, values;
+
+    QString artikelid   = data.zeile(1);
+    QString menge       = data.zeile(2);
+    QString projektid   = data.zeile(3);
+    QString kommentar   = data.zeile(4);
+
+    param.zeile_anhaengen(PARAM_LAGER_VORGANG);
+    param.zeile_anhaengen(PARAM_LAGER_ARTIKELID);
+    param.zeile_anhaengen(PARAM_LAGER_MENGE);
+    param.zeile_anhaengen(PARAM_LAGER_ERSTELLER);
+    param.zeile_anhaengen(PARAM_LAGER_DATERST);
+    param.zeile_anhaengen(PARAM_LAGER_KOMMISSION);
+    param.zeile_anhaengen(PARAM_LAGER_KOMMENT);
+
+    values.zeile_anhaengen(VORGANG_WARENAUSGANG);
+    values.zeile_anhaengen(artikelid);
+    values.zeile_anhaengen(menge);
+    values.zeile_anhaengen(user);
+    datum heute;
+    values.zeile_anhaengen(heute.get_today_y_m_d());
+    values.zeile_anhaengen(projektid);
+    values.zeile_anhaengen(kommentar);
+
+    //Aktuelle Lagermenge des Artikeln abfragen:
+    QString menge_vorher = dbeigen->get_data_qstring(TABNAME_ARTIKEL, PARAM_ARTIKEL_LAGERSTAND, artikelid);
+    int menge_akt = menge_vorher.toInt() + menge.toInt();
+
+    dbeigen->data_edit(TABNAME_ARTIKEL, PARAM_ARTIKEL_LAGERSTAND, int_to_qstring(menge_akt), artikelid);
+
+    dbeigen->data_new(TABNAME_LAGER, param, values);
+    update_table();
+
+    //heraus bekommen, ob zu diesem Artikel bereits ein Eintrag in der promat_* existiert:
+    QString promat_name;
+    promat_name  = TABNAME_PROMAT;
+    promat_name += projektid;
+    text_zeilenweise artikelids = dbeigen->get_data_tz(promat_name, PARAM_PROMAT_ARTIKEL_ID);
+    int index = -1;
+    for(uint i=1; i<=artikelids.zeilenanzahl() ;i++)
+    {
+        if(artikelids.zeile(i) == artikelid)
+        {
+            index = i;
+            break;
+        }
+    }
+
+    //Wert anpassen:
+    if(index > 0)//Artikel bereits vorhanden in promat_*
+    {
+        text_zeilenweise promat_value_ids = dbeigen->get_data_tz(promat_name, PARAM_PROMAT_ID);
+        QString promat_value_id = promat_value_ids.zeile(index);
+
+        int menge_vorher = dbeigen->get_data_qstring(promat_name, PARAM_PROMAT_ME_VERARBEITET, promat_value_id).toInt();
+        int menge_jetzt = menge.toInt();
+        int menge_nachher = menge_vorher - menge_jetzt;
+        dbeigen->data_edit(promat_name, PARAM_PROMAT_ME_VERARBEITET, int_to_qstring(menge_nachher), promat_value_id);
+        if(menge_nachher < 0)
+        {
+            QMessageBox mb;
+            mb.setText(tr("Es wurde mehr ins Lager zurückgegeben als zuvor für das Projekt ausgegeben wurde."));
+            mb.exec();
+        }
+    }else
+    {
+        text_zeilenweise pa, val;
+
+        pa.zeile_anhaengen(PARAM_PROMAT_ARTIKEL_ID);
+        pa.zeile_anhaengen(PARAM_PROMAT_ME_VERARBEITET);
+
+        val.zeile_anhaengen(artikelid);
+        val.zeile_anhaengen("-" + menge);//es wurde mehr Wieder-Eingelagert als rausgegeben wurde
+        dbeigen->data_new(promat_name, pa, val);
+        QMessageBox mb;
+        mb.setText(tr("Es wurde mehr ins Lager zurückgegeben als zuvor für das Projekt ausgegeben wurde."));
+        mb.exec();
+    }
+    QMessageBox mb;
+    mb.setText(tr("Buchung erfolgreich durchgeführt."));
+    mb.exec();
+}
+
 //------------------------------------
+
+
 
 
 
