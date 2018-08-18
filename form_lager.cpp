@@ -293,6 +293,13 @@ void Form_lager::update_table()
             //------------------------
             cmd += TABNAME_ARTIKEL;
             cmd += ".";
+            cmd += PARAM_ARTIKEL_ID;
+            cmd += " AS ";
+            cmd += "ID";
+            cmd += ", ";
+            //------------------------
+            cmd += TABNAME_ARTIKEL;
+            cmd += ".";
             cmd += PARAM_ARTIKEL_NR;
             cmd += " AS ";
             cmd += "Artikelnummer";
@@ -423,9 +430,13 @@ void Form_lager::on_pushButton_inagain_clicked()
 
 void Form_lager::on_pushButton_korrektur_clicked()
 {
-    QMessageBox mb;
-    mb.setText(tr("Diese Funktion ist leider noch nicht fertig!"));
-    mb.exec();
+    Dialog_text_input *d = new Dialog_text_input(this);
+    d->setWindowTitle("Bestandskorrektur");
+    d->set_infotext("Bitte Artikel-ID eingeben");
+    connect(d, SIGNAL(signal_userinput(QString)),   \
+            this, SLOT(slot_bestkor_aid(QString))   );
+    d->exec();
+    delete d;
 }
 
 //------------------------------------slots:
@@ -771,6 +782,40 @@ void Form_lager::slot_inagain(text_zeilenweise data)
     QMessageBox mb;
     mb.setText(tr("Buchung erfolgreich durchgeführt."));
     mb.exec();
+}
+
+void Form_lager::slot_bestkor_aid(QString artikel_id)
+{
+    //Prüfen, ob es eine Bestellung mit dieser ID gibt:
+    text_zeilenweise artikel_ids = dbeigen->get_data_tz(TABNAME_ARTIKEL, PARAM_ARTIKEL_ID);
+    bool existiert = false;
+    for(uint i=1; i<=artikel_ids.zeilenanzahl() ;i++)
+    {
+        if(artikel_ids.zeile(i) == artikel_id)
+        {
+            existiert = true;
+            break;
+        }
+    }
+    if(existiert == true)
+    {
+        idbuffer = artikel_id;
+    }else
+    {
+        idbuffer.clear();
+        QMessageBox mb;
+        mb.setText(tr("Ein Artikel mit dieser ID existiert nicht!"));
+        mb.exec();
+    }
+
+}
+
+void Form_lager::slot_bestkor_menge(QString menge)
+{
+    if(!idbuffer.isEmpty())
+    {
+        //Dialog für Bestandskorrektur aufrufen
+    }
 }
 
 //------------------------------------
