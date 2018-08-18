@@ -716,7 +716,7 @@ void Form_lager::slot_inagain(text_zeilenweise data)
     param.zeile_anhaengen(PARAM_LAGER_KOMMISSION);
     param.zeile_anhaengen(PARAM_LAGER_KOMMENT);
 
-    values.zeile_anhaengen(VORGANG_WARENAUSGANG);
+    values.zeile_anhaengen(VORGANG_WIEDEREINLAGERUNG);
     values.zeile_anhaengen(artikelid);
     values.zeile_anhaengen(menge);
     values.zeile_anhaengen(user);

@@ -7,6 +7,8 @@
 //----------------------------------
 #define VORGANG_WARENEINGANG        "1"
 #define VORGANG_WARENAUSGANG        "2"
+#define VORGANG_WIEDEREINLAGERUNG   "3"
+#define VORGANG_KORREKTUR           "4"
 
 
 

@@ -29,7 +29,7 @@
     <item>
      <widget class="QPushButton" name="pushButton_ok">
       <property name="text">
-       <string>OK</string>
+       <string>Buchen</string>
       </property>
      </widget>
     </item>
@@ -43,7 +43,7 @@
     <item>
      <widget class="QPushButton" name="pushButton_cancel">
       <property name="text">
-       <string>Abbrechen / Fertig</string>
+       <string>Schließen</string>
       </property>
      </widget>
     </item>

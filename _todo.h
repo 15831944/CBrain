@@ -29,7 +29,9 @@
 -->modul matliste
     ->Artikelpreis anzeigen lassen
 
-
+-->Vorgänge in DB eintragen:
+#define VORGANG_WIEDEREINLAGERUNG   "3" --> Wieder-Einlagerung
+#define VORGANG_KORREKTUR           "4" --> Korrektur
 
 
 
