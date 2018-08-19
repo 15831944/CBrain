@@ -50,6 +50,10 @@ void Dialog_artikel_verwenden::on_lineEdit_id_textChanged(const QString &arg1)
         bez = dbeigen->get_data_qstring(TABNAME_ARTIKEL, PARAM_ARTIKEL_BEZ, arg1);
         beziehungen = dbeigen->get_data_qstring(TABNAME_ARTIKEL, PARAM_ARTIKEL_BEZIEHUNG, arg1);
         beziehungen.replace("#br#", "\n");
+        if(beziehungen == "0")
+        {
+            beziehungen.clear();
+        }
         text_zeilenweise beziehungen_tz;
         beziehungen_tz.set_text(beziehungen);
 
@@ -137,38 +141,44 @@ void Dialog_artikel_verwenden::set_data(text_zeilenweise data)
         QString beziehungen = data.zeile(3);
         beziehungen.replace(NEW_LINE_BR, "\n");
 
-        text_zeilenweise beziehungen_tz;
-        beziehungen_tz.set_text(beziehungen);
-        text_zeilenweise beziehungen_tz_ids;
-        //text_zeilenweise beziehungen_tz_menge;
-        for(uint i=1; i<=beziehungen_tz.zeilenanzahl() ;i++)
+        if(beziehungen == "0")
         {
-            QString zeile = beziehungen_tz.zeile(i);
-            beziehungen_tz_ids.zeile_anhaengen(text_links(zeile, " ||| "));
-            //beziehungen_tz_menge.zeile_anhaengen(text_rechts(zeile, " ||| "));
-        }
-
-        ui->doubleSpinBox_menge->setValue(menge.toDouble());
-        int row = ui->comboBox_status->findText(dbeigen->get_data_qstring(TABNAME_STATUS, PARAM_STATUS_STATUS, status_id));
-        ui->comboBox_status->setCurrentIndex(row);
-
-        for(int i=1; i<=ui->listWidget->count() ;i++)
+            beziehungen.clear();;
+        }else
         {
-            bool zeile_is_checked = false;
-            for(uint ii=1; ii<=beziehungen_tz_ids.zeilenanzahl() ;ii++)
+            text_zeilenweise beziehungen_tz;
+            beziehungen_tz.set_text(beziehungen);
+            text_zeilenweise beziehungen_tz_ids;
+            //text_zeilenweise beziehungen_tz_menge;
+            for(uint i=1; i<=beziehungen_tz.zeilenanzahl() ;i++)
             {
-                if(bezi_id_tz.zeile(i) == beziehungen_tz_ids.zeile(ii))
-                {
-                    zeile_is_checked = true;
-                    break;
-                }
+                QString zeile = beziehungen_tz.zeile(i);
+                beziehungen_tz_ids.zeile_anhaengen(text_links(zeile, " ||| "));
+                //beziehungen_tz_menge.zeile_anhaengen(text_rechts(zeile, " ||| "));
             }
-            if(zeile_is_checked)
+
+            ui->doubleSpinBox_menge->setValue(menge.toDouble());
+            int row = ui->comboBox_status->findText(dbeigen->get_data_qstring(TABNAME_STATUS, PARAM_STATUS_STATUS, status_id));
+            ui->comboBox_status->setCurrentIndex(row);
+
+            for(int i=1; i<=ui->listWidget->count() ;i++)
             {
-                ui->listWidget->item(i-1)->setCheckState(Qt::Checked); // AND initialize check stat
-            }else
-            {
-                ui->listWidget->item(i-1)->setCheckState(Qt::Unchecked); // AND initialize check state
+                bool zeile_is_checked = false;
+                for(uint ii=1; ii<=beziehungen_tz_ids.zeilenanzahl() ;ii++)
+                {
+                    if(bezi_id_tz.zeile(i) == beziehungen_tz_ids.zeile(ii))
+                    {
+                        zeile_is_checked = true;
+                        break;
+                    }
+                }
+                if(zeile_is_checked)
+                {
+                    ui->listWidget->item(i-1)->setCheckState(Qt::Checked); // AND initialize check stat
+                }else
+                {
+                    ui->listWidget->item(i-1)->setCheckState(Qt::Unchecked); // AND initialize check state
+                }
             }
         }
     }

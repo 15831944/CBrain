@@ -16,6 +16,7 @@
 #include "text.h"
 #include "dialog_dataselection.h"
 #include "dialog_yes_no.h"
+#include "dialog_text_input.h"
 
 namespace Ui {
 class Dialog_promatposrumpf;
@@ -42,7 +43,7 @@ public slots:
     void slot_edit_data(text_zeilenweise data);
     void slot_delete(text_zeilenweise ids);
     void slot_new_artikel(text_zeilenweise artikel_ids);//muss als tz wegen Dialog_dataselection
-    void slot_edit_dialog(text_zeilenweise ids);
+    void slot_edit_dialog(QString listid);
     void slot_edit_dialog();
     void slot_edit_dialog_cancel();
 
