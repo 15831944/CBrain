@@ -53,7 +53,8 @@ SOURCES += main.cpp\
     artikel_mengenerfassung.cpp \
     form_bestellung.cpp \
     dialog_bestellung.cpp \
-    dialog_datum_input.cpp
+    dialog_datum_input.cpp \
+    dialog_lager_mengenkorrektur.cpp
 
 HEADERS  += mainwindow.h \
     defines_filenames.h \
@@ -108,7 +109,8 @@ HEADERS  += mainwindow.h \
     form_bestellung.h \
     _tabname_bestellung.h \
     dialog_bestellung.h \
-    dialog_datum_input.h
+    dialog_datum_input.h \
+    dialog_lager_mengenkorrektur.h
 
 FORMS    += mainwindow.ui \
     dialog_login.ui \
@@ -140,4 +142,5 @@ FORMS    += mainwindow.ui \
     dialog_artikel_verwenden.ui \
     form_bestellung.ui \
     dialog_bestellung.ui \
-    dialog_datum_input.ui
+    dialog_datum_input.ui \
+    dialog_lager_mengenkorrektur.ui

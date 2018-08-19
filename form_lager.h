@@ -16,6 +16,7 @@
 #include "dialog_lager.h"
 #include "umwandeln.h"
 #include "dialog_text_input.h"
+#include "dialog_lager_mengenkorrektur.h"
 
 namespace Ui {
 class Form_lager;

@@ -800,6 +800,14 @@ void Form_lager::slot_bestkor_aid(QString artikel_id)
     if(existiert == true)
     {
         idbuffer = artikel_id;
+        Dialog_lager_mengenkorrektur *d = new Dialog_lager_mengenkorrektur(this);
+        d->setWindowTitle("Lagerbestand korrigieren");
+        d->set_db(dbeigen);
+        d->set_aid(artikel_id);
+        connect(d, SIGNAL(signal_send_menge(QString))   ,\
+                this, SLOT(slot_bestkor_menge(QString)) );
+        d->exec();
+        delete d;
     }else
     {
         idbuffer.clear();
@@ -814,7 +822,32 @@ void Form_lager::slot_bestkor_menge(QString menge)
 {
     if(!idbuffer.isEmpty())
     {
-        //Dialog für Bestandskorrektur aufrufen
+        //Vorgang erfassen
+        text_zeilenweise param, values;
+
+        int mevor = dbeigen->get_data_qstring(TABNAME_ARTIKEL, PARAM_ARTIKEL_LAGERSTAND, idbuffer).toInt();
+        int mediff = menge.toInt() - mevor;
+
+        param.zeile_anhaengen(PARAM_LAGER_VORGANG);
+        param.zeile_anhaengen(PARAM_LAGER_ARTIKELID);
+        param.zeile_anhaengen(PARAM_LAGER_MENGE);
+        param.zeile_anhaengen(PARAM_LAGER_ERSTELLER);
+        param.zeile_anhaengen(PARAM_LAGER_DATERST);
+
+        values.zeile_anhaengen(VORGANG_KORREKTUR);
+        values.zeile_anhaengen(idbuffer);
+        values.zeile_anhaengen(int_to_qstring(mediff));
+        values.zeile_anhaengen(user);
+        datum heute;
+        values.zeile_anhaengen(heute.get_today_y_m_d());;
+
+        //Vorgang buchen:
+        dbeigen->data_new(TABNAME_LAGER, param, values);
+
+        //Änderung buchen:
+        dbeigen->data_edit(TABNAME_ARTIKEL, PARAM_ARTIKEL_LAGERSTAND, menge, idbuffer);
+
+        update_table();
     }
 }
 
