@@ -425,6 +425,13 @@ void Form_matlist::update_table()
             QString cmd;
             cmd += "SELECT ";
             //------------------------
+            cmd += TABNAME_LIEFERANT;
+            cmd += ".";
+            cmd += PARAM_LIEFERANT_NAME;
+            cmd += " AS ";
+            cmd += "Lieferant";
+            cmd += ", ";
+            //------------------------
             cmd += TABNAME_ARTIKEL;
             cmd += ".";
             cmd += PARAM_ARTIKEL_NR;
@@ -433,6 +440,13 @@ void Form_matlist::update_table()
             cmd += TABNAME_ARTIKEL;
             cmd += ".";
             cmd += PARAM_ARTIKEL_BEZ;
+            cmd += ", ";
+            //------------------------
+            cmd += TABNAME_ARTIKEL;
+            cmd += ".";
+            cmd += PARAM_ARTIKEL_PREIS;
+            cmd += " AS ";
+            cmd += "Preis";
             cmd += ", ";
             //------------------------
             cmd += promat_tabname;
@@ -516,6 +530,7 @@ void Form_matlist::update_table()
             cmd += " FROM ";
             cmd += promat_tabname;
             //------------------------
+            /*
             //------------------------
             cmd += " LEFT JOIN ";
             cmd += TABNAME_ARTIKEL;
@@ -528,6 +543,31 @@ void Form_matlist::update_table()
             cmd += ".";
             cmd += PARAM_ARTIKEL_ID;
             cmd += ")";
+            //------------------------
+            */
+            //------------------------
+            cmd += " LEFT JOIN ";
+            cmd += " (";
+            cmd += TABNAME_ARTIKEL;
+            cmd += " LEFT JOIN ";
+            cmd += TABNAME_LIEFERANT;
+            cmd += " ON ";
+            cmd += TABNAME_ARTIKEL;
+            cmd += ".";
+            cmd += PARAM_ARTIKEL_LIEFERANT;
+            cmd += " = ";
+            cmd += TABNAME_LIEFERANT;
+            cmd += ".";
+            cmd += PARAM_LIEFERANT_ID;
+            cmd += ")";
+            cmd += " ON ";
+            cmd += promat_tabname;
+            cmd += ".";
+            cmd += PARAM_PROMAT_ARTIKEL_ID;
+            cmd += " = ";
+            cmd += TABNAME_ARTIKEL;
+            cmd += ".";
+            cmd += PARAM_ARTIKEL_ID;
             //------------------------
             for(uint i=1; i<=names_postables.zeilenanzahl() ;i++)
             {

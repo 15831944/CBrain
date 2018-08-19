@@ -11,6 +11,7 @@
 #include "_tabname_promatposlist.h"
 #include "_tabname_personal.h"
 #include "_tabname_status.h"
+#include "_tabname_lieferant.h"
 #include "dialog_dataselection.h"
 #include "dialog_promatpos.h"
 #include "dialog_promatposrumpf.h"
