@@ -17,6 +17,8 @@ QString float_to_qstring(float zahl);
 std::string double_to_string(double zahl);
 QString double_to_qstring(double zahl);
 
+QString double_to_qstring_euro(double zahl);
+
 
 
 

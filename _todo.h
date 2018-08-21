@@ -20,12 +20,8 @@
 
 -->Im-Export-Dialog
 
--->modul matliste
-    ->Artikelpreis anzeigen lassen
-
--->Vorgänge in DB eintragen:
-#define VORGANG_WIEDEREINLAGERUNG   "3" --> Wieder-Einlagerung
-#define VORGANG_KORREKTUR           "4" --> Korrektur
+-->modul_matlist
+    ->Projekt merken ab Programmstart und beim erneuten wechseln in das Modul projekt setzen
 
 
 

@@ -74,7 +74,7 @@
      <x>10</x>
      <y>100</y>
      <width>521</width>
-     <height>361</height>
+     <height>341</height>
     </rect>
    </property>
   </widget>
@@ -351,6 +351,19 @@
    </property>
    <property name="text">
     <string>Reservieren</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="lineEdit_statusbar">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>450</y>
+     <width>521</width>
+     <height>20</height>
+    </rect>
    </property>
   </widget>
  </widget>

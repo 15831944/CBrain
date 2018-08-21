@@ -117,9 +117,15 @@ void Form_matlist::resizeEvent(QResizeEvent *event)
 
     //links Tabelle:
     ui->tableView->setFixedSize(b_li,\
-                                hoehe - 1 - h_btn*3 - 4 );
+                                hoehe - 1 - (h_btn+1)*4 - 1 );
     ui->tableView->move(1,\
                         1 + (h_btn + 1)*3);
+
+    //links Statusleiste:
+    ui->lineEdit_statusbar->setFixedHeight(h_btn);
+    ui->lineEdit_statusbar->setFixedWidth(b_li);
+    ui->lineEdit_statusbar->move(1,\
+                                 hoehe - h_btn);
 
     //rechts Kopfzeile:
     ui->pushButton_check_all_pos->setFixedWidth(b_re/3-3);
@@ -691,6 +697,87 @@ void Form_matlist::update_table()
         }
     }
     //-------------------------------------------
+    update_statusbar();
+}
+
+void Form_matlist::update_statusbar()
+{
+    //--------------------------------------------------------------------------------------
+    text_zeilenweise megesamt = dbeigen->get_data_tz(promat_tabname, PARAM_PROMAT_ME_GESAMTBEDARF);
+    text_zeilenweise aid      = dbeigen->get_data_tz(promat_tabname, PARAM_PROMAT_ARTIKEL_ID);
+    text_zeilenweise apreise;
+    for(uint i=1; i<=aid.zeilenanzahl(); i++)
+    {
+        QString preis = dbeigen->get_data_qstring(TABNAME_ARTIKEL, PARAM_ARTIKEL_PREIS, aid.zeile(i));
+        apreise.zeile_anhaengen(preis);
+    }
+    double gesamtpreis = 0;
+    for(uint i=1; i<=aid.zeilenanzahl(); i++)
+    {
+        double preis, menge;
+        preis = apreise.zeile(i).toDouble();
+        menge = megesamt.zeile(i).toDouble();
+        gesamtpreis += preis * menge;
+    }
+    //--------------------------------------------------------------------------------------
+    QString posliste;
+    posliste  = TABNAME_PROMATPOSLIST;
+    posliste += ui->lineEdit_projekt_id->text();
+    text_zeilenweise matpos_ids = dbeigen->get_data_tz(posliste, PARAM_PROMATPOSLIST_ID);
+    text_zeilenweise names_postables;
+    for(uint i=1; i<=matpos_ids.zeilenanzahl() ;i++)
+    {
+        if(ui->listWidget_matpos->item(i-1)->checkState() == Qt::Checked)
+        {
+            QString tabname;
+            tabname += TABNAME_PROMATPOS;
+            tabname += ui->lineEdit_projekt_id->text();
+            tabname += "_";
+            tabname += matpos_ids.zeile(i);
+            names_postables.zeile_anhaengen(tabname);
+        }
+    }
+    artikel_mengenerfassung ame;
+    //Aktuelle Mengen berechnen:
+    for(uint i=1; i<=names_postables.zeilenanzahl() ;i++)
+    {
+        text_zeilenweise artikel_ids = dbeigen->get_data_tz(names_postables.zeile(i), \
+                                                            PARAM_PROMATPOS_ARTIKEL_ID);
+        text_zeilenweise mengen = dbeigen->get_data_tz(names_postables.zeile(i), \
+                                                       PARAM_PROMATPOS_MENGE);
+        text_zeilenweise status_ids = dbeigen->get_data_tz(names_postables.zeile(i), \
+                                                            PARAM_PROMATPOS_STATUS_ID);
+        text_zeilenweise beziehungen = dbeigen->get_data_tz(names_postables.zeile(i), \
+                                                            PARAM_PROMATPOS_BEZIEHUNG);
+        if(artikel_ids.zeilenanzahl() != 0)
+        {
+            ame.add_matpos(artikel_ids,\
+                           mengen,\
+                           status_ids,\
+                           beziehungen);
+        }
+    }
+    text_zeilenweise checked_aids, checked_me;
+    checked_aids = ame.get_artikel_ids();
+    checked_me = ame.get_mengen_gesamt();
+    double checkedpreis = 0;
+    for(uint i=1; i<=checked_aids.zeilenanzahl() ;i++)
+    {
+        double menge, preis;
+        menge = checked_me.zeile(i).toDouble();
+        preis = dbeigen->get_data_qstring(TABNAME_ARTIKEL, PARAM_ARTIKEL_PREIS, checked_aids.zeile(i)).toDouble();
+        checkedpreis += menge * preis;
+    }
+    //--------------------------------------------------------------------------------------
+
+    QString statustext;
+    statustext += "Gesamtwert: ";
+    statustext += double_to_qstring_euro(gesamtpreis);
+    statustext += "\t";
+    statustext += "Auswahl: ";
+    statustext += double_to_qstring_euro(checkedpreis);
+
+    ui->lineEdit_statusbar->setText(statustext);
 }
 
 void Form_matlist::update_promatpos_mengen(QString pro_id, QString pos_id, double pos_me_vor, double pos_me_nach)

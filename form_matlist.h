@@ -87,6 +87,7 @@ private:
     void create_table_promatpos(QString bez, QString menge); //Tabelle die den Inhalt einer Materialposition erfasst
     void update_listwidget_matpos();
     void update_table();
+    void update_statusbar();
     void update_promatpos_mengen(QString pro_id, QString pos_id, double pos_me_vor, double pos_me_nach);
 };
 
