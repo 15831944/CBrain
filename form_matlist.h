@@ -33,6 +33,7 @@ public:
 
     void set_db(cbrainbatabase *new_db);
     void set_user(QString u);
+    void set_proid(QString projektid);
 
 public slots:
     void slot_set_project(text_zeilenweise p);
@@ -45,6 +46,9 @@ public slots:
     void slot_update_table();
     void slot_import_get_projekt_id(text_zeilenweise ids);
     void slot_import_get_pos_id(text_zeilenweise ids);
+
+signals:
+    void signal_proidchanged(QString projektid);
 
 protected:
     void resizeEvent(QResizeEvent *event);

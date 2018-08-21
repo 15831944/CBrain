@@ -27,6 +27,13 @@ void Form_matlist::set_user(QString u)
     user = u;
 }
 
+void Form_matlist::set_proid(QString projektid)
+{
+    text_zeilenweise pro;
+    pro.set_text(projektid);
+    slot_set_project(pro);
+}
+
 void Form_matlist::resizeEvent(QResizeEvent *event)
 {
     int hoehe = this->height();
@@ -1244,6 +1251,7 @@ void Form_matlist::on_lineEdit_projekt_id_textChanged(const QString &arg1)
         promat_tabname  = TABNAME_PROMAT;
         promat_tabname += arg1;
         update_table();
+        emit signal_proidchanged(arg1);
     }
 }
 

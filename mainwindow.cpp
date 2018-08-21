@@ -290,6 +290,11 @@ void MainWindow::slot_write_inifile()
     write_inifile();
 }
 
+void MainWindow::slot_setflag_matlist_proid(QString projektid)
+{
+    flag_matlist_proid = projektid;
+}
+
 //-----------------------------------------------Dialoge und Widgets ansprechen:
 void MainWindow::on_actionBenutzer_wechsen_triggered()
 {
@@ -407,6 +412,8 @@ void MainWindow::change_modul(QString modul)
     }
     if(widget_matlist != NULL)
     {
+        disconnect(widget_matlist, SIGNAL(signal_proidchanged(QString)),    \
+                   this, SLOT(slot_setflag_matlist_proid(QString))          );
         delete widget_matlist;
         widget_matlist = NULL;
     }
@@ -491,6 +498,12 @@ void MainWindow::change_modul(QString modul)
                 widget_matlist->setGeometry(posx, posy, b, h);
                 widget_matlist->set_user(u.get_current_user_id());
                 widget_matlist->set_db(&dbeigen);
+                if(!flag_matlist_proid.isEmpty())
+                {
+                    widget_matlist->set_proid(flag_matlist_proid);
+                }
+                connect(widget_matlist, SIGNAL(signal_proidchanged(QString)),   \
+                        this, SLOT(slot_setflag_matlist_proid(QString))         );
                 widget_matlist->show();
             }else if(modul == "Bestellungen")
             {

@@ -21,7 +21,7 @@
 -->Im-Export-Dialog
 
 -->modul_matlist
-    ->Projekt merken ab Programmstart und beim erneuten wechseln in das Modul projekt setzen
+    ->Ausdruck Tabelle ermöglichen
 
 
 
