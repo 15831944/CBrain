@@ -8,6 +8,7 @@ Dialog_lager::Dialog_lager(QWidget *parent) :
     ui->setupUi(this);
     dbeigen = NULL;
     setWindowFlags(windowFlags() & ~Qt::WindowCloseButtonHint);
+    set_showinbestellung_enabled(false);
 }
 
 Dialog_lager::~Dialog_lager()
@@ -318,6 +319,18 @@ void Dialog_lager::set_lieferschein_enabled(bool isit)
     }
 }
 
+void Dialog_lager::set_showinbestellung_enabled(bool isit)
+{
+    if(isit == true)
+    {
+        ui->lineEdit_inbestellung->show();
+        ui->label_inbestelling->show();
+    }else
+    {
+        ui->lineEdit_inbestellung->hide();
+        ui->label_inbestelling->hide();
+    }
+}
 //----------------------------------------Filter:
 void Dialog_lager::on_lineEdit_artikelfilter_textChanged()
 {
@@ -469,6 +482,13 @@ void Dialog_lager::on_comboBox_artikel_currentIndexChanged(int index)
     {
         ui->comboBox_artikel->removeItem(0);
         ui->comboBox_artikel->setCurrentIndex(index-1);
+    }
+    if(ui->comboBox_artikel->itemText(0) != "---")
+    {
+        QString aid = artikel_id_gefiltert.zeile(ui->comboBox_artikel->currentIndex() + 1);
+        QString inbest;
+        inbest = dbeigen->get_data_qstring(TABNAME_ARTIKEL, PARAM_ARTIKEL_BESTELLT, aid);
+        ui->lineEdit_inbestellung->setText(inbest);
     }
 }
 

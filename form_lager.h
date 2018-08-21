@@ -51,7 +51,6 @@ private slots:
     void on_pushButton_out_clicked();
     void on_pushButton_inagain_clicked();
     void on_pushButton_korrektur_clicked();
-
     void on_comboBox_lieferanten_currentIndexChanged(int index);
 
 private:

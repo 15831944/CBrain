@@ -449,6 +449,7 @@ void Form_lager::on_pushButton_in_clicked()
     d->set_vorgang("Waren-Eingang");
     d->set_kommission_enabled(false);
     d->set_lieferschein_enabled(true);
+    d->set_showinbestellung_enabled(true);
     connect(d, SIGNAL(signal_send_data(text_zeilenweise)),  \
             this, SLOT(slot_in(text_zeilenweise))          );
     d->exec();

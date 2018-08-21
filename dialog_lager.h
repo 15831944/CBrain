@@ -36,6 +36,7 @@ public:
     }
     void set_kommission_enabled(bool isit);
     void set_lieferschein_enabled(bool isit);
+    void set_showinbestellung_enabled(bool isit);
 
 signals:
     void signal_send_data(text_zeilenweise data);
