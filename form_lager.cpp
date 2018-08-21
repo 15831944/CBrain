@@ -58,11 +58,17 @@ void Form_lager::resizeEvent(QResizeEvent *event)
                           - ui->label_suche->geometry().width()\
                           ,1);    
 
+    //rechts combobox Lieferanten:
+    ui->comboBox_lieferanten->setFixedWidth((breite-2)/3);
+    ui->comboBox_lieferanten->setFixedHeight(hbtn);
+    ui->comboBox_lieferanten->move(1 + ui->tableView->geometry().width() + 1,\
+                                   1 + hbtn + 1);
+
     //rechts Tabelle Artikel:
     ui->tableView_artikel->move(1 + ui->tableView->geometry().width() + 1,\
-                                1 + ui->pushButton_in->geometry().height() + 1);
+                                1 + (hbtn + 1)*2);
     ui->tableView_artikel->setFixedWidth( (breite-2)/3 );
-    ui->tableView_artikel->setFixedHeight(ui->tableView->geometry().height());
+    ui->tableView_artikel->setFixedHeight(hoehe - 1 - (hbtn + 1)*2);
 
     QWidget::resizeEvent(event);
 }
@@ -80,6 +86,7 @@ void Form_lager::set_user(QString u)
 void Form_lager::show()
 {
     update_table();
+    update_lieferanten();
     setVisible(true);
 }
 
@@ -226,9 +233,12 @@ void Form_lager::update_table()
             cmd += PARAM_VORGANG_ID;
             cmd += ")";
             //------------------------
-            if(!ui->lineEdit_suche->text().isEmpty())
+            if(!ui->lineEdit_suche->text().isEmpty()  ||  ui->comboBox_lieferanten->currentIndex() > 0)
             {
                 cmd += " WHERE ";
+            }
+            if(!ui->lineEdit_suche->text().isEmpty())
+            {
                 cmd += TABNAME_ARTIKEL;
                 cmd += ".";
                 cmd += PARAM_ARTIKEL_NR;
@@ -256,6 +266,18 @@ void Form_lager::update_table()
                 cmd += " LIKE \'%";
                 cmd += ui->lineEdit_suche->text();
                 cmd += "%\'";
+            }
+            if(ui->comboBox_lieferanten->currentIndex() > 0)
+            {
+                if(!ui->lineEdit_suche->text().isEmpty())
+                {
+                    cmd += " AND ";
+                }
+                cmd += TABNAME_ARTIKEL;
+                cmd += ".";
+                cmd += PARAM_ARTIKEL_LIEFERANT;
+                cmd += " LIKE ";
+                cmd += lieferanten_ids.zeile(ui->comboBox_lieferanten->currentIndex());
             }
             //------------------------
             cmd += " GROUP BY ";
@@ -329,9 +351,12 @@ void Form_lager::update_table()
             cmd += " FROM ";
             cmd += TABNAME_ARTIKEL;
             //------------------------
-            if(!ui->lineEdit_suche->text().isEmpty())
+            if(!ui->lineEdit_suche->text().isEmpty()  ||  ui->comboBox_lieferanten->currentIndex() > 0)
             {
                 cmd += " WHERE ";
+            }
+            if(!ui->lineEdit_suche->text().isEmpty())
+            {
                 cmd += TABNAME_ARTIKEL;
                 cmd += ".";
                 cmd += PARAM_ARTIKEL_NR;
@@ -345,6 +370,18 @@ void Form_lager::update_table()
                 cmd += " LIKE \'%";
                 cmd += ui->lineEdit_suche->text();
                 cmd += "%\'";
+            }
+            if(ui->comboBox_lieferanten->currentIndex() > 0)
+            {
+                if(!ui->lineEdit_suche->text().isEmpty())
+                {
+                    cmd += " AND ";
+                }
+                cmd += TABNAME_ARTIKEL;
+                cmd += ".";
+                cmd += PARAM_ARTIKEL_LIEFERANT;
+                cmd += " LIKE ";
+                cmd += lieferanten_ids.zeile(ui->comboBox_lieferanten->currentIndex());
             }
             //------------------------
             cmd += " ORDER BY ";            //Sortiert nach:
@@ -377,7 +414,27 @@ void Form_lager::update_table()
     //-------------------------------------------
 }
 
+void Form_lager::update_lieferanten()
+{
+    if(dbeigen != NULL)
+    {
+        lieferanten_ids = dbeigen->get_data_tz(TABNAME_LIEFERANT, PARAM_LIEFERANT_ID);
+        lieferanten_namen = dbeigen->get_data_tz(TABNAME_LIEFERANT, PARAM_LIEFERANT_NAME);
+        ui->comboBox_lieferanten->clear();
+        ui->comboBox_lieferanten->addItem("Alle Lieferanten");
+        for(uint i=1; i<=lieferanten_ids.zeilenanzahl() ;i++)
+        {
+            ui->comboBox_lieferanten->addItem(lieferanten_namen.zeile(i));
+        }
+    }
+}
+
 void Form_lager::on_lineEdit_suche_textChanged()
+{
+    update_table();
+}
+
+void Form_lager::on_comboBox_lieferanten_currentIndexChanged(int index)
 {
     update_table();
 }
@@ -852,6 +909,8 @@ void Form_lager::slot_bestkor_menge(QString menge)
 }
 
 //------------------------------------
+
+
 
 
 

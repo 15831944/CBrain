@@ -12,6 +12,7 @@
 #include "_tabname_vorgang.h"
 #include "_tabname_promat.h"
 #include "_tabname_bestellung.h"
+#include "_tabname_lieferant.h"
 #include "datum.h"
 #include "dialog_lager.h"
 #include "umwandeln.h"
@@ -51,6 +52,8 @@ private slots:
     void on_pushButton_inagain_clicked();
     void on_pushButton_korrektur_clicked();
 
+    void on_comboBox_lieferanten_currentIndexChanged(int index);
+
 private:
     Ui::Form_lager *ui;
 
@@ -58,8 +61,10 @@ private:
     QSqlQueryModel *model, *model_artikel;
     QString user;
     QString idbuffer;
+    text_zeilenweise lieferanten_ids, lieferanten_namen;
 
     void update_table();
+    void update_lieferanten();
 };
 
 #endif // FORM_LAGER_H
