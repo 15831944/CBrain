@@ -18,18 +18,11 @@
    dialog von user_A erwartet jedoch das die daten noch von ihm selbst blockiert sind
    ->evtl einfach nicht zulassen, dass user_B abbrechen kann (disable btn cancel)
 
--->modul_backup
-    ->wahrscheinlich Hilfe von Reno Kohmann
-
 -->Im-Export-Dialog
 
--->modul_lager
-    ->Buschung von Waren-Ein- und Ausgang strornierbar machen (Falsche Buchungen korrigieren)
-    ->Inventurfunktion zum korrigieren des Lagerbestandes
-
-
-
-
+-->modul_matlist
+    ->Schnellstatusänderung ermöglichen
+        >erfasst -> zur bestellung freigegeben
 
 
 

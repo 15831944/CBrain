@@ -8,6 +8,7 @@ Dialog_lager::Dialog_lager(QWidget *parent) :
     ui->setupUi(this);
     dbeigen = NULL;
     setWindowFlags(windowFlags() & ~Qt::WindowCloseButtonHint);
+    set_showinbestellung_enabled(false);
 }
 
 Dialog_lager::~Dialog_lager()
@@ -129,6 +130,8 @@ void Dialog_lager::setup()
             lie_name.zeile_anhaengen(name);
         }
     }
+    lie_id_gefiltert = lie_id;
+    ui->comboBox_lieferanten->clear();
     ui->comboBox_lieferanten->addItem("ALLE");
     for(uint i=1; i<=lie_id.zeilenanzahl() ;i++)
     {
@@ -137,6 +140,7 @@ void Dialog_lager::setup()
         ui->comboBox_lieferanten->addItem(zeile);
     }
 
+    ui->comboBox_artikel->clear();
     ui->comboBox_artikel->addItem("---");
     for(uint i=1; i<=artikel_id.zeilenanzahl() ;i++)
     {
@@ -146,6 +150,8 @@ void Dialog_lager::setup()
         zeile += artikel_bez.zeile(i);
         ui->comboBox_artikel->addItem(zeile);
     }
+
+    ui->comboBox_kom->clear();
     ui->comboBox_kom->addItem("---");
     for(uint i=1; i<=projekt_id.zeilenanzahl() ;i++)
     {
@@ -190,8 +196,29 @@ void Dialog_lager::on_pushButton_ok_clicked()
             tz.zeile_anhaengen("no");        //Wert 5
         }
 
-        dlg_to_printmsg();
-        emit signal_send_data(tz);
+
+        if(lastokmsg.get_text() != tz.get_text())
+        {
+            lastokmsg = tz;
+            dlg_to_printmsg();
+            emit signal_send_data(tz);
+        }else
+        {
+            Dialog_yes_no *d = new Dialog_yes_no(this);
+            d->setWindowTitle("evtl unbeabsichtigte Doppeltbuchung");
+            QString msg;
+            msg += "Eine exakt identischer ";
+            msg += vorgang;
+            msg += " wurde gerade eben von Ihnen verbucht.\n";
+            msg += "Soll der ";
+            msg += vorgang;
+            msg += " ein weiteres Mal gebucht werden?";
+            d->setup(msg);
+            connect(d, SIGNAL(signal_yes()),        \
+                    this, SLOT(slot_oksameagain())  );
+            d->exec();
+            delete d;
+        }
     }
 }
 
@@ -292,6 +319,18 @@ void Dialog_lager::set_lieferschein_enabled(bool isit)
     }
 }
 
+void Dialog_lager::set_showinbestellung_enabled(bool isit)
+{
+    if(isit == true)
+    {
+        ui->lineEdit_inbestellung->show();
+        ui->label_inbestelling->show();
+    }else
+    {
+        ui->lineEdit_inbestellung->hide();
+        ui->label_inbestelling->hide();
+    }
+}
 //----------------------------------------Filter:
 void Dialog_lager::on_lineEdit_artikelfilter_textChanged()
 {
@@ -309,7 +348,7 @@ void Dialog_lager::on_lineEdit_artikelfilter_textChanged()
 
         if(ui->comboBox_lieferanten->currentText() == "ALLE")
         {
-            if(anr.contains(suchbegriff)  ||  abez.contains(suchbegriff))
+            if(suchbegriff.isEmpty())
             {
                 artikel_id_gefiltert.zeile_anhaengen(artikel_id.zeile(i));
                 artikel_nr_gefiltert.zeile_anhaengen(artikel_nr.zeile(i));
@@ -321,11 +360,7 @@ void Dialog_lager::on_lineEdit_artikelfilter_textChanged()
                 zeile += " / ";
                 zeile += artikel_bez.zeile(i);
                 ui->comboBox_artikel->addItem(zeile);
-            }
-        }else
-        {
-            QString lid = lie_id_gefiltert.zeile(ui->comboBox_lieferanten->currentIndex() + 1);
-            if(artikel_lie_id.zeile(i) == lid)
+            }else
             {
                 if(anr.contains(suchbegriff)  ||  abez.contains(suchbegriff))
                 {
@@ -341,6 +376,43 @@ void Dialog_lager::on_lineEdit_artikelfilter_textChanged()
                     ui->comboBox_artikel->addItem(zeile);
                 }
             }
+        }else
+        {
+            QString lid = lie_id_gefiltert.zeile(ui->comboBox_lieferanten->currentIndex());
+                                                    //+1 weil erstes element von tz hat index 1 und nicht 0
+                                                    //-1 weil "ALLE" nicht in tz enthalten
+                                                    //ergibt index combobox +0
+            if(artikel_lie_id.zeile(i) == lid)
+            {
+                if(suchbegriff.isEmpty())
+                {
+                    artikel_id_gefiltert.zeile_anhaengen(artikel_id.zeile(i));
+                    artikel_nr_gefiltert.zeile_anhaengen(artikel_nr.zeile(i));
+                    artikel_bez_gefiltert.zeile_anhaengen(artikel_bez.zeile(i));
+                    artikel_lie_id_gefiltert.zeile_anhaengen(artikel_lie_id.zeile(i));
+
+                    QString zeile;
+                    zeile  = artikel_nr.zeile(i);
+                    zeile += " / ";
+                    zeile += artikel_bez.zeile(i);
+                    ui->comboBox_artikel->addItem(zeile);
+                }else
+                {
+                    if(anr.contains(suchbegriff)  ||  abez.contains(suchbegriff))
+                    {
+                        artikel_id_gefiltert.zeile_anhaengen(artikel_id.zeile(i));
+                        artikel_nr_gefiltert.zeile_anhaengen(artikel_nr.zeile(i));
+                        artikel_bez_gefiltert.zeile_anhaengen(artikel_bez.zeile(i));
+                        artikel_lie_id_gefiltert.zeile_anhaengen(artikel_lie_id.zeile(i));
+
+                        QString zeile;
+                        zeile  = artikel_nr.zeile(i);
+                        zeile += " / ";
+                        zeile += artikel_bez.zeile(i);
+                        ui->comboBox_artikel->addItem(zeile);
+                    }
+                }
+            }
         }
     }
 }
@@ -354,11 +426,19 @@ void Dialog_lager::on_lineEdit_komfilter_textChanged(const QString &arg1)
     for(uint i=1; i<=projekt_name.zeilenanzahl() ;i++)
     {
         QString name = projekt_name.zeile(i);
-        if(name.toUpper().contains(arg1.toUpper()))
+        if(arg1.isEmpty())
         {
             projekt_id_gefiltert.zeile_anhaengen(projekt_id.zeile(i));
             projekt_name_gefiltert.zeile_anhaengen(name);
             ui->comboBox_kom->addItem(name);
+        }else
+        {
+            if(name.toUpper().contains(arg1.toUpper()))
+            {
+                projekt_id_gefiltert.zeile_anhaengen(projekt_id.zeile(i));
+                projekt_name_gefiltert.zeile_anhaengen(name);
+                ui->comboBox_kom->addItem(name);
+            }
         }
     }
 }
@@ -395,4 +475,45 @@ void Dialog_lager::on_lineEdit_lieferantenfilter_textChanged(const QString &arg1
 
 }
 
+//----------------------------------------private slots
+void Dialog_lager::on_comboBox_artikel_currentIndexChanged(int index)
+{
+    if(index!=0 && ui->comboBox_artikel->itemText(0) == "---")
+    {
+        ui->comboBox_artikel->removeItem(0);
+        ui->comboBox_artikel->setCurrentIndex(index-1);
+    }
+    if(ui->comboBox_artikel->itemText(0) != "---")
+    {
+        QString aid = artikel_id_gefiltert.zeile(ui->comboBox_artikel->currentIndex() + 1);
+        QString inbest;
+        inbest = dbeigen->get_data_qstring(TABNAME_ARTIKEL, PARAM_ARTIKEL_BESTELLT, aid);
+        ui->lineEdit_inbestellung->setText(inbest);
+    }
+}
+
+void Dialog_lager::on_comboBox_kom_currentIndexChanged(int index)
+{
+    if(index!=0 && ui->comboBox_kom->itemText(0) == "---")
+    {
+        ui->comboBox_kom->removeItem(0);
+        ui->comboBox_kom->setCurrentIndex(index-1);
+    }
+}
+
+void Dialog_lager::on_comboBox_lieferanten_currentIndexChanged(int index)
+{
+    on_lineEdit_artikelfilter_textChanged();
+}
+
+void Dialog_lager::slot_oksameagain()
+{
+    dlg_to_printmsg();
+    emit signal_send_data(lastokmsg);
+}
+
 //----------------------------------------
+
+
+
+

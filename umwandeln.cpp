@@ -51,3 +51,11 @@ QString double_to_qstring(double zahl)
     QString msg = QString::number(zahl, 'f', 4);//4 sorgt für 4 Nachkommastellen
     return msg;
 }
+
+QString double_to_qstring_euro(double zahl)
+{
+    QString msg = QString::number(zahl, 'f', 2);//2 sorgt für 2 Nachkommastellen
+    msg.replace(".",",");
+    msg += "€";
+    return msg;
+}

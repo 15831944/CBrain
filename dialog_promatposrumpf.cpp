@@ -114,6 +114,11 @@ void Dialog_promatposrumpf::update_table()
         QString cmd;
         cmd += "SELECT ";
         //------------------------
+        cmd += tabname;
+        cmd += ".";
+        cmd += PARAM_PROMATPOS_ID;
+        cmd += ", ";
+        //------------------------
         cmd += TABNAME_ARTIKEL;
         cmd += ".";
         cmd += PARAM_ARTIKEL_NR;
@@ -594,123 +599,13 @@ void Dialog_promatposrumpf::on_pushButton_delete_clicked()
 
 void Dialog_promatposrumpf::on_pushButton_edit_clicked()
 {
-    text_zeilenweise tz;
-    text_zeilenweise ids;
-    //-------------------------------------------
-    {
-        QSqlDatabase db;
-
-        db = QSqlDatabase::database("dbglobal");
-        db.setHostName(dbeigen->get_host());
-        db.setDatabaseName(dbeigen->get_dbname());
-        db.setUserName(dbeigen->get_user());
-        db.setPassword(dbeigen->get_pwd());
-
-        if(db.open())
-        {
-            QSqlQuery q(db);
-            QString cmd;
-            cmd += "SELECT ";
-            //------------------------
-            cmd += tabname;
-            cmd += ".";
-            cmd += PARAM_PROMATPOS_ID;
-            cmd += ", ";
-            //------------------------
-            cmd += TABNAME_ARTIKEL;
-            cmd += ".";
-            cmd += PARAM_ARTIKEL_NR;
-            cmd += ", ";
-            //------------------------
-            cmd += TABNAME_ARTIKEL;
-            cmd += ".";
-            cmd += PARAM_ARTIKEL_BEZ;
-            //cmd += ", ";
-            //------------------------
-            cmd += " FROM ";
-            cmd += tabname;
-            //------------------------
-            cmd += " LEFT JOIN ";
-            cmd += TABNAME_ARTIKEL;
-            cmd += " ON (";
-            cmd += tabname;
-            cmd += ".";
-            cmd += PARAM_PROMATPOS_ARTIKEL_ID;
-            cmd += " = ";
-            cmd += TABNAME_ARTIKEL;
-            cmd += ".";
-            cmd += PARAM_ARTIKEL_ID;
-            cmd += ")";
-            //------------------------
-            //------------------------
-            if(!ui->lineEdit_filter->text().isEmpty())
-            {
-                cmd += " WHERE ";
-                cmd += PARAM_ARTIKEL_NR;
-                cmd += " LIKE \'%";
-                cmd += ui->lineEdit_filter->text();
-                cmd += "%\'";
-                cmd += " OR ";
-                cmd += PARAM_ARTIKEL_BEZ;
-                cmd += " LIKE \'%";
-                cmd += ui->lineEdit_filter->text();
-                cmd += "%\'";
-            }
-            //------------------------
-            cmd += " GROUP BY ";
-            cmd += tabname;
-            cmd += ".";
-            cmd += PARAM_PROMATPOS_ID;
-            //------------------------
-            cmd += " ORDER BY ";            //Sortiert nach:
-            cmd += TABNAME_ARTIKEL;
-            cmd += ".";
-            cmd += PARAM_ARTIKEL_NR;
-            //------------------------
-            //------------------------
-
-            if(q.exec(cmd))
-            {
-                while(q.next())
-                {
-                    ids.zeile_anhaengen(q.value(0).toString()); //ID in der eigenen TAbelle
-
-                    QString tmp;
-                    tmp += q.value(1).toString();   //Artikelnummer
-                    tmp += " ||| ";
-                    tmp += q.value(2).toString();   //Bezeichnung
-                    tz.zeile_anhaengen(tmp);
-                }
-            }else
-            {
-                QMessageBox mb;
-                mb.setText("Fehler:\n" + q.lastError().text());
-                mb.exec();
-            }
-            db.close();
-
-        }else
-        {
-            QMessageBox mb;
-            mb.setText(tr("Fehler bei Datenbankverbindung!"));
-            mb.exec();
-        }
-    }
-    //-------------------------------------------
-    if(tz.zeilenanzahl() == 1)
-    {
-        slot_edit_dialog(ids);
-    }else
-    {
-        Dialog_dataselection *d = new Dialog_dataselection(this);
-        d->set_data(tz, ids);
-        d->set_anz_returnwerte(1);
-        d->setWindowTitle("Artikeleintrag bearbeiten (nur einen)");
-        connect(d, SIGNAL(signal_send_selection(text_zeilenweise)), \
-                this, SLOT(slot_edit_dialog(text_zeilenweise))      );
-        d->exec();
-        delete d;
-    }
+    Dialog_text_input *d = new Dialog_text_input(this);
+    d->setWindowTitle("Eintrag bearbeiten");
+    d->set_infotext("Bitte ID-Nummer des Listenelementes eingeben");
+    connect(d, SIGNAL(signal_userinput(QString)),   \
+            this, SLOT(slot_edit_dialog(QString))   );
+    d->exec();
+    delete d;
 }
 
 void Dialog_promatposrumpf::on_pushButton_close_clicked()
@@ -855,36 +750,57 @@ void Dialog_promatposrumpf::slot_new_artikel(text_zeilenweise artikel_ids)
 
 }
 
-void Dialog_promatposrumpf::slot_edit_dialog(text_zeilenweise ids)
+void Dialog_promatposrumpf::slot_edit_dialog(QString listid)
 {
-    idbuffer = ids.zeile(1);
-
-    QString blockfromuser_id = dbeigen->get_data_qstring(tabname, PARAM_PROMATPOS_BLOCK, idbuffer);
-    QString blockfromuser = dbeigen->get_data_qstring(TABNAME_ARTIKEL, PARAM_ARTIKEL_BLOCK, idbuffer,\
-                                                      TABNAME_PERSONAL, PARAM_PERSONAL_VORNAME);
-    blockfromuser += " ";
-    blockfromuser += dbeigen->get_data_qstring(tabname, PARAM_PROMATPOS_BLOCK, idbuffer,\
-                                               TABNAME_PERSONAL, PARAM_PERSONAL_NACHNAME);
-
-    if(blockfromuser_id == USER_NOBODY_ID || blockfromuser.isEmpty() )
+    //Prüfen, ob es ein Eintrag mit dieser ID gibt:
+    text_zeilenweise listen_ids = dbeigen->get_data_tz(tabname, PARAM_PROMATPOS_ID);
+    bool existiert = false;
+    for(uint i=1; i<=listen_ids.zeilenanzahl() ;i++)
     {
-        QString artikel_id = dbeigen->get_data_qstring(tabname, PARAM_PROMATPOS_ARTIKEL_ID, idbuffer);
-        bearbeiten_dialog(artikel_id);
+        if(listen_ids.zeile(i) == listid)
+        {
+            existiert = true;
+            break;
+        }
+    }
+    if(existiert == true)
+    {
+        idbuffer = listid;
+
+        QString blockfromuser_id = dbeigen->get_data_qstring(tabname, PARAM_PROMATPOS_BLOCK, idbuffer);
+        QString blockfromuser = dbeigen->get_data_qstring(TABNAME_ARTIKEL, PARAM_ARTIKEL_BLOCK, idbuffer,\
+                                                          TABNAME_PERSONAL, PARAM_PERSONAL_VORNAME);
+        blockfromuser += " ";
+        blockfromuser += dbeigen->get_data_qstring(tabname, PARAM_PROMATPOS_BLOCK, idbuffer,\
+                                                   TABNAME_PERSONAL, PARAM_PERSONAL_NACHNAME);
+
+        if(blockfromuser_id == USER_NOBODY_ID || blockfromuser.isEmpty() )
+        {
+            QString artikel_id = dbeigen->get_data_qstring(tabname, PARAM_PROMATPOS_ARTIKEL_ID, idbuffer);
+            bearbeiten_dialog(artikel_id);
+        }else
+        {
+            Dialog_yes_no *d = new Dialog_yes_no(this);
+            d->setWindowTitle("Datensatz bereits gesperrt");
+            QString msg;
+            msg += "Dieser Datensatz wurde bereits vom Nutzer \"";
+            msg += blockfromuser;
+            msg += "\" gesperrt.\nBitte stimmen Sie sich mit dem Benutzer ab!\n";
+            msg += "Soll dieser trotzdem zum Bearbeiten geoeffnet werden?";
+            d->setup(msg);
+            idbuffer = listid;
+            connect(d, SIGNAL(signal_yes()), this, SLOT(slot_edit_dialog()));
+
+            d->exec();
+            delete d;
+        }
+
     }else
     {
-        Dialog_yes_no *d = new Dialog_yes_no(this);
-        d->setWindowTitle("Datensatz bereits gesperrt");
-        QString msg;
-        msg += "Dieser Datensatz wurde bereits vom Nutzer \"";
-        msg += blockfromuser;
-        msg += "\" gesperrt.\nBitte stimmen Sie sich mit dem Benutzer ab!\n";
-        msg += "Soll dieser trotzdem zum Bearbeiten geoeffnet werden?";
-        d->setup(msg);
-        idbuffer = ids.zeile(1);
-        connect(d, SIGNAL(signal_yes()), this, SLOT(slot_edit_dialog()));
-
-        d->exec();
-        delete d;
+        idbuffer.clear();
+        QMessageBox mb;
+        mb.setText(tr("Ein Eintrag mit dieser ID existiert nicht!"));
+        mb.exec();
     }
 }
 

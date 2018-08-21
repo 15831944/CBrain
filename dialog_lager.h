@@ -13,6 +13,7 @@
 #include "_tabname_lieferant.h"
 #include "text.h"
 #include "dialog_printbox.h"
+#include "dialog_yes_no.h"
 
 namespace Ui {
 class Dialog_lager;
@@ -35,6 +36,7 @@ public:
     }
     void set_kommission_enabled(bool isit);
     void set_lieferschein_enabled(bool isit);
+    void set_showinbestellung_enabled(bool isit);
 
 signals:
     void signal_send_data(text_zeilenweise data);
@@ -47,6 +49,11 @@ private slots:
     void on_lineEdit_komfilter_textChanged(const QString &arg1);
     void on_pushButton_print_clicked();
     void on_lineEdit_lieferantenfilter_textChanged(const QString &arg1);
+    void slot_oksameagain();
+    void on_comboBox_artikel_currentIndexChanged(int index);
+    void on_comboBox_kom_currentIndexChanged(int index);
+
+    void on_comboBox_lieferanten_currentIndexChanged(int index);
 
 private:
     Ui::Dialog_lager *ui;
@@ -64,6 +71,8 @@ private:
 
     text_zeilenweise projekt_id,        projekt_id_gefiltert;
     text_zeilenweise projekt_name,      projekt_name_gefiltert;
+
+    text_zeilenweise lastokmsg;
 
     //text_zeilenweise lieferanten;
 

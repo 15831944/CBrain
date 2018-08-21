@@ -11,12 +11,14 @@
 #include "_tabname_promatposlist.h"
 #include "_tabname_personal.h"
 #include "_tabname_status.h"
+#include "_tabname_lieferant.h"
 #include "dialog_dataselection.h"
 #include "dialog_promatpos.h"
 #include "dialog_promatposrumpf.h"
 #include "text.h"
 #include "dialog_yes_no.h"
 #include "artikel_mengenerfassung.h"
+#include "dialog_printbox.h"
 
 namespace Ui {
 class Form_matlist;
@@ -32,6 +34,7 @@ public:
 
     void set_db(cbrainbatabase *new_db);
     void set_user(QString u);
+    void set_proid(QString projektid);
 
 public slots:
     void slot_set_project(text_zeilenweise p);
@@ -44,6 +47,9 @@ public slots:
     void slot_update_table();
     void slot_import_get_projekt_id(text_zeilenweise ids);
     void slot_import_get_pos_id(text_zeilenweise ids);
+
+signals:
+    void signal_proidchanged(QString projektid);
 
 protected:
     void resizeEvent(QResizeEvent *event);
@@ -70,6 +76,7 @@ private slots:
     void on_checkBox_verarbeitet_toggled();
     void on_checkBox_show_pos_toggled(bool checked);
     void on_pushButton_reservieren_clicked();
+    void on_pushButton_packliste_clicked();
 
 private:
     Ui::Form_matlist *ui;
@@ -86,6 +93,7 @@ private:
     void create_table_promatpos(QString bez, QString menge); //Tabelle die den Inhalt einer Materialposition erfasst
     void update_listwidget_matpos();
     void update_table();
+    void update_statusbar();
     void update_promatpos_mengen(QString pro_id, QString pos_id, double pos_me_vor, double pos_me_nach);
 };
 

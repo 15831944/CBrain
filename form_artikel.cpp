@@ -656,7 +656,7 @@ void Form_artikel::slot_new(text_zeilenweise data)
     param.zeile_anhaengen(PARAM_ARTIKEL_NR);
     param.zeile_anhaengen(PARAM_ARTIKEL_BEZ);
     param.zeile_anhaengen(PARAM_ARTIKEL_LIEFERANT);
-    param.zeile_anhaengen(PARAM_ARTIKEL_LAGERSTAND);
+    //param.zeile_anhaengen(PARAM_ARTIKEL_LAGERSTAND); ist bereits Default als 0 definiert
     param.zeile_anhaengen(PARAM_ARTIKEL_ERSTELLER);
     param.zeile_anhaengen(PARAM_ARTIKEL_DATERST);
     param.zeile_anhaengen(PARAM_ARTIKEL_LAGERORT);
@@ -670,7 +670,7 @@ void Form_artikel::slot_new(text_zeilenweise data)
     values.zeile_anhaengen(data.zeile(1));
     values.zeile_anhaengen(data.zeile(2));
     values.zeile_anhaengen(data.zeile(3));
-    values.zeile_anhaengen("0");
+    //values.zeile_anhaengen("0");ist bereits Default als 0 definiert
     values.zeile_anhaengen(user);
     datum heute;
     values.zeile_anhaengen(heute.get_today_y_m_d());

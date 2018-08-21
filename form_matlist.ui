@@ -25,6 +25,9 @@
      <height>20</height>
     </rect>
    </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Projekt-Nummer&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
    <property name="readOnly">
     <bool>false</bool>
    </property>
@@ -41,6 +44,9 @@
      <height>23</height>
     </rect>
    </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Projekt auswählen&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
    <property name="text">
     <string>...</string>
    </property>
@@ -53,6 +59,9 @@
      <width>113</width>
      <height>20</height>
     </rect>
+   </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Filter für Tabelle&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
   </widget>
   <widget class="QLabel" name="label_filter">
@@ -74,7 +83,7 @@
      <x>10</x>
      <y>100</y>
      <width>521</width>
-     <height>361</height>
+     <height>341</height>
     </rect>
    </property>
   </widget>
@@ -191,6 +200,9 @@
      <height>20</height>
     </rect>
    </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Prijekt-ID&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
    <property name="readOnly">
     <bool>false</bool>
    </property>
@@ -219,6 +231,9 @@
      <width>75</width>
      <height>23</height>
     </rect>
+   </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;aktualisiert die Tabelle&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="text">
     <string>aktualisieren</string>
@@ -349,8 +364,40 @@
      <height>23</height>
     </rect>
    </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Reserviert alle Artikel die den Status &amp;quot;Zur Bestellung freigegeben&amp;quot; haben. Ggf. wird ein Bestellvorschlag im Bestell-Modul erstellt.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
    <property name="text">
     <string>Reservieren</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="lineEdit_statusbar">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>450</y>
+     <width>431</width>
+     <height>20</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_packliste">
+   <property name="geometry">
+    <rect>
+     <x>450</x>
+     <y>440</y>
+     <width>85</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Erstellt eine Packliste für die ausgewählten Positionen. Es werden nur Artikel aufgelistet die den Status &amp;quot;Zur Bestellung freigegeben&amp;quot; haben&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+   <property name="text">
+    <string>Packliste</string>
    </property>
   </widget>
  </widget>

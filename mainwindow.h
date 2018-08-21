@@ -53,6 +53,7 @@ public slots:
     void slot_get_users(users new_users);
     void slot_get_settings_db_eigen(text_zeilenweise data);
     void slot_write_inifile();
+    void slot_setflag_matlist_proid(QString projektid);
 
 private slots:
     void on_actionNetzwerkordner_aendern_triggered();
@@ -85,6 +86,7 @@ private:
     //Flags:
     bool isvalid;               //Anwendungsumgebung korrekt (Inifiles + Ordner...)
     QString currend_modul;      //Speichert den Namen des Moduls für WindowTitle
+    QString flag_matlist_proid;
 
     //eigene Widgets:
     Form_tableeditor    *widget_tableeditor;

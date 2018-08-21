@@ -22,16 +22,32 @@ void Form_lager::resizeEvent(QResizeEvent *event)
 {
     int hoehe = this->geometry().height();
     int breite = this->geometry().width();
+    int hbtn = ui->pushButton_in->height();
+    int bbtn = breite/5;
 
-    //Buttons:
-    ui->pushButton_in->move(1,1);
-    ui->pushButton_in->setFixedWidth(breite/5);
+    //Buttons Zeile 1:
+    ui->pushButton_in->setFixedWidth(bbtn);
+    ui->pushButton_in->move(1,\
+                            1);
+    ui->pushButton_out->setFixedWidth(bbtn);
+    ui->pushButton_out->move(1 + bbtn + 1,\
+                             1);
 
-    ui->pushButton_out->move(1 + ui->pushButton_in->geometry().width() + 1\
-                             ,1);
-    ui->pushButton_out->setFixedWidth(ui->pushButton_in->geometry().width());
+    //Buttons Zeile 2:
+    ui->pushButton_inagain->setFixedWidth(bbtn);
+    ui->pushButton_inagain->move(1,\
+                                 1 + hbtn + 1);
+    ui->pushButton_korrektur->setFixedWidth(bbtn);
+    ui->pushButton_korrektur->move(1 + bbtn + 1,\
+                                   1 + hbtn + 1);
 
-    //Suchleiste:
+    //links Tabelle Lager:
+    ui->tableView->move(1,\
+                        1 + (hbtn + 1)*2);
+    ui->tableView->setFixedWidth( (breite-2)/3*2 );
+    ui->tableView->setFixedHeight(hoehe - ui->tableView->pos().ry() -1);
+
+    //rechts Suchleiste:
     ui->lineEdit_suche->setFixedHeight(ui->pushButton_in->geometry().height());
     ui->lineEdit_suche->setFixedWidth(breite/3);
     ui->lineEdit_suche->move(breite - 1 - ui->lineEdit_suche->geometry().width()\
@@ -40,19 +56,19 @@ void Form_lager::resizeEvent(QResizeEvent *event)
     ui->label_suche->setFixedHeight(ui->pushButton_in->geometry().height());
     ui->label_suche->move(breite - 1 -ui->lineEdit_suche->geometry().width() - 1\
                           - ui->label_suche->geometry().width()\
-                          ,1);
+                          ,1);    
 
-    //Tabelle Lager:
-    ui->tableView->move(1,\
-                        1 + ui->pushButton_in->geometry().height() + 1);
-    ui->tableView->setFixedWidth( (breite-2)/3*2 );
-    ui->tableView->setFixedHeight(hoehe - ui->tableView->pos().ry() -1);
+    //rechts combobox Lieferanten:
+    ui->comboBox_lieferanten->setFixedWidth((breite-2)/3);
+    ui->comboBox_lieferanten->setFixedHeight(hbtn);
+    ui->comboBox_lieferanten->move(1 + ui->tableView->geometry().width() + 1,\
+                                   1 + hbtn + 1);
 
-    //Tabelle Artikel:
+    //rechts Tabelle Artikel:
     ui->tableView_artikel->move(1 + ui->tableView->geometry().width() + 1,\
-                                1 + ui->pushButton_in->geometry().height() + 1);
+                                1 + (hbtn + 1)*2);
     ui->tableView_artikel->setFixedWidth( (breite-2)/3 );
-    ui->tableView_artikel->setFixedHeight(ui->tableView->geometry().height());
+    ui->tableView_artikel->setFixedHeight(hoehe - 1 - (hbtn + 1)*2);
 
     QWidget::resizeEvent(event);
 }
@@ -70,6 +86,7 @@ void Form_lager::set_user(QString u)
 void Form_lager::show()
 {
     update_table();
+    update_lieferanten();
     setVisible(true);
 }
 
@@ -216,9 +233,12 @@ void Form_lager::update_table()
             cmd += PARAM_VORGANG_ID;
             cmd += ")";
             //------------------------
-            if(!ui->lineEdit_suche->text().isEmpty())
+            if(!ui->lineEdit_suche->text().isEmpty()  ||  ui->comboBox_lieferanten->currentIndex() > 0)
             {
                 cmd += " WHERE ";
+            }
+            if(!ui->lineEdit_suche->text().isEmpty())
+            {
                 cmd += TABNAME_ARTIKEL;
                 cmd += ".";
                 cmd += PARAM_ARTIKEL_NR;
@@ -246,6 +266,18 @@ void Form_lager::update_table()
                 cmd += " LIKE \'%";
                 cmd += ui->lineEdit_suche->text();
                 cmd += "%\'";
+            }
+            if(ui->comboBox_lieferanten->currentIndex() > 0)
+            {
+                if(!ui->lineEdit_suche->text().isEmpty())
+                {
+                    cmd += " AND ";
+                }
+                cmd += TABNAME_ARTIKEL;
+                cmd += ".";
+                cmd += PARAM_ARTIKEL_LIEFERANT;
+                cmd += " LIKE ";
+                cmd += lieferanten_ids.zeile(ui->comboBox_lieferanten->currentIndex());
             }
             //------------------------
             cmd += " GROUP BY ";
@@ -283,6 +315,13 @@ void Form_lager::update_table()
             //------------------------
             cmd += TABNAME_ARTIKEL;
             cmd += ".";
+            cmd += PARAM_ARTIKEL_ID;
+            cmd += " AS ";
+            cmd += "ID";
+            cmd += ", ";
+            //------------------------
+            cmd += TABNAME_ARTIKEL;
+            cmd += ".";
             cmd += PARAM_ARTIKEL_NR;
             cmd += " AS ";
             cmd += "Artikelnummer";
@@ -312,9 +351,12 @@ void Form_lager::update_table()
             cmd += " FROM ";
             cmd += TABNAME_ARTIKEL;
             //------------------------
-            if(!ui->lineEdit_suche->text().isEmpty())
+            if(!ui->lineEdit_suche->text().isEmpty()  ||  ui->comboBox_lieferanten->currentIndex() > 0)
             {
                 cmd += " WHERE ";
+            }
+            if(!ui->lineEdit_suche->text().isEmpty())
+            {
                 cmd += TABNAME_ARTIKEL;
                 cmd += ".";
                 cmd += PARAM_ARTIKEL_NR;
@@ -328,6 +370,18 @@ void Form_lager::update_table()
                 cmd += " LIKE \'%";
                 cmd += ui->lineEdit_suche->text();
                 cmd += "%\'";
+            }
+            if(ui->comboBox_lieferanten->currentIndex() > 0)
+            {
+                if(!ui->lineEdit_suche->text().isEmpty())
+                {
+                    cmd += " AND ";
+                }
+                cmd += TABNAME_ARTIKEL;
+                cmd += ".";
+                cmd += PARAM_ARTIKEL_LIEFERANT;
+                cmd += " LIKE ";
+                cmd += lieferanten_ids.zeile(ui->comboBox_lieferanten->currentIndex());
             }
             //------------------------
             cmd += " ORDER BY ";            //Sortiert nach:
@@ -360,7 +414,27 @@ void Form_lager::update_table()
     //-------------------------------------------
 }
 
+void Form_lager::update_lieferanten()
+{
+    if(dbeigen != NULL)
+    {
+        lieferanten_ids = dbeigen->get_data_tz(TABNAME_LIEFERANT, PARAM_LIEFERANT_ID);
+        lieferanten_namen = dbeigen->get_data_tz(TABNAME_LIEFERANT, PARAM_LIEFERANT_NAME);
+        ui->comboBox_lieferanten->clear();
+        ui->comboBox_lieferanten->addItem("Alle Lieferanten");
+        for(uint i=1; i<=lieferanten_ids.zeilenanzahl() ;i++)
+        {
+            ui->comboBox_lieferanten->addItem(lieferanten_namen.zeile(i));
+        }
+    }
+}
+
 void Form_lager::on_lineEdit_suche_textChanged()
+{
+    update_table();
+}
+
+void Form_lager::on_comboBox_lieferanten_currentIndexChanged(int index)
 {
     update_table();
 }
@@ -375,6 +449,7 @@ void Form_lager::on_pushButton_in_clicked()
     d->set_vorgang("Waren-Eingang");
     d->set_kommission_enabled(false);
     d->set_lieferschein_enabled(true);
+    d->set_showinbestellung_enabled(true);
     connect(d, SIGNAL(signal_send_data(text_zeilenweise)),  \
             this, SLOT(slot_in(text_zeilenweise))          );
     d->exec();
@@ -392,6 +467,32 @@ void Form_lager::on_pushButton_out_clicked()
     d->set_lieferschein_enabled(false);
     connect(d, SIGNAL(signal_send_data(text_zeilenweise)),  \
             this, SLOT(slot_out(text_zeilenweise))          );
+    d->exec();
+    delete d;
+}
+
+void Form_lager::on_pushButton_inagain_clicked()
+{
+    Dialog_lager *d = new Dialog_lager(this);
+    d->set_db(dbeigen);
+    d->setup();
+    d->setWindowTitle("Wieder-Einlagerung buchen");
+    d->set_vorgang("Wieder-Einlagerung");
+    d->set_kommission_enabled(true);
+    d->set_lieferschein_enabled(false);
+    connect(d, SIGNAL(signal_send_data(text_zeilenweise)),  \
+            this, SLOT(slot_inagain(text_zeilenweise))          );
+    d->exec();
+    delete d;
+}
+
+void Form_lager::on_pushButton_korrektur_clicked()
+{
+    Dialog_text_input *d = new Dialog_text_input(this);
+    d->setWindowTitle("Bestandskorrektur");
+    d->set_infotext("Bitte Artikel-ID eingeben");
+    connect(d, SIGNAL(signal_userinput(QString)),   \
+            this, SLOT(slot_bestkor_aid(QString))   );
     d->exec();
     delete d;
 }
@@ -444,9 +545,13 @@ void Form_lager::slot_in(text_zeilenweise data)
         QMessageBox mb;
         mb.setText(tr("Achtung!\nBestellte Menge < gelieferte Menge!\n"));
         mb.exec();
+        dbeigen->data_edit(TABNAME_ARTIKEL, PARAM_ARTIKEL_BESTELLT, "0", artikelid);
+    }else
+    {
+        menge_akt = in_bestellung - menge.toInt();
+        dbeigen->data_edit(TABNAME_ARTIKEL, PARAM_ARTIKEL_BESTELLT, int_to_qstring(menge_akt), artikelid);
     }
-    menge_akt = in_bestellung - menge.toInt();
-    dbeigen->data_edit(TABNAME_ARTIKEL, PARAM_ARTIKEL_BESTELLT, int_to_qstring(menge_akt), artikelid);
+
 
     //Menge in Bestellung als geliefert austragen:
     text_zeilenweise best_ids, best_bestellt, best_geliefert;
@@ -652,7 +757,163 @@ void Form_lager::slot_out(text_zeilenweise data)
     }
 }
 
+void Form_lager::slot_inagain(text_zeilenweise data)
+{
+    text_zeilenweise param, values;
+
+    QString artikelid   = data.zeile(1);
+    QString menge       = data.zeile(2);
+    QString projektid   = data.zeile(3);
+    QString kommentar   = data.zeile(4);
+
+    param.zeile_anhaengen(PARAM_LAGER_VORGANG);
+    param.zeile_anhaengen(PARAM_LAGER_ARTIKELID);
+    param.zeile_anhaengen(PARAM_LAGER_MENGE);
+    param.zeile_anhaengen(PARAM_LAGER_ERSTELLER);
+    param.zeile_anhaengen(PARAM_LAGER_DATERST);
+    param.zeile_anhaengen(PARAM_LAGER_KOMMISSION);
+    param.zeile_anhaengen(PARAM_LAGER_KOMMENT);
+
+    values.zeile_anhaengen(VORGANG_WIEDEREINLAGERUNG);
+    values.zeile_anhaengen(artikelid);
+    values.zeile_anhaengen(menge);
+    values.zeile_anhaengen(user);
+    datum heute;
+    values.zeile_anhaengen(heute.get_today_y_m_d());
+    values.zeile_anhaengen(projektid);
+    values.zeile_anhaengen(kommentar);
+
+    //Aktuelle Lagermenge des Artikeln abfragen:
+    QString menge_vorher = dbeigen->get_data_qstring(TABNAME_ARTIKEL, PARAM_ARTIKEL_LAGERSTAND, artikelid);
+    int menge_akt = menge_vorher.toInt() + menge.toInt();
+
+    dbeigen->data_edit(TABNAME_ARTIKEL, PARAM_ARTIKEL_LAGERSTAND, int_to_qstring(menge_akt), artikelid);
+
+    dbeigen->data_new(TABNAME_LAGER, param, values);
+    update_table();
+
+    //heraus bekommen, ob zu diesem Artikel bereits ein Eintrag in der promat_* existiert:
+    QString promat_name;
+    promat_name  = TABNAME_PROMAT;
+    promat_name += projektid;
+    text_zeilenweise artikelids = dbeigen->get_data_tz(promat_name, PARAM_PROMAT_ARTIKEL_ID);
+    int index = -1;
+    for(uint i=1; i<=artikelids.zeilenanzahl() ;i++)
+    {
+        if(artikelids.zeile(i) == artikelid)
+        {
+            index = i;
+            break;
+        }
+    }
+
+    //Wert anpassen:
+    if(index > 0)//Artikel bereits vorhanden in promat_*
+    {
+        text_zeilenweise promat_value_ids = dbeigen->get_data_tz(promat_name, PARAM_PROMAT_ID);
+        QString promat_value_id = promat_value_ids.zeile(index);
+
+        int menge_vorher = dbeigen->get_data_qstring(promat_name, PARAM_PROMAT_ME_VERARBEITET, promat_value_id).toInt();
+        int menge_jetzt = menge.toInt();
+        int menge_nachher = menge_vorher - menge_jetzt;
+        dbeigen->data_edit(promat_name, PARAM_PROMAT_ME_VERARBEITET, int_to_qstring(menge_nachher), promat_value_id);
+        if(menge_nachher < 0)
+        {
+            QMessageBox mb;
+            mb.setText(tr("Es wurde mehr ins Lager zurückgegeben als zuvor für das Projekt ausgegeben wurde."));
+            mb.exec();
+        }
+    }else
+    {
+        text_zeilenweise pa, val;
+
+        pa.zeile_anhaengen(PARAM_PROMAT_ARTIKEL_ID);
+        pa.zeile_anhaengen(PARAM_PROMAT_ME_VERARBEITET);
+
+        val.zeile_anhaengen(artikelid);
+        val.zeile_anhaengen("-" + menge);//es wurde mehr Wieder-Eingelagert als rausgegeben wurde
+        dbeigen->data_new(promat_name, pa, val);
+        QMessageBox mb;
+        mb.setText(tr("Es wurde mehr ins Lager zurückgegeben als zuvor für das Projekt ausgegeben wurde."));
+        mb.exec();
+    }
+    QMessageBox mb;
+    mb.setText(tr("Buchung erfolgreich durchgeführt."));
+    mb.exec();
+}
+
+void Form_lager::slot_bestkor_aid(QString artikel_id)
+{
+    //Prüfen, ob es eine Bestellung mit dieser ID gibt:
+    text_zeilenweise artikel_ids = dbeigen->get_data_tz(TABNAME_ARTIKEL, PARAM_ARTIKEL_ID);
+    bool existiert = false;
+    for(uint i=1; i<=artikel_ids.zeilenanzahl() ;i++)
+    {
+        if(artikel_ids.zeile(i) == artikel_id)
+        {
+            existiert = true;
+            break;
+        }
+    }
+    if(existiert == true)
+    {
+        idbuffer = artikel_id;
+        Dialog_lager_mengenkorrektur *d = new Dialog_lager_mengenkorrektur(this);
+        d->setWindowTitle("Lagerbestand korrigieren");
+        d->set_db(dbeigen);
+        d->set_aid(artikel_id);
+        connect(d, SIGNAL(signal_send_menge(QString))   ,\
+                this, SLOT(slot_bestkor_menge(QString)) );
+        d->exec();
+        delete d;
+    }else
+    {
+        idbuffer.clear();
+        QMessageBox mb;
+        mb.setText(tr("Ein Artikel mit dieser ID existiert nicht!"));
+        mb.exec();
+    }
+
+}
+
+void Form_lager::slot_bestkor_menge(QString menge)
+{
+    if(!idbuffer.isEmpty())
+    {
+        //Vorgang erfassen
+        text_zeilenweise param, values;
+
+        int mevor = dbeigen->get_data_qstring(TABNAME_ARTIKEL, PARAM_ARTIKEL_LAGERSTAND, idbuffer).toInt();
+        int mediff = menge.toInt() - mevor;
+
+        param.zeile_anhaengen(PARAM_LAGER_VORGANG);
+        param.zeile_anhaengen(PARAM_LAGER_ARTIKELID);
+        param.zeile_anhaengen(PARAM_LAGER_MENGE);
+        param.zeile_anhaengen(PARAM_LAGER_ERSTELLER);
+        param.zeile_anhaengen(PARAM_LAGER_DATERST);
+
+        values.zeile_anhaengen(VORGANG_KORREKTUR);
+        values.zeile_anhaengen(idbuffer);
+        values.zeile_anhaengen(int_to_qstring(mediff));
+        values.zeile_anhaengen(user);
+        datum heute;
+        values.zeile_anhaengen(heute.get_today_y_m_d());;
+
+        //Vorgang buchen:
+        dbeigen->data_new(TABNAME_LAGER, param, values);
+
+        //Änderung buchen:
+        dbeigen->data_edit(TABNAME_ARTIKEL, PARAM_ARTIKEL_LAGERSTAND, menge, idbuffer);
+
+        update_table();
+    }
+}
+
 //------------------------------------
+
+
+
+
 
 
 
