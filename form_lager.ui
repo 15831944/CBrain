@@ -35,6 +35,9 @@
      <height>23</height>
     </rect>
    </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Tabellenfilter&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
   </widget>
   <widget class="QTableView" name="tableView">
    <property name="geometry">
@@ -61,6 +64,9 @@
      <height>26</height>
     </rect>
    </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Einen Wareneingang wird dann gebucht, wenn Ware von einem Lieferanten kommt und ins Lager eingelagert wird.Hier vorgenommene Buchungen haben Einfluss auf das Bestell-Modul&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
    <property name="text">
     <string>Waren-Eingang</string>
    </property>
@@ -73,6 +79,9 @@
      <width>151</width>
      <height>26</height>
     </rect>
+   </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Einen Wareneingang wird dann gebucht, wenn Ware aus dem Lager entnommen wird.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="text">
     <string>Waren-Ausgang</string>
@@ -103,6 +112,9 @@
      <height>26</height>
     </rect>
    </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Eine Wieder-Einlagerung wird dann gebucht, wenn Ware z.B. aus dem Bankraum wieder ins Lager eingelagert wird.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
    <property name="text">
     <string>Wieder-Einlagerung</string>
    </property>
@@ -115,6 +127,9 @@
      <width>151</width>
      <height>26</height>
     </rect>
+   </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Eine Bestandskorrektur wird dann gebucht, wenn die Bestandsmenge eines Artikels im Programm nicht mit der Bestandsmenge im Regalfach übereinstimmt, z.B. bei einer Inventur.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="text">
     <string>Bestandskorrektur</string>

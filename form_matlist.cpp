@@ -128,11 +128,14 @@ void Form_matlist::resizeEvent(QResizeEvent *event)
     ui->tableView->move(1,\
                         1 + (h_btn + 1)*3);
 
-    //links Statusleiste:
+    //links Statusleiste + Buttons:
     ui->lineEdit_statusbar->setFixedHeight(h_btn);
-    ui->lineEdit_statusbar->setFixedWidth(b_li);
+    ui->lineEdit_statusbar->setFixedWidth(b_li - 2 - ui->pushButton_packliste->width());
     ui->lineEdit_statusbar->move(1,\
                                  hoehe - h_btn);
+    ui->pushButton_packliste->setFixedHeight(h_btn);
+    ui->pushButton_packliste->move(b_li - ui->pushButton_packliste->width(),\
+                                     hoehe - h_btn);
 
     //rechts Kopfzeile:
     ui->pushButton_check_all_pos->setFixedWidth(b_re/3-3);
@@ -1239,6 +1242,89 @@ void Form_matlist::on_pushButton_reservieren_clicked()
     }
 }
 
+void Form_matlist::on_pushButton_packliste_clicked()
+{
+    //Erstellt eine druckbare Packiste für die ausgewählten Positionen
+
+    if(!ui->lineEdit_projekt_id->text().isEmpty())
+    {
+        QString posliste;
+        posliste  = TABNAME_PROMATPOSLIST;
+        posliste += ui->lineEdit_projekt_id->text();
+        text_zeilenweise matpos_ids = dbeigen->get_data_tz(posliste, PARAM_PROMATPOSLIST_ID);
+        text_zeilenweise names_postables;
+        for(uint i=1; i<=matpos_ids.zeilenanzahl() ;i++)
+        {
+            if(ui->listWidget_matpos->item(i-1)->checkState() == Qt::Checked)
+            {
+                QString tabname;
+                tabname += TABNAME_PROMATPOS;
+                tabname += ui->lineEdit_projekt_id->text();
+                tabname += "_";
+                tabname += matpos_ids.zeile(i);
+                names_postables.zeile_anhaengen(tabname);
+            }
+        }
+        artikel_mengenerfassung ame;
+        //Aktuelle Mengen berechnen:
+        for(uint i=1; i<=names_postables.zeilenanzahl() ;i++)
+        {
+            text_zeilenweise artikel_ids = dbeigen->get_data_tz(names_postables.zeile(i), \
+                                                                PARAM_PROMATPOS_ARTIKEL_ID);
+            text_zeilenweise mengen = dbeigen->get_data_tz(names_postables.zeile(i), \
+                                                           PARAM_PROMATPOS_MENGE);
+            text_zeilenweise status_ids = dbeigen->get_data_tz(names_postables.zeile(i), \
+                                                                PARAM_PROMATPOS_STATUS_ID);
+            text_zeilenweise beziehungen = dbeigen->get_data_tz(names_postables.zeile(i), \
+                                                                PARAM_PROMATPOS_BEZIEHUNG);
+            if(artikel_ids.zeilenanzahl() != 0)
+            {
+                ame.add_matpos(artikel_ids,\
+                               mengen,\
+                               status_ids,\
+                               beziehungen);
+            }
+        }
+        QString printmsg;
+        printmsg += "Packliste ";
+        printmsg += ui->lineEdit_projekt->text();
+        printmsg += "\n\n";
+        text_zeilenweise aids, ameng;
+        aids   = ame.get_artikel_ids();
+        ameng  = ame.get_mengen_bestellen();
+        for(uint i=1; i<=aids.zeilenanzahl() ;i++)
+        {
+            QString me = ameng.zeile(i);
+            if(me.contains("."))
+            {
+                me = text_links(me, ".");
+            }
+            printmsg += me;
+            printmsg += "x";
+            printmsg += "  ";
+            printmsg += dbeigen->get_data_qstring(TABNAME_ARTIKEL, PARAM_ARTIKEL_LIEFERANT,\
+                                                  aids.zeile(i), \
+                                                  TABNAME_LIEFERANT, PARAM_LIEFERANT_NAME);
+            printmsg += " ";
+            printmsg += dbeigen->get_data_qstring(TABNAME_ARTIKEL, PARAM_ARTIKEL_NR, aids.zeile(i));
+            printmsg += " ";
+            printmsg += dbeigen->get_data_qstring(TABNAME_ARTIKEL, PARAM_ARTIKEL_BEZ, aids.zeile(i));
+            if(i != aids.zeilenanzahl())
+            {
+                printmsg += "\n\n";
+            }
+        }
+        Dialog_printbox *d = new Dialog_printbox(this);
+        d->setText(printmsg);
+        d->exec();
+        delete d;
+    }else
+    {
+        QMessageBox mb;
+        mb.setText(tr("Bitte zuerst ein Projekt wählen!"));
+        mb.exec();
+    }
+}
 //-------------------------------------private Slots:
 void Form_matlist::on_lineEdit_projekt_id_textChanged(const QString &arg1)
 {
@@ -1717,6 +1803,8 @@ void Form_matlist::slot_import_get_pos_id(text_zeilenweise ids)
     update_listwidget_matpos();
     slot_update_table();
 }
+
+
 
 
 

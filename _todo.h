@@ -21,7 +21,8 @@
 -->Im-Export-Dialog
 
 -->modul_matlist
-    ->Ausdruck Tabelle ermöglichen
+    ->Schnellstatusänderung ermöglichen
+        >erfasst -> zur bestellung freigegeben
 
 
 

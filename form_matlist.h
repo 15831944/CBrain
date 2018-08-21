@@ -18,6 +18,7 @@
 #include "text.h"
 #include "dialog_yes_no.h"
 #include "artikel_mengenerfassung.h"
+#include "dialog_printbox.h"
 
 namespace Ui {
 class Form_matlist;
@@ -75,6 +76,7 @@ private slots:
     void on_checkBox_verarbeitet_toggled();
     void on_checkBox_show_pos_toggled(bool checked);
     void on_pushButton_reservieren_clicked();
+    void on_pushButton_packliste_clicked();
 
 private:
     Ui::Form_matlist *ui;
